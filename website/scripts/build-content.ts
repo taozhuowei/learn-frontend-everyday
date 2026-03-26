@@ -75,10 +75,7 @@ function walkMarkdownFiles(currentDir: string, bucket: string[] = []) {
     const fullPath = path.join(currentDir, entry.name)
 
     if (entry.isDirectory()) {
-      if (
-        ['node_modules', 'dist', '.git'].includes(entry.name) ||
-        entry.name.endsWith('_launcher')
-      ) {
+      if (['node_modules', 'dist', '.git'].includes(entry.name) || entry.name === 'launcher') {
         continue
       }
 
@@ -99,7 +96,7 @@ function walkProblemFiles(currentDir: string, bucket: string[] = []) {
     const fullPath = path.join(currentDir, entry.name)
 
     if (entry.isDirectory()) {
-      if (['node_modules', 'dist'].includes(entry.name) || entry.name.endsWith('_launcher')) {
+      if (['node_modules', 'dist'].includes(entry.name) || entry.name === 'launcher') {
         continue
       }
 
