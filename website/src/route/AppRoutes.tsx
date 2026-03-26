@@ -54,7 +54,7 @@ export function AppRoutes() {
   return (
     <Suspense fallback={<RouteLoadingFallback />}>
       <Routes>
-        <Route element={<Outlet />} path="/">
+        <Route element={<Outlet />} path="">
           <Route element={<HomePage />} index />
           <Route element={<ExamEntryPage />} path="exam" />
           <Route element={<ExamSessionPage />} path="exam/session" />
