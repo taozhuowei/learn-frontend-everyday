@@ -14,7 +14,7 @@ const ONE_DAY = 24 * 60 * 60 * 1000;
 const ONE_HOUR = 60 * 60 * 1000;
 const ONE_MINUTE = 60 * 1000;
 const ONE_SECOND = 1000;
-function CountDown({ totalSeconds, onEnd, showMs = false }) {
+function CountDown({ totalSeconds = 60, onEnd, showMs = false }) {
   const [timeLeft, setTimeLeft] = useState(totalSeconds * 1000);
   const timer = useRef(null);
   const lastTimestamp = useRef(null);

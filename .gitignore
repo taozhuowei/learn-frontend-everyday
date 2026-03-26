@@ -4,5 +4,7 @@ Thumbs.db
 website/node_modules/
 website/dist/
 website/.cache/
+docs/实践/**/node_modules/
+docs/实践/**/dist/
 
 .github/.DS_Store
