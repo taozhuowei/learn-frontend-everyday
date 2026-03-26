@@ -11,8 +11,8 @@ docs/
 ├─ 实践/
 │  ├─ <分类>/*.{js,jsx,tsx,vue}         # 题库源码
 │  ├─ <分类>/*_test.js                  # 与题目同级的测试文件
-│  ├─ with_react/*_launcher/            # React 本地联调工程
-│  └─ with_vue/*_launcher/              # Vue 本地联调工程
+│  ├─ with_react/launcher/              # React 本地联调工程，会自动扫描同级 .jsx/.tsx 组件
+│  └─ with_vue/launcher/                # Vue 本地联调工程，会自动扫描同级 .vue 组件
 └─ 其他分类目录
 ```
 
@@ -70,5 +70,7 @@ module.exports = [
 ## 协作规则
 
 - `docs` 只维护内容源，不维护镜像数据或手写生成结果。
-- React/Vue 联调逻辑只放在对应 `*_launcher` 目录，不混入通用题库源码。
+- React launcher 会自动导入同级目录中的 `.jsx`、`.tsx` 组件，并忽略 `_test` 文件。
+- Vue launcher 会自动导入同级目录中的 `.vue` 组件，并忽略 `_test` 文件。
+- React/Vue 联调逻辑只放在对应 `launcher` 目录，不混入通用题库源码。
 - 内容结构、测试协议或题库导入规则变化时，必须同步更新 [website/README.md](../website/README.md) 和 [website/PRD.md](../website/PRD.md)。

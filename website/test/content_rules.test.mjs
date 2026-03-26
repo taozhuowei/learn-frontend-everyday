@@ -58,11 +58,11 @@ test('execution config is inferred from the source type', () => {
   })
   assert.deepEqual(getExecutionConfig('jsx'), {
     executionMode: 'local',
-    launcherPath: 'docs/实践/with_react/react_launcher',
+    launcherPath: 'docs/实践/with_react/launcher',
   })
   assert.deepEqual(getExecutionConfig('vue'), {
     executionMode: 'local',
-    launcherPath: 'docs/实践/with_vue/vue_launcher',
+    launcherPath: 'docs/实践/with_vue/launcher',
   })
 })
 
