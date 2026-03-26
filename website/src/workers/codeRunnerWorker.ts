@@ -1,0 +1,164 @@
+import type { JudgeCase } from '../types/content'
+import type { ExecutionCaseResult, ExecutionRequest, ExecutionResponse } from '../types/exam'
+
+function sanitizeSource(source: string) {
+  return source
+    .replace(/^\s*export\s+default\s+.*?;?\s*$/gm, '')
+    .replace(/^\s*export\s+\{[\s\S]*?\};?\s*$/gm, '')
+    .trim()
+}
+
+function normalize(value: unknown): unknown {
+  if (typeof value === 'undefined') {
+    return { __type: 'undefined' }
+  }
+
+  if (typeof value === 'number' && Number.isNaN(value)) {
+    return { __type: 'nan' }
+  }
+
+  if (Array.isArray(value)) {
+    return value.map((item) => normalize(item))
+  }
+
+  if (value && typeof value === 'object') {
+    return Object.fromEntries(
+      Object.entries(value as Record<string, unknown>).map(([key, entry]) => [
+        key,
+        normalize(entry),
+      ]),
+    )
+  }
+
+  return value
+}
+
+function deepEqual(left: unknown, right: unknown) {
+  return JSON.stringify(normalize(left)) === JSON.stringify(normalize(right))
+}
+
+function stringifyLogEntry(value: unknown) {
+  if (typeof value === 'string') {
+    return value
+  }
+
+  try {
+    return JSON.stringify(value, null, 2)
+  } catch {
+    return String(value)
+  }
+}
+
+async function runSingleCase(evaluator: (input: string) => Promise<unknown>, testCase: JudgeCase) {
+  const start = performance.now()
+
+  try {
+    const actual = await Promise.race([
+      evaluator(testCase.input),
+      new Promise((_, reject) => {
+        setTimeout(() => reject(new Error('执行超时')), testCase.timeoutMs ?? 1500)
+      }),
+    ])
+
+    return {
+      caseId: testCase.id,
+      description: testCase.description,
+      passed: deepEqual(actual, testCase.expected),
+      expected: normalize(testCase.expected),
+      actual: normalize(actual),
+      logs: [] as string[],
+      durationMs: Math.round(performance.now() - start),
+    } satisfies ExecutionCaseResult
+  } catch (error) {
+    return {
+      caseId: testCase.id,
+      description: testCase.description,
+      passed: false,
+      expected: normalize(testCase.expected),
+      actual: { __type: 'error' },
+      logs: [] as string[],
+      error: error instanceof Error ? error.message : String(error),
+      durationMs: Math.round(performance.now() - start),
+    } satisfies ExecutionCaseResult
+  }
+}
+
+function createEvaluator(source: string) {
+  const buffer: string[] = []
+  const shadowConsole = {
+    log: (...args: unknown[]) => buffer.push(args.map((arg) => stringifyLogEntry(arg)).join(' ')),
+    info: (...args: unknown[]) => buffer.push(args.map((arg) => stringifyLogEntry(arg)).join(' ')),
+    warn: (...args: unknown[]) => buffer.push(args.map((arg) => stringifyLogEntry(arg)).join(' ')),
+    error: (...args: unknown[]) => buffer.push(args.map((arg) => stringifyLogEntry(arg)).join(' ')),
+  }
+
+  const evaluatorFactory = new Function(
+    'console',
+    'setTimeout',
+    'clearTimeout',
+    'setInterval',
+    'clearInterval',
+    `
+      ${sanitizeSource(source)}
+      return async function runInput(input) {
+        return await eval(input)
+      }
+    `,
+  ) as (
+    console: typeof shadowConsole,
+    setTimeout: typeof globalThis.setTimeout,
+    clearTimeout: typeof globalThis.clearTimeout,
+    setInterval: typeof globalThis.setInterval,
+    clearInterval: typeof globalThis.clearInterval,
+  ) => (input: string) => Promise<unknown>
+
+  const execute = evaluatorFactory(
+    console as unknown as typeof shadowConsole,
+    setTimeout,
+    clearTimeout,
+    setInterval,
+    clearInterval,
+  )
+
+  return {
+    buffer,
+    execute,
+  }
+}
+
+async function executeRequest(request: ExecutionRequest): Promise<ExecutionResponse> {
+  const { buffer, execute } = createEvaluator(request.source)
+  const results: ExecutionCaseResult[] = []
+
+  for (const testCase of request.cases) {
+    const before = buffer.length
+    const result = await runSingleCase(execute, testCase)
+    result.logs = buffer.slice(before)
+    results.push(result)
+  }
+
+  return {
+    summary: {
+      passedCount: results.filter((item) => item.passed).length,
+      totalCount: results.length,
+    },
+    results,
+  }
+}
+
+self.onmessage = async (event: MessageEvent<{ id: number; payload: ExecutionRequest }>) => {
+  try {
+    const response = await executeRequest(event.data.payload)
+    self.postMessage({
+      id: event.data.id,
+      ok: true,
+      response,
+    })
+  } catch (error) {
+    self.postMessage({
+      id: event.data.id,
+      ok: false,
+      error: error instanceof Error ? error.message : String(error),
+    })
+  }
+}
