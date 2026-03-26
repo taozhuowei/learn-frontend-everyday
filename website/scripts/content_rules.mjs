@@ -80,14 +80,14 @@ export function getExecutionConfig(sourceType) {
   if (sourceType === 'jsx' || sourceType === 'tsx') {
     return {
       executionMode: 'local',
-      launcherPath: 'docs/实践/with_react/react_launcher',
+      launcherPath: 'docs/实践/with_react/launcher',
     }
   }
 
   if (sourceType === 'vue') {
     return {
       executionMode: 'local',
-      launcherPath: 'docs/实践/with_vue/vue_launcher',
+      launcherPath: 'docs/实践/with_vue/launcher',
     }
   }
 
