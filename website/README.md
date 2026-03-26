@@ -7,7 +7,7 @@
 - 展示理论知识文章。
 - 提供学习模式、考试模式和题库详情页。
 - 在浏览器中执行纯 `.js` 题目。
-- 为 React/Vue 题目保留本地联调入口，但这些联调工程仍放在 `../docs/实践/*_launcher/`。
+- 为 React/Vue 题目保留本地联调入口，但这些联调工程仍放在 `../docs/实践/*/launcher/`。
 
 ## 界面与交互
 
@@ -77,7 +77,7 @@ yarn build
 ### 题库源码
 
 - 来源：`../docs/实践/**/*.{js,jsx,tsx,vue}`
-- 排除：`*_test.js`、`*_launcher`、`dist`、`node_modules`
+- 排除：`*_test.js`、`launcher`、`dist`、`node_modules`
 
 每个题目文件头部必须包含：
 
@@ -122,8 +122,8 @@ module.exports = [
 ### 执行模式推断
 
 - `.js` => `browser`
-- `.jsx` / `.tsx` => `local`，使用 `docs/实践/with_react/react_launcher`
-- `.vue` => `local`，使用 `docs/实践/with_vue/vue_launcher`
+- `.jsx` / `.tsx` => `local`，使用 `docs/实践/with_react/launcher`
+- `.vue` => `local`，使用 `docs/实践/with_vue/launcher`
 
 ## 前端数据模型
 

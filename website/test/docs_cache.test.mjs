@@ -19,7 +19,7 @@ test('collectDocsInputFiles ignores launcher directories and keeps same-director
   const docsRoot = path.join(tempRoot, 'docs')
   const practiceRoot = path.join(docsRoot, '实践')
   const utilityRoot = path.join(practiceRoot, 'utility')
-  const launcherRoot = path.join(practiceRoot, 'with_react', 'react_launcher')
+  const launcherRoot = path.join(practiceRoot, 'with_react', 'launcher')
 
   fs.mkdirSync(utilityRoot, { recursive: true })
   fs.mkdirSync(launcherRoot, { recursive: true })
