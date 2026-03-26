@@ -1,5 +1,5 @@
 import { Suspense, lazy } from 'react'
-import { Navigate, Route, Routes } from 'react-router-dom'
+import { Navigate, Outlet, Route, Routes } from 'react-router-dom'
 import { problems } from '../generated/problems'
 
 const HomePage = lazy(() =>
@@ -54,17 +54,19 @@ export function AppRoutes() {
   return (
     <Suspense fallback={<RouteLoadingFallback />}>
       <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/exam" element={<ExamEntryPage />} />
-        <Route path="/exam/session" element={<ExamSessionPage />} />
-        <Route path="/exam/result" element={<ExamResultPage />} />
-        <Route path="/learn" element={<Navigate replace to={`/learn/${firstProblemId}`} />} />
-        <Route path="/learn/:problemId" element={<LearnPage />} />
-        <Route path="/library" element={<LibraryPage />} />
-        <Route path="/library/:problemId" element={<LibraryDetailPage />} />
-        <Route path="/theory" element={<TheoryPage />} />
-        <Route path="/theory/:slug" element={<TheoryPage />} />
-        <Route path="/settings" element={<SettingsRedirectPage />} />
+        <Route element={<Outlet />} path="/">
+          <Route element={<HomePage />} index />
+          <Route element={<ExamEntryPage />} path="exam" />
+          <Route element={<ExamSessionPage />} path="exam/session" />
+          <Route element={<ExamResultPage />} path="exam/result" />
+          <Route element={<Navigate replace to={`/learn/${firstProblemId}`} />} path="learn" />
+          <Route element={<LearnPage />} path="learn/:problemId" />
+          <Route element={<LibraryPage />} path="library" />
+          <Route element={<LibraryDetailPage />} path="library/:problemId" />
+          <Route element={<TheoryPage />} path="theory" />
+          <Route element={<TheoryPage />} path="theory/:slug" />
+          <Route element={<SettingsRedirectPage />} path="settings" />
+        </Route>
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </Suspense>
