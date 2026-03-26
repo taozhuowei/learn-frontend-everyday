@@ -16,7 +16,7 @@
 ### 2.2 题库源码
 
 - 来源：`../docs/实践/**/*.{js,jsx,tsx,vue}`
-- 排除：`*_test.js`、`*_launcher`、`dist`、`node_modules`
+- 排除：`*_test.js`、`launcher`、`dist`、`node_modules`
 - 约束：
   - 每个题目都必须包含 `@description`、`@approach`、`@params`、`@return`
   - `@description` 必须详细说明题目要实现的功能、输入输出语义、边界条件和限制
