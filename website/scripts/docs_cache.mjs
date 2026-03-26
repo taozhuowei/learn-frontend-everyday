@@ -117,7 +117,7 @@ function shouldSkipDir(entryName) {
     entryName === 'node_modules' ||
     entryName === 'dist' ||
     entryName === '.git' ||
-    entryName.endsWith('_launcher')
+    entryName === 'launcher'
   )
 }
 
