@@ -297,8 +297,8 @@ export const generatedTestManifest = [
     "fullCaseCount": 5
   },
   {
-    "problemId": "HelloWorld",
-    "title": "HelloWorld",
+    "problemId": "cascader",
+    "title": "Cascader",
     "categoryId": "with_vue",
     "categoryName": "Vue 组件",
     "executionMode": "local",

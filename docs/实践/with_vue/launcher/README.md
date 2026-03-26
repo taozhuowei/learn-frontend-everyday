@@ -21,7 +21,7 @@ yarn dev
 
 ```text
 with_vue/
-├─ casscader.vue
+├─ cascader.vue
 └─ launcher/
 ```
 
