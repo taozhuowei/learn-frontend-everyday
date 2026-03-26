@@ -1,97 +1,7 @@
-import type { ReactNode } from 'react'
 import { Link } from 'react-router-dom'
 import { AppShell } from '../components/AppShell'
 import { knowledgeArticles } from '../generated/knowledge'
 import { problems } from '../generated/problems'
-
-function PracticeIcon() {
-  return (
-    <svg aria-hidden="true" viewBox="0 0 24 24">
-      <path
-        d="M6 4.75h8.5L19.25 9.5V19A1.25 1.25 0 0 1 18 20.25H6A1.25 1.25 0 0 1 4.75 19V6A1.25 1.25 0 0 1 6 4.75Z"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.5"
-      />
-      <path d="M14 4.75V9.5h4.75" fill="none" stroke="currentColor" strokeWidth="1.5" />
-      <path
-        d="M8 12.25h8M8 15.75h5.5"
-        fill="none"
-        stroke="currentColor"
-        strokeLinecap="round"
-        strokeWidth="1.5"
-      />
-    </svg>
-  )
-}
-
-function ExamIcon() {
-  return (
-    <svg aria-hidden="true" viewBox="0 0 24 24">
-      <circle cx="12" cy="12" fill="none" r="7.25" stroke="currentColor" strokeWidth="1.5" />
-      <path
-        d="M12 8.5V12l2.5 2.25"
-        fill="none"
-        stroke="currentColor"
-        strokeLinecap="round"
-        strokeWidth="1.5"
-      />
-      <path
-        d="M8 3.75H5.75M18.25 3.75H16"
-        fill="none"
-        stroke="currentColor"
-        strokeLinecap="round"
-        strokeWidth="1.5"
-      />
-    </svg>
-  )
-}
-
-function LibraryIcon() {
-  return (
-    <svg aria-hidden="true" viewBox="0 0 24 24">
-      <path
-        d="M6.5 5.25h9.75A2.5 2.5 0 0 1 18.75 7.75v10.5H8.75A2.5 2.5 0 0 0 6.5 19.7V5.25Z"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.5"
-      />
-      <path
-        d="M6.5 6.5A2.75 2.75 0 0 0 3.75 9.25V17a2 2 0 0 0 2 2h2.5"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.5"
-      />
-      <path
-        d="M9.5 9.25h5.5M9.5 12.25h5.5"
-        fill="none"
-        stroke="currentColor"
-        strokeLinecap="round"
-        strokeWidth="1.5"
-      />
-    </svg>
-  )
-}
-
-function TheoryIcon() {
-  return (
-    <svg aria-hidden="true" viewBox="0 0 24 24">
-      <path
-        d="M5.25 6.25A2.5 2.5 0 0 1 7.75 3.75h8.5a2.5 2.5 0 0 1 2.5 2.5v11.5l-5.5-2.75-5.5 2.75V6.25Z"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.5"
-      />
-      <path
-        d="M9 8.75h6M9 11.75h4"
-        fill="none"
-        stroke="currentColor"
-        strokeLinecap="round"
-        strokeWidth="1.5"
-      />
-    </svg>
-  )
-}
 
 type FeatureLink = {
   title: string
@@ -99,11 +9,13 @@ type FeatureLink = {
   href: string
   meta: string
   tone: 'practice' | 'exam' | 'library' | 'theory'
-  icon: ReactNode
+  emoji: string
 }
 
 const firstBrowserProblem =
   problems.find((problem) => problem.executionMode === 'browser') ?? problems[0]
+const browserProblemCount = problems.filter((problem) => problem.executionMode === 'browser').length
+const localProblemCount = problems.length - browserProblemCount
 
 const featuredLinks: FeatureLink[] = [
   {
@@ -112,7 +24,7 @@ const featuredLinks: FeatureLink[] = [
     href: `/learn/${firstBrowserProblem?.id ?? 'map'}`,
     meta: 'Practice',
     tone: 'practice',
-    icon: <PracticeIcon />,
+    emoji: '🧩',
   },
   {
     title: '考试模式',
@@ -120,7 +32,7 @@ const featuredLinks: FeatureLink[] = [
     href: '/exam',
     meta: 'Exam',
     tone: 'exam',
-    icon: <ExamIcon />,
+    emoji: '⏱️',
   },
   {
     title: '题库',
@@ -128,7 +40,7 @@ const featuredLinks: FeatureLink[] = [
     href: '/library',
     meta: 'Library',
     tone: 'library',
-    icon: <LibraryIcon />,
+    emoji: '📚',
   },
   {
     title: '理论知识',
@@ -136,7 +48,7 @@ const featuredLinks: FeatureLink[] = [
     href: '/theory',
     meta: 'Theory',
     tone: 'theory',
-    icon: <TheoryIcon />,
+    emoji: '🧠',
   },
 ]
 
@@ -151,6 +63,17 @@ export function HomePage() {
             当前站点收录 {problems.length} 道题目与 {knowledgeArticles.length} 篇理论文档。
             首页只保留四个主入口，让内容结构、练习方式和阅读路径一眼可见。
           </p>
+          <div aria-label="站点概览" className="home-summary-strip" role="list">
+            <span className="home-summary-chip" role="listitem">
+              {browserProblemCount} 道浏览器判题
+            </span>
+            <span className="home-summary-chip" role="listitem">
+              {localProblemCount} 道本地联调题
+            </span>
+            <span className="home-summary-chip" role="listitem">
+              {knowledgeArticles.length} 篇理论文章
+            </span>
+          </div>
         </section>
 
         <section aria-label="主要功能入口" className="home-entry-grid home-entry-grid-landing">
@@ -161,9 +84,9 @@ export function HomePage() {
               to={item.href}
             >
               <div className="home-entry-figure">
-                <span className="entry-icon">{item.icon}</span>
-                <span className="entry-geometry entry-geometry-dot" />
-                <span className="entry-geometry entry-geometry-line" />
+                <span aria-hidden="true" className="entry-icon">
+                  {item.emoji}
+                </span>
               </div>
               <div className="home-entry-copy">
                 <span className="poster-link-meta">{item.meta}</span>

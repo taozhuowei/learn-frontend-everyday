@@ -1,5 +1,5 @@
 import { useEffect, useRef } from 'react'
-import Editor, { type OnMount } from '@monaco-editor/react'
+import Editor, { type BeforeMount, type OnMount } from '@monaco-editor/react'
 import type * as monaco from 'monaco-editor'
 
 export interface WorkspaceAction {
@@ -37,6 +37,53 @@ export function CodeWorkspace({
     syncingRef.current = true
     model.setValue(value)
   }, [value])
+
+  const handleBeforeMount: BeforeMount = (monacoInstance) => {
+    monacoInstance.editor.defineTheme('atelier-claude-light', {
+      base: 'vs',
+      inherit: true,
+      rules: [
+        { token: 'comment', foreground: '8A8378', fontStyle: 'italic' },
+        { token: 'keyword', foreground: '2B63F3' },
+        { token: 'operator', foreground: '5B5348' },
+        { token: 'number', foreground: 'C96A32' },
+        { token: 'string', foreground: '1E7C63' },
+        { token: 'regexp', foreground: '8A4CE3' },
+        { token: 'type', foreground: '7A3A17' },
+        { token: 'identifier', foreground: '1F2430' },
+        { token: 'delimiter', foreground: '625C54' },
+      ],
+      colors: {
+        'editor.background': '#FBF8F2',
+        'editor.foreground': '#1F2430',
+        'editor.lineHighlightBackground': '#F2ECE1',
+        'editor.lineHighlightBorder': '#00000000',
+        'editor.selectionBackground': '#DCE7FF',
+        'editor.selectionHighlightBackground': '#EAF0FF',
+        'editor.wordHighlightBackground': '#EAF0FF',
+        'editor.wordHighlightStrongBackground': '#D8E4FF',
+        'editorCursor.foreground': '#2549B8',
+        'editorWhitespace.foreground': '#D5CCBC',
+        'editorIndentGuide.background1': '#E4DCCF',
+        'editorIndentGuide.activeBackground1': '#C3B7A3',
+        'editorLineNumber.foreground': '#A39A8C',
+        'editorLineNumber.activeForeground': '#4B4339',
+        'editorGutter.background': '#FBF8F2',
+        'editorBracketMatch.background': '#EEF3FF',
+        'editorBracketMatch.border': '#A9BFFB',
+        'editorWidget.background': '#FFFDFC',
+        'editorWidget.border': '#DDD3C5',
+        'editorSuggestWidget.background': '#FFFDFC',
+        'editorSuggestWidget.border': '#DDD3C5',
+        'editorSuggestWidget.selectedBackground': '#EEF3FF',
+        'editorHoverWidget.background': '#FFFDFC',
+        'editorHoverWidget.border': '#DDD3C5',
+        'scrollbarSlider.background': '#CFC5B633',
+        'scrollbarSlider.hoverBackground': '#CFC5B366',
+        'scrollbarSlider.activeBackground': '#CFC5B399',
+      },
+    })
+  }
 
   const handleMount: OnMount = (editor: monaco.editor.IStandaloneCodeEditor) => {
     editorRef.current = editor
@@ -86,8 +133,9 @@ export function CodeWorkspace({
 
       <div className="editor-frame editor-frame-leetcode">
         <Editor
-          defaultLanguage={language}
+          beforeMount={handleBeforeMount}
           height="100%"
+          language={language}
           onChange={(nextValue) => {
             if (syncingRef.current) {
               syncingRef.current = false
@@ -115,6 +163,9 @@ export function CodeWorkspace({
             scrollBeyondLastLine: false,
             smoothScrolling: true,
             renderLineHighlight: 'gutter',
+            bracketPairColorization: {
+              enabled: true,
+            },
             suggestOnTriggerCharacters: true,
             scrollbar: {
               verticalScrollbarSize: 9,
@@ -122,7 +173,7 @@ export function CodeWorkspace({
             },
             wordWrap: 'on',
           }}
-          theme="vs-light"
+          theme="atelier-claude-light"
           value={value}
         />
       </div>

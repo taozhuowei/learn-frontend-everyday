@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Redirecting...</title>
+  </head>
+  <body>
+    <script>
+      (function () {
+        var pathname = window.location.pathname.replace(/\/+$/, '')
+
+        if (/\.[^/]+$/.test(pathname)) {
+          return
+        }
+
+        var segments = pathname.replace(/^\//, '').split('/')
+        var base_segment = segments[0] || ''
+        var route_segments = base_segment ? segments.slice(1) : segments
+        var base_path = base_segment ? '/' + base_segment : ''
+        var route_path = '/' + route_segments.join('/')
+        var search = window.location.search ? window.location.search.slice(1) : ''
+        var hash = window.location.hash ? window.location.hash.slice(1) : ''
+        var redirect_url =
+          base_path +
+          '/?p=' +
+          encodeURIComponent(route_path === '/' ? '/' : route_path) +
+          (search ? '&q=' + encodeURIComponent(search) : '') +
+          (hash ? '&h=' + encodeURIComponent(hash) : '')
+
+        window.location.replace(redirect_url)
+      })()
+    </script>
+  </body>
+</html>

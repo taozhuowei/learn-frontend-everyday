@@ -9,6 +9,13 @@
 - 在浏览器中执行纯 `.js` 题目。
 - 为 React/Vue 题目保留本地联调入口，但这些联调工程仍放在 `../docs/实践/*_launcher/`。
 
+## 界面与交互
+
+- 全站采用暖纸面 + 深墨文字 + 棕铜强调色的配色方向，尽量去掉旧的高饱和蓝橙方案。
+- 首页保持 2 x 2 宫格入口并确保卡片齐平对齐，入口图标使用多色 emoji 作为快速识别锚点。
+- 学习模式的编辑器默认只给空白起步区，不自动填入标准答案。
+- 代码编辑区使用 Monaco，并加载自定义浅色主题以提供更明显的语法着色与可读性。
+
 ## 目录说明
 
 ```text
@@ -57,6 +64,8 @@ yarn build
 
 - 仓库根目录提供 [deploy-pages.yml](../.github/workflows/deploy-pages.yml) 工作流，推送到 `main` 后会自动构建 `website` 并发布 `website/dist`。
 - [vite.config.ts](./vite.config.ts) 会在 GitHub Actions 环境下自动读取仓库名并设置 Pages `base`，本地开发仍保持根路径。
+- [App.tsx](./src/App.tsx) 会把 `import.meta.env.BASE_URL` 作为路由 `basename`，避免仓库子路径部署后的默认路由错位。
+- [public/404.html](./public/404.html) 与 [index.html](./index.html) 共同提供 SPA 路由回退，解决 GitHub Pages 刷新深链时的 404。
 - Pages 需要在仓库设置中使用 `GitHub Actions` 作为部署来源。
 
 ## 内容导入规则

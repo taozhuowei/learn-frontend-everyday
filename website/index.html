@@ -2,12 +2,43 @@
 <html lang="zh-CN">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/svg+xml" href="%BASE_URL%favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>前端代码实战网站</title>
   </head>
   <body>
     <div id="root"></div>
+    <script>
+      (function () {
+        const base_path = '%BASE_URL%'.replace(/\/$/, '')
+        const url = new URL(window.location.href)
+        const redirect_path = url.searchParams.get('p')
+        const redirect_query = url.searchParams.get('q')
+        const redirect_hash = url.searchParams.get('h')
+
+        if (!redirect_path) {
+          return
+        }
+
+        url.searchParams.delete('p')
+        url.searchParams.delete('q')
+        url.searchParams.delete('h')
+
+        const preserved_query = url.searchParams.toString()
+        const next_search = redirect_query
+          ? `?${redirect_query}${preserved_query ? `&${preserved_query}` : ''}`
+          : preserved_query
+            ? `?${preserved_query}`
+            : ''
+        const next_hash = redirect_hash ? `#${redirect_hash}` : ''
+
+        window.history.replaceState(
+          null,
+          '',
+          `${base_path}${redirect_path}${next_search}${next_hash}`,
+        )
+      })()
+    </script>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
