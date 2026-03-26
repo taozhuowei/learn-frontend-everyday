@@ -11,6 +11,24 @@ const CodeWorkspace = lazy(() =>
   import('../components/CodeWorkspace').then((module) => ({ default: module.CodeWorkspace })),
 )
 
+function createInitialSource(problem: (typeof problems)[number]) {
+  if (problem.sourceType === 'vue') {
+    return [
+      '<!-- 根据题目说明完成实现。 -->',
+      `<!-- 当前题目：${problem.title} -->`,
+      '<!-- 左侧可查看题目说明、参数、返回值与参考答案。 -->',
+      '',
+    ].join('\n')
+  }
+
+  return [
+    '// 根据题目说明完成实现。',
+    `// 当前题目：${problem.title}`,
+    '// 左侧可查看题目说明、参数、返回值与参考答案。',
+    '',
+  ].join('\n')
+}
+
 export function LearnPage() {
   const { problemId } = useParams()
   const currentProblemId = problemId ?? ''
@@ -25,11 +43,12 @@ export function LearnPage() {
 
 function LearnProblemView({ problem }: { problem: (typeof problems)[number] }) {
   const navigate = useNavigate()
-  const [source, setSource] = useState(problem.template)
+  const initial_source = createInitialSource(problem)
+  const [source, setSource] = useState(initial_source)
   const [sampleExecution, setSampleExecution] = useState<ExecutionResponse | null>(null)
   const [consoleExecution, setConsoleExecution] = useState<ExecutionResponse | null>(null)
   const [busyAction, setBusyAction] = useState<'run' | 'submit' | null>(null)
-  const sourceRef = useRef(problem.template)
+  const sourceRef = useRef(initial_source)
 
   const sidebarItems = problems.map((item) => ({
     id: item.id,
