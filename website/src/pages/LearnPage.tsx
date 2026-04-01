@@ -6,6 +6,7 @@ import { ProblemReferencePanel } from '../components/ProblemReferencePanel'
 import { problems } from '../generated/problems'
 import type { ExecutionResponse } from '../types/exam'
 import { runCode } from '../utils/codeRunner'
+import '../styles/leetcode-theme.css'
 
 const CodeWorkspace = lazy(() =>
   import('../components/CodeWorkspace').then((module) => ({ default: module.CodeWorkspace })),
@@ -108,14 +109,14 @@ function LearnProblemView({ problem }: { problem: (typeof problems)[number] }) {
   return (
     <AppShell
       actions={
-        <Link className="action-button ghost" to={`/library/${problem.id}`}>
+        <Link className="lc-btn lc-btn-ghost" to={`/library/${problem.id}`}>
           题库详情
         </Link>
       }
-      eyebrow="学习"
+      eyebrow="学习模式"
       title={problem.title}
     >
-      <div className="workspace-grid workspace-grid-learning">
+      <div className="lc-workspace">
         <ProblemReferencePanel
           currentProblemId={problem.id}
           items={sidebarItems}
@@ -128,9 +129,12 @@ function LearnProblemView({ problem }: { problem: (typeof problems)[number] }) {
 
         <Suspense
           fallback={
-            <section className="panel workspace-panel route-loading-panel">
-              <span className="panel-title">Loading editor...</span>
-              <p className="panel-description">Monaco is loaded only when coding starts.</p>
+            <section className="lc-panel lc-workspace-panel lc-panel-loading">
+              <div className="lc-loading-content">
+                <div className="lc-loading-spinner" />
+                <span className="lc-loading-text">加载编辑器...</span>
+                <p className="lc-loading-subtext">Monaco Editor 正在初始化</p>
+              </div>
             </section>
           }
         >
@@ -145,21 +149,27 @@ function LearnProblemView({ problem }: { problem: (typeof problems)[number] }) {
 
         <CasePanel
           actions={
-            <div className="panel-actions-row">
+            <div className="lc-actions-row">
               <button
-                className="action-button primary action-wide"
+                className="lc-btn lc-btn-primary lc-btn-run"
                 disabled={problem.executionMode !== 'browser'}
                 onClick={() => executeCases('run')}
                 type="button"
               >
+                <svg className="lc-icon" fill="none" height="16" viewBox="0 0 24 24" width="16">
+                  <path d="M8 5v14l11-7z" fill="currentColor" />
+                </svg>
                 {busyAction === 'run' ? '运行中...' : '运行'}
               </button>
               <button
-                className="action-button ghost action-wide"
+                className="lc-btn lc-btn-submit"
                 disabled={problem.executionMode !== 'browser'}
                 onClick={() => executeCases('submit')}
                 type="button"
               >
+                <svg className="lc-icon" fill="none" height="16" viewBox="0 0 24 24" width="16">
+                  <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" fill="currentColor" />
+                </svg>
                 {busyAction === 'submit' ? '判题中...' : '提交'}
               </button>
             </div>
@@ -167,7 +177,7 @@ function LearnProblemView({ problem }: { problem: (typeof problems)[number] }) {
           cases={problem.basicCases}
           consoleExecution={consoleExecution}
           execution={sampleExecution}
-          title={problem.executionMode === 'browser' ? '调试与判题' : '本地环境说明'}
+          title={problem.executionMode === 'browser' ? '测试与判题' : '本地环境说明'}
         />
       </div>
     </AppShell>
