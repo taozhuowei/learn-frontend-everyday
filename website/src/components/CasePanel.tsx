@@ -38,33 +38,29 @@ export function CasePanel({
   }, [cases, hasCustomTab])
 
   return (
-    <aside className="panel panel-side-detail">
-      <div className="panel-heading panel-heading-stacked">
-        <div className="panel-heading-copy">
-          <span className="panel-title">{title}</span>
-          <span className="panel-caption">{cases.length} 个基础用例</span>
+    <aside className="lc-panel lc-case-panel">
+      <div className="lc-panel-header lc-case-header">
+        <div className="lc-panel-header-left">
+          <span className="lc-panel-title">{title}</span>
+          <span className="lc-panel-subtitle">{cases.length} 个用例</span>
         </div>
-        {actions ? <div className="panel-actions-vertical">{actions}</div> : null}
+        {actions ? <div className="lc-panel-actions">{actions}</div> : null}
       </div>
 
-      <div
-        aria-label="右侧信息切换"
-        className={`reference-tabs ${hasCustomTab ? '' : 'reference-tabs-double'}`}
-        role="tablist"
-      >
+      <div aria-label="右侧信息切换" className="lc-tabs" role="tablist">
         <button
           aria-selected={activeTab === 'cases'}
-          className={`reference-tab ${activeTab === 'cases' ? 'active' : ''}`}
+          className={`lc-tab ${activeTab === 'cases' ? 'lc-tab-active' : ''}`}
           onClick={() => setActiveTab('cases')}
           role="tab"
           type="button"
         >
-          基础用例
+          测试用例
         </button>
         {hasCustomTab ? (
           <button
             aria-selected={activeTab === 'custom'}
-            className={`reference-tab ${activeTab === 'custom' ? 'active' : ''}`}
+            className={`lc-tab ${activeTab === 'custom' ? 'lc-tab-active' : ''}`}
             onClick={() => setActiveTab('custom')}
             role="tab"
             type="button"
@@ -74,7 +70,7 @@ export function CasePanel({
         ) : null}
         <button
           aria-selected={activeTab === 'console'}
-          className={`reference-tab ${activeTab === 'console' ? 'active' : ''}`}
+          className={`lc-tab ${activeTab === 'console' ? 'lc-tab-active' : ''}`}
           onClick={() => setActiveTab('console')}
           role="tab"
           type="button"
@@ -83,88 +79,127 @@ export function CasePanel({
         </button>
       </div>
 
-      {activeTab === 'cases' ? (
-        <div className="case-list">
-          {cases.map((testCase) => {
-            const result = execution?.results.find((item) => item.caseId === testCase.id)
+      <div className="lc-case-content">
+        {activeTab === 'cases' ? (
+          <div className="lc-case-list">
+            {cases.map((testCase) => {
+              const result = execution?.results.find((item) => item.caseId === testCase.id)
 
-            return (
-              <article className="case-card" key={testCase.id}>
-                <header>
-                  <strong>{testCase.description}</strong>
+              return (
+                <div
+                  className={`lc-case-item ${result ? (result.passed ? 'lc-case-pass' : 'lc-case-fail') : ''}`}
+                  key={testCase.id}
+                >
+                  <div className="lc-case-header-row">
+                    <span className="lc-case-name">{testCase.description}</span>
+                    {result ? (
+                      <span
+                        className={`lc-case-badge ${result.passed ? 'lc-badge-success' : 'lc-badge-error'}`}
+                      >
+                        {result.passed ? '通过' : '失败'}
+                      </span>
+                    ) : (
+                      <span className="lc-case-badge lc-badge-pending">待运行</span>
+                    )}
+                  </div>
+                  <div className="lc-case-input">
+                    <span className="lc-case-label">输入：</span>
+                    <code>{testCase.input}</code>
+                  </div>
                   {result ? (
-                    <span className={`case-status ${result.passed ? 'pass' : 'fail'}`}>
-                      {result.passed ? '通过' : '失败'}
-                    </span>
+                    <div className="lc-case-result">
+                      <div className="lc-result-row">
+                        <span className="lc-result-label">期望：</span>
+                        <span className="lc-result-value lc-result-expected">
+                          {JSON.stringify(result.expected)}
+                        </span>
+                      </div>
+                      <div className="lc-result-row">
+                        <span className="lc-result-label">实际：</span>
+                        <span
+                          className={`lc-result-value ${result.passed ? 'lc-result-expected' : 'lc-result-actual'}`}
+                        >
+                          {JSON.stringify(result.actual)}
+                        </span>
+                      </div>
+                      {result.error ? (
+                        <div className="lc-result-error">
+                          <span className="lc-result-label">错误：</span>
+                          <span>{result.error}</span>
+                        </div>
+                      ) : null}
+                    </div>
                   ) : (
-                    <span className="case-status idle">待运行</span>
+                    <div className="lc-case-expected">
+                      <span className="lc-case-label">期望：</span>
+                      <span>{JSON.stringify(testCase.expected)}</span>
+                    </div>
                   )}
-                </header>
-                <code>{testCase.input}</code>
-                {result ? (
-                  <div className="case-result-copy">
-                    <span>期望：{JSON.stringify(result.expected)}</span>
-                    <span>实际：{JSON.stringify(result.actual)}</span>
-                    {result.error ? <span>错误：{result.error}</span> : null}
-                  </div>
-                ) : (
-                  <span className="case-result-copy">
-                    期望：{JSON.stringify(testCase.expected)}
-                  </span>
-                )}
-              </article>
-            )
-          })}
-        </div>
-      ) : null}
-
-      {activeTab === 'custom' && hasCustomTab ? (
-        <div className="custom-case-editor">
-          <span className="panel-title">自定义运行用例</span>
-          <textarea
-            onChange={(event) => onCustomInputChange?.(event.target.value)}
-            placeholder="输入要执行的表达式，例如：[1, 2, 3].map((value) => value * 2)"
-            rows={4}
-            value={customCaseInput}
-          />
-          <textarea
-            onChange={(event) => onCustomExpectedChange?.(event.target.value)}
-            placeholder="输入期望值 JSON，例如：[2, 4, 6]"
-            rows={3}
-            value={customCaseExpected}
-          />
-        </div>
-      ) : null}
-
-      {activeTab === 'console' ? (
-        <div className="console-panel">
-          <div className="panel-heading">
-            <span className="panel-title">控制台输出</span>
-            <span className="panel-caption">
-              {activeConsoleExecution
-                ? `${activeConsoleExecution.summary.passedCount}/${activeConsoleExecution.summary.totalCount} 通过`
-                : '尚未运行'}
-            </span>
+                </div>
+              )
+            })}
           </div>
-          {activeConsoleExecution ? (
-            <div className="console-log">
-              {activeConsoleExecution.results.map((result) =>
-                result.logs.length > 0 || result.error ? (
-                  <div key={result.caseId}>
-                    <strong>{result.description}</strong>
-                    {result.logs.map((log, index) => (
-                      <pre key={`${result.caseId}-${index}`}>{log}</pre>
-                    ))}
-                    {result.error ? <pre>{result.error}</pre> : null}
-                  </div>
-                ) : null,
-              )}
+        ) : null}
+
+        {activeTab === 'custom' && hasCustomTab ? (
+          <div className="lc-custom-case">
+            <div className="lc-custom-field">
+              <label className="lc-custom-label">输入表达式</label>
+              <textarea
+                className="lc-textarea"
+                onChange={(event) => onCustomInputChange?.(event.target.value)}
+                placeholder="输入要执行的表达式，例如：[1, 2, 3].map((value) => value * 2)"
+                rows={4}
+                value={customCaseInput}
+              />
             </div>
-          ) : (
-            <p className="hint-copy">运行样例或提交判题后，这里会显示日志、报错和判题摘要。</p>
-          )}
-        </div>
-      ) : null}
+            <div className="lc-custom-field">
+              <label className="lc-custom-label">期望输出 (JSON)</label>
+              <textarea
+                className="lc-textarea"
+                onChange={(event) => onCustomExpectedChange?.(event.target.value)}
+                placeholder="输入期望值 JSON，例如：[2, 4, 6]"
+                rows={3}
+                value={customCaseExpected}
+              />
+            </div>
+          </div>
+        ) : null}
+
+        {activeTab === 'console' ? (
+          <div className="lc-console">
+            <div className="lc-console-header">
+              <span className="lc-console-title">运行结果</span>
+              <span className="lc-console-summary">
+                {activeConsoleExecution
+                  ? `${activeConsoleExecution.summary.passedCount}/${activeConsoleExecution.summary.totalCount} 通过`
+                  : '尚未运行'}
+              </span>
+            </div>
+            {activeConsoleExecution ? (
+              <div className="lc-console-logs">
+                {activeConsoleExecution.results.map((result) =>
+                  result.logs.length > 0 || result.error ? (
+                    <div className="lc-console-log-item" key={result.caseId}>
+                      <div className="lc-log-title">{result.description}</div>
+                      {result.logs.map((log, index) => (
+                        <pre key={`${result.caseId}-${index}`} className="lc-log-content">
+                          {log}
+                        </pre>
+                      ))}
+                      {result.error ? <pre className="lc-log-error">{result.error}</pre> : null}
+                    </div>
+                  ) : null,
+                )}
+              </div>
+            ) : (
+              <div className="lc-console-empty">
+                <p>运行样例或提交判题后，这里会显示日志、报错和判题摘要。</p>
+              </div>
+            )}
+          </div>
+        ) : null}
+      </div>
     </aside>
   )
 }
