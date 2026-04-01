@@ -1,6 +1,8 @@
 .DS_Store
 Thumbs.db
 
+.playwright-mcp/
+
 website/node_modules/
 website/dist/
 website/.cache/
