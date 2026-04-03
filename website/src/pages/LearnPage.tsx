@@ -112,8 +112,9 @@ function ProblemInfoPanel({
 
                   return (
                     <button
+                      aria-label={option.label}
                       aria-selected={isActive}
-                      className={`flex items-center gap-1 rounded-[var(--radius-sm)] px-2.5 py-1 text-xs font-semibold transition-colors ${
+                      className={`flex h-8 w-8 items-center justify-center rounded-[var(--radius-sm)] transition-colors ${
                         isActive
                           ? 'bg-white text-[var(--color-ink)] shadow-sm'
                           : 'text-[var(--color-ink-tertiary)] hover:text-[var(--color-ink)]'
@@ -121,10 +122,10 @@ function ProblemInfoPanel({
                       key={option.id}
                       onClick={() => onSolutionInteractionModeChange(option.id)}
                       role="tab"
+                      title={option.label}
                       type="button"
                     >
-                      <Icon size={12} />
-                      {option.label}
+                      <Icon size={14} />
                     </button>
                   )
                 })}
