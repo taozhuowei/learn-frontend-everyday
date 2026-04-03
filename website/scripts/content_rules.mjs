@@ -79,15 +79,15 @@ export function hasSkipTag(source) {
 export function getExecutionConfig(sourceType) {
   if (sourceType === 'jsx' || sourceType === 'tsx') {
     return {
-      executionMode: 'local',
-      launcherPath: 'docs/实践/with_react/launcher',
+      executionMode: 'component',
+      launcherPath: 'problems/with_react/launcher',
     }
   }
 
   if (sourceType === 'vue') {
     return {
-      executionMode: 'local',
-      launcherPath: 'docs/实践/with_vue/launcher',
+      executionMode: 'component',
+      launcherPath: 'problems/with_vue/launcher',
     }
   }
 

@@ -5,31 +5,32 @@ function sanitizeSource(source: string) {
   return source
     .replace(/^\s*export\s+default\s+.*?;?\s*$/gm, '')
     .replace(/^\s*export\s+\{[\s\S]*?\};?\s*$/gm, '')
+    .replace(/^\s*export\s+(function|class|const|let|var)\s+/gm, '$1 ')
     .trim()
 }
 
-function normalize(value: unknown): unknown {
+function normalize(value: unknown, seen = new Set<unknown>()): unknown {
   if (typeof value === 'undefined') {
     return { __type: 'undefined' }
   }
-
   if (typeof value === 'number' && Number.isNaN(value)) {
     return { __type: 'nan' }
   }
-
   if (Array.isArray(value)) {
-    return value.map((item) => normalize(item))
+    if (seen.has(value)) return { __type: 'circular' }
+    seen.add(value)
+    return value.map((item) => normalize(item, seen))
   }
-
   if (value && typeof value === 'object') {
+    if (seen.has(value)) return { __type: 'circular' }
+    seen.add(value)
     return Object.fromEntries(
       Object.entries(value as Record<string, unknown>).map(([key, entry]) => [
         key,
-        normalize(entry),
+        normalize(entry, seen),
       ]),
     )
   }
-
   return value
 }
 
@@ -98,6 +99,9 @@ function createEvaluator(source: string) {
     'clearTimeout',
     'setInterval',
     'clearInterval',
+    'fetch',
+    'XMLHttpRequest',
+    'WebSocket',
     `
       ${sanitizeSource(source)}
       return async function runInput(input) {
@@ -110,6 +114,9 @@ function createEvaluator(source: string) {
     clearTimeout: typeof globalThis.clearTimeout,
     setInterval: typeof globalThis.setInterval,
     clearInterval: typeof globalThis.clearInterval,
+    fetch: undefined,
+    XMLHttpRequest: undefined,
+    WebSocket: undefined,
   ) => (input: string) => Promise<unknown>
 
   const execute = evaluatorFactory(
@@ -118,6 +125,9 @@ function createEvaluator(source: string) {
     clearTimeout,
     setInterval,
     clearInterval,
+    undefined,
+    undefined,
+    undefined,
   )
 
   return {

@@ -15,7 +15,7 @@ export interface ProblemRecord {
   categoryName: string
   title: string
   sourceType: string
-  executionMode: 'browser' | 'local'
+  executionMode: 'browser' | 'component' | 'local'
   launcherPath: string | null
   description: string
   paramsText: string

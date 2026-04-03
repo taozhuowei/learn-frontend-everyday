@@ -24,9 +24,9 @@ export function pickExamProblems(allProblems: ProblemRecord[], config: ExamConfi
     config.categoryIds.length > 0
       ? allProblems.filter(
           (problem) =>
-            problem.executionMode === 'browser' && config.categoryIds.includes(problem.categoryId),
+            problem.executionMode !== 'local' && config.categoryIds.includes(problem.categoryId),
         )
-      : allProblems.filter((problem) => problem.executionMode === 'browser')
+      : allProblems.filter((problem) => problem.executionMode !== 'local')
 
   return shuffle(filtered).slice(0, Math.max(1, Math.min(config.questionCount, filtered.length)))
 }
@@ -100,7 +100,13 @@ export function buildExamResult(
     }
   })
 
-  const totalScore = perProblem.reduce((sum, item) => sum + item.score, 0)
+  const perProblemScore = 100 / Math.max(questionCount, 1)
+  const totalScore = Math.round(
+    session.problemIds.reduce((sum, problemId) => {
+      const existing = session.submittedMap[problemId]
+      return sum + perProblemScore * (existing?.ratio ?? 0)
+    }, 0),
+  )
 
   return {
     perProblem,

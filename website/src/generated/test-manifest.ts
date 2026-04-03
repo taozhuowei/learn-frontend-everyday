@@ -283,7 +283,7 @@ export const generatedTestManifest = [
     "title": "Cascader",
     "categoryId": "with_react",
     "categoryName": "React 组件",
-    "executionMode": "local",
+    "executionMode": "component",
     "basicCaseCount": 3,
     "fullCaseCount": 5
   },
@@ -292,7 +292,7 @@ export const generatedTestManifest = [
     "title": "Countdown",
     "categoryId": "with_react",
     "categoryName": "React 组件",
-    "executionMode": "local",
+    "executionMode": "component",
     "basicCaseCount": 3,
     "fullCaseCount": 5
   },
@@ -301,7 +301,7 @@ export const generatedTestManifest = [
     "title": "Cascader",
     "categoryId": "with_vue",
     "categoryName": "Vue 组件",
-    "executionMode": "local",
+    "executionMode": "component",
     "basicCaseCount": 3,
     "fullCaseCount": 5
   }

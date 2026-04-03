@@ -1,104 +1,180 @@
-import { Link } from 'react-router-dom'
+/**
+ * Page: HomePage
+ * Purpose: 主页，展示 CodeForge Hero 区和四大功能入口卡片。
+ */
+
+import { BookOpen, ChevronRight, GraduationCap, ExternalLink, Trophy } from 'lucide-react'
+
 import { AppShell } from '../components/AppShell'
 import { knowledgeArticles } from '../generated/knowledge'
 import { problems } from '../generated/problems'
 
-type FeatureLink = {
+const firstLearnProblem = problems.find((p) => p.executionMode === 'browser') ?? problems[0]
+
+const stats = {
+  total: problems.length,
+  browser: problems.filter((p) => p.executionMode === 'browser').length,
+  component: problems.filter((p) => p.executionMode === 'component').length,
+  articles: knowledgeArticles.length,
+}
+
+type FeatureCard = {
   title: string
   description: string
   href: string
-  meta: string
-  tone: 'practice' | 'exam' | 'library' | 'theory'
-  emoji: string
+  icon: React.ReactNode
+  accent: string
+  stat: string
 }
 
-const firstBrowserProblem =
-  problems.find((problem) => problem.executionMode === 'browser') ?? problems[0]
-const browserProblemCount = problems.filter((problem) => problem.executionMode === 'browser').length
-const localProblemCount = problems.length - browserProblemCount
-
-const featuredLinks: FeatureLink[] = [
+const featureCards: FeatureCard[] = [
   {
     title: '学习模式',
-    description: '三栏工作区，左侧读题与答案，中间写代码，右侧看样例、日志与提交结果。',
-    href: `/learn/${firstBrowserProblem?.id ?? 'map'}`,
-    meta: 'Practice',
-    tone: 'practice',
-    emoji: '🧩',
+    description: '三栏工作区，左侧读题与参考答案，中间写代码，右侧查看样例与提交结果。',
+    href: `/learn/${firstLearnProblem?.id ?? 'map'}`,
+    icon: <BookOpen size={22} />,
+    accent: 'amber',
+    stat: `${stats.total} 道题目`,
   },
   {
     title: '考试模式',
-    description: '从网页可运行题里随机抽题，保留计时、切题、运行与提交的完整链路。',
+    description: '从题库随机抽题，完整模拟考试流程：计时、切题、运行、提交与成绩报告。',
     href: '/exam',
-    meta: 'Exam',
-    tone: 'exam',
-    emoji: '⏱️',
-  },
-  {
-    title: '题库',
-    description: '按分类浏览所有题目，区分网页判题题与本地环境题，快速进入详情和学习页。',
-    href: '/library',
-    meta: 'Library',
-    tone: 'library',
-    emoji: '📚',
+    icon: <Trophy size={22} />,
+    accent: 'blue',
+    stat: `${stats.browser + stats.component} 道可参考`,
   },
   {
     title: '理论知识',
-    description: '直接消费 docs 中的 Markdown 文档，在网站内以稳定阅读布局展示。',
+    description: '浏览前端核心知识文档，支持背诵模式隐藏正文、文档内关键词搜索与 TOC 导航。',
     href: '/theory',
-    meta: 'Theory',
-    tone: 'theory',
-    emoji: '🧠',
+    icon: <GraduationCap size={22} />,
+    accent: 'emerald',
+    stat: `${stats.articles} 篇文章`,
+  },
+  {
+    title: 'GitHub 源码',
+    description: '查看本项目完整源码，包括题目文件、构建脚本与网站工程，欢迎 Star 或 PR。',
+    href: 'https://github.com/taozhuowei/Learn-Front-end-Everyday',
+    icon: <ExternalLink size={22} />,
+    accent: 'slate',
+    stat: '开源项目',
   },
 ]
 
+const accentMap: Record<string, { bg: string; border: string; icon: string; badge: string }> = {
+  amber: {
+    bg: 'hover:bg-amber-50',
+    border: 'hover:border-[var(--color-primary)]',
+    icon: 'text-[var(--color-primary)]',
+    badge: 'bg-[var(--color-primary-soft)] text-[var(--color-primary-ink)]',
+  },
+  blue: {
+    bg: 'hover:bg-blue-50',
+    border: 'hover:border-blue-400',
+    icon: 'text-blue-500',
+    badge: 'bg-blue-50 text-blue-700',
+  },
+  emerald: {
+    bg: 'hover:bg-emerald-50',
+    border: 'hover:border-emerald-400',
+    icon: 'text-emerald-500',
+    badge: 'bg-emerald-50 text-emerald-700',
+  },
+  slate: {
+    bg: 'hover:bg-[var(--color-surface-secondary)]',
+    border: 'hover:border-[var(--color-border-strong)]',
+    icon: 'text-[var(--color-ink-tertiary)]',
+    badge: 'bg-[var(--color-surface-secondary)] text-[var(--color-ink-tertiary)]',
+  },
+}
+
 export function HomePage() {
   return (
-    <AppShell showPageHeader={false} showTopbar={false} title="前端代码实战演练">
-      <div className="home-stage home-stage-landing">
-        <section className="home-compact-header home-compact-header-landing">
-          <span className="eyebrow">Atelier Code</span>
-          <h1>前端代码实战演练</h1>
-          <p>
-            当前站点收录 {problems.length} 道题目与 {knowledgeArticles.length} 篇理论文档。
-            首页只保留四个主入口，让内容结构、练习方式和阅读路径一眼可见。
-          </p>
-          <div aria-label="站点概览" className="home-summary-strip" role="list">
-            <span className="home-summary-chip" role="listitem">
-              {browserProblemCount} 道浏览器判题
-            </span>
-            <span className="home-summary-chip" role="listitem">
-              {localProblemCount} 道本地联调题
-            </span>
-            <span className="home-summary-chip" role="listitem">
-              {knowledgeArticles.length} 篇理论文章
-            </span>
+    <AppShell showPageHeader={false} title="首页">
+      <div className="h-full overflow-y-auto">
+        {/* Hero */}
+        <div className="relative overflow-hidden bg-white border-b border-[var(--color-border)]">
+          {/* 几何光晕装饰 */}
+          <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
+            <div className="absolute -top-20 -left-20 w-96 h-96 rounded-full bg-amber-300/20 blur-3xl" />
+            <div className="absolute -top-10 left-60 w-64 h-64 rounded-full bg-blue-300/15 blur-3xl" />
+            <div className="absolute top-10 right-10 w-48 h-48 rounded-full bg-amber-200/25 blur-2xl" />
           </div>
-        </section>
 
-        <section aria-label="主要功能入口" className="home-entry-grid home-entry-grid-landing">
-          {featuredLinks.map((item) => (
-            <Link
-              className={`home-entry-card home-entry-card-${item.tone}`}
-              key={item.title}
-              to={item.href}
-            >
-              <div className="home-entry-figure">
-                <span aria-hidden="true" className="entry-icon">
-                  {item.emoji}
-                </span>
-              </div>
-              <div className="home-entry-copy">
-                <span className="poster-link-meta">{item.meta}</span>
-                <strong>{item.title}</strong>
-                <p>{item.description}</p>
-              </div>
-              <span aria-hidden="true" className="entry-arrow">
-                →
+          <div className="relative max-w-3xl mx-auto px-8 py-16 text-center">
+            <div className="flex items-center justify-center gap-2 mb-4">
+              <span className="w-9 h-9 rounded-[9px] bg-[var(--color-primary)] text-white text-sm font-extrabold flex items-center justify-center">
+                CF
               </span>
-            </Link>
-          ))}
-        </section>
+              <span className="text-[0.7rem] font-bold uppercase tracking-[0.2em] text-[var(--color-ink-tertiary)]">
+                CodeForge
+              </span>
+            </div>
+            <h1 className="text-4xl font-extrabold tracking-tight text-[var(--color-ink)] mb-4 leading-tight">
+              锻造你的前端
+              <br />
+              <span className="text-[var(--color-primary)]">实战能力</span>
+            </h1>
+            <p className="text-base text-[var(--color-ink-secondary)] leading-relaxed max-w-xl mx-auto mb-6">
+              {stats.total} 道精心设计的前端题目，{stats.articles} 篇理论知识文档， 浏览器内置 IDE
+              即时练习，系统性提升前端核心技术。
+            </p>
+            <div className="flex items-center justify-center gap-3 flex-wrap">
+              {[
+                { label: `${stats.total} 道题目`, color: 'text-[var(--color-primary)]' },
+                { label: `${stats.browser} 道自动判题`, color: 'text-blue-500' },
+                { label: `${stats.articles} 篇文档`, color: 'text-emerald-500' },
+              ].map((item) => (
+                <span key={item.label} className={`text-sm font-semibold ${item.color}`}>
+                  {item.label}
+                </span>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Feature cards */}
+        <div className="max-w-5xl mx-auto px-8 py-10">
+          <div className="grid grid-cols-2 gap-4">
+            {featureCards.map((card) => {
+              const a = accentMap[card.accent]
+              const isExternal = card.href.startsWith('http')
+              return (
+                <a
+                  key={card.title}
+                  href={card.href}
+                  target={isExternal ? '_blank' : undefined}
+                  rel={isExternal ? 'noopener noreferrer' : undefined}
+                  className={`group flex items-start gap-4 p-5 rounded-[var(--radius-lg)] bg-white border border-[var(--color-border)] ${a.border} ${a.bg} transition-all hover:-translate-y-0.5 hover:shadow-md cursor-pointer`}
+                >
+                  <div
+                    className={`shrink-0 w-10 h-10 flex items-center justify-center rounded-[var(--radius-md)] bg-[var(--color-surface-secondary)] ${a.icon} mt-0.5`}
+                  >
+                    {card.icon}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center justify-between gap-2 mb-1">
+                      <h3 className="text-sm font-bold text-[var(--color-ink)]">{card.title}</h3>
+                      <span
+                        className={`shrink-0 text-[0.6rem] font-bold px-1.5 py-0.5 rounded-full ${a.badge}`}
+                      >
+                        {card.stat}
+                      </span>
+                    </div>
+                    <p className="text-xs text-[var(--color-ink-secondary)] leading-relaxed">
+                      {card.description}
+                    </p>
+                  </div>
+                  <ChevronRight
+                    className={`shrink-0 mt-2 ${a.icon} opacity-0 group-hover:opacity-100 transition-opacity`}
+                    size={16}
+                  />
+                </a>
+              )
+            })}
+          </div>
+        </div>
       </div>
     </AppShell>
   )

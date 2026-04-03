@@ -37,7 +37,7 @@ export function runCode(request: ExecutionRequest) {
     worker.onerror = (event) => {
       window.clearTimeout(timeoutId)
       worker.terminate()
-      reject(new Error(event.message))
+      reject(new Error(event.message || event.error?.message || 'Worker 运行时错误'))
     }
 
     worker.postMessage({

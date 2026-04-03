@@ -6,17 +6,13 @@ import { SyntaxHighlighter, oneLight } from '../utils/code_highlighter'
 
 export function MarkdownContent({ markdown }: { markdown: string }) {
   return (
-    <div className="markdown-body">
+    <div className="cf-markdown">
       <ReactMarkdown
         components={{
           code({ className, children, ...props }) {
             const language = className?.replace('language-', '')
             if (!language) {
-              return (
-                <code className="inline-code" {...props}>
-                  {children}
-                </code>
-              )
+              return <code {...props}>{children}</code>
             }
 
             return (

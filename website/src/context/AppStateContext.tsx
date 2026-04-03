@@ -49,6 +49,23 @@ interface AppContextValue {
   toggleSettingsPanel: () => void
 }
 
+const EXAM_SESSION_STORAGE_KEY = 'cf_exam_session_v1'
+
+function loadPersistedExamState(): Pick<AppState, 'session' | 'sessionDeadline'> {
+  try {
+    const raw = localStorage.getItem(EXAM_SESSION_STORAGE_KEY)
+    if (!raw) return { session: null, sessionDeadline: null }
+    const parsed = JSON.parse(raw) as Pick<AppState, 'session' | 'sessionDeadline'>
+    if (!parsed.sessionDeadline || parsed.sessionDeadline <= Date.now()) {
+      localStorage.removeItem(EXAM_SESSION_STORAGE_KEY)
+      return { session: null, sessionDeadline: null }
+    }
+    return parsed
+  } catch {
+    return { session: null, sessionDeadline: null }
+  }
+}
+
 const initialState: AppState = {
   settings: { ...DEFAULT_EXAM_CONFIG },
   session: null,
@@ -156,8 +173,19 @@ function reducer(state: AppState, action: AppAction): AppState {
 const AppStateContext = createContext<AppContextValue | null>(null)
 
 export function AppStateProvider({ children }: { children: React.ReactNode }) {
-  const [state, dispatch] = useReducer(reducer, initialState)
+  const [state, dispatch] = useReducer(reducer, { ...initialState, ...loadPersistedExamState() })
   const stateRef = useRef(state)
+
+  useEffect(() => {
+    if (state.session && state.sessionDeadline) {
+      localStorage.setItem(
+        EXAM_SESSION_STORAGE_KEY,
+        JSON.stringify({ session: state.session, sessionDeadline: state.sessionDeadline }),
+      )
+    } else {
+      localStorage.removeItem(EXAM_SESSION_STORAGE_KEY)
+    }
+  }, [state.session, state.sessionDeadline])
 
   useEffect(() => {
     stateRef.current = state
@@ -171,7 +199,7 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
     [],
   )
   const executableProblemCount = useMemo(
-    () => problems.filter((problem) => problem.executionMode === 'browser').length,
+    () => problems.filter((problem) => problem.executionMode !== 'local').length,
     [],
   )
 

@@ -1,3 +1,10 @@
+/**
+ * Page: ExamEntryPage
+ * Purpose: 考试入口页，展示考试规则配置、可用题目池统计，并提供"开始考试"入口。
+ * executionMode !== 'local' 的题均可参与考试（browser + component）。
+ */
+
+import { Settings2, Trophy } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { AppShell } from '../components/AppShell'
 import { useAppState } from '../context/AppStateContext'
@@ -7,97 +14,109 @@ import { pickExamProblems } from '../utils/exam'
 export function ExamEntryPage() {
   const { categories, openSettingsPanel, startExam, state } = useAppState()
   const navigate = useNavigate()
-  const executableProblems = problems.filter((problem) => problem.executionMode === 'browser')
+
+  // browser + component 题均可参与考试
+  const executableProblems = problems.filter((p) => p.executionMode !== 'local')
 
   function handleStartExam() {
-    const selectedProblems = pickExamProblems(problems, state.settings)
-    startExam(selectedProblems.map((problem) => problem.id))
+    const selected = pickExamProblems(problems, state.settings)
+    startExam(selected.map((p) => p.id))
     navigate('/exam/session')
   }
 
   return (
     <AppShell
       actions={
-        <button className="action-button ghost" onClick={openSettingsPanel} type="button">
+        <button
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-semibold border border-[var(--color-border)] text-[var(--color-ink-secondary)] hover:bg-[var(--color-surface-secondary)] transition-colors"
+          onClick={openSettingsPanel}
+          type="button"
+        >
+          <Settings2 size={13} />
           调整规则
         </button>
       }
-      description="考试模式只抽取可在浏览器内运行与判题的题目。"
       eyebrow="考试模式"
-      title="准备进入整轮模拟了吗？"
+      title="准备好进入模拟考试了吗？"
     >
-      <div className="exam-entry-layout">
-        <section className="exam-hero">
-          <span className="eyebrow">Mock Exam</span>
-          <h2>保持三栏工作区，把注意力留给题目、代码和判题结果。</h2>
-          <p>
-            首页与题库会展示所有题目，但考试只会抽取网页可运行的 JavaScript 题。本地 React/Vue
-            题保留在题库和学习页里，通过 launcher 自行联调。
-          </p>
-          <div className="spotlight-actions">
-            <button className="action-button primary" onClick={handleStartExam} type="button">
-              开始整轮考试
-            </button>
-          </div>
-        </section>
-
-        <div className="page-grid page-grid-home exam-entry-grid">
-          <section className="panel compact-panel exam-rules-panel">
-            <div className="panel-heading">
-              <span className="panel-title">考试规则</span>
-              <span className="panel-caption">当前会话生效</span>
+      <div className="h-full overflow-y-auto">
+        <div className="max-w-3xl mx-auto px-6 py-10 flex flex-col gap-8">
+          {/* Hero */}
+          <section className="text-center py-4">
+            <div className="w-14 h-14 rounded-[var(--radius-lg)] bg-[var(--color-primary-soft)] flex items-center justify-center mx-auto mb-4">
+              <Trophy size={26} className="text-[var(--color-primary)]" />
             </div>
-            <div className="metric-strip exam-config-strip">
-              <div>
-                <strong>{state.settings.durationMinutes} 分钟</strong>
-                <span>考试时长</span>
-              </div>
-              <div>
-                <strong>{state.settings.questionCount} 题</strong>
-                <span>随机题量</span>
-              </div>
-              <div>
-                <strong>{state.settings.categoryIds.length || categories.length}</strong>
-                <span>覆盖分类</span>
-              </div>
-              <div>
-                <strong>{state.settings.passingScore} 分</strong>
-                <span>及格线</span>
-              </div>
-            </div>
-            <p className="panel-description">
-              规则面板只保留与考试直接相关的配置，题目总池会自动过滤掉本地环境题。
+            <h2 className="text-2xl font-bold text-[var(--color-ink)] mb-2">完整模拟考试链路</h2>
+            <p className="text-sm text-[var(--color-ink-secondary)] leading-relaxed max-w-md mx-auto mb-6">
+              系统将根据当前配置随机抽取题目，保留计时、切题、运行与提交的完整流程。
+              浏览器可自动判题的题目（JS 函数题和组件题）均纳入题库。
             </p>
+            <button
+              className="inline-flex items-center gap-2 px-6 py-2.5 rounded-md bg-[var(--color-primary)] text-white text-sm font-semibold hover:bg-[var(--color-primary-strong)] transition-colors"
+              onClick={handleStartExam}
+              type="button"
+            >
+              开始考试
+            </button>
           </section>
 
-          <section className="panel exam-value-panel">
-            <div className="exam-value-copy">
-              <span className="eyebrow">Available Pool</span>
-              <strong>{executableProblems.length} 道网页可判题</strong>
-              <p>考试、运行、提交、日志与代码提示都围绕同一套浏览器判题链路工作。</p>
-            </div>
-            <div className="exam-value-footer">
-              <button className="action-button primary" onClick={handleStartExam} type="button">
-                直接开考
+          {/* 规则 + 题库统计 */}
+          <div className="grid grid-cols-2 gap-4">
+            {/* 当前规则 */}
+            <div className="bg-white border border-[var(--color-border)] rounded-[var(--radius-lg)] p-5">
+              <h3 className="text-xs font-bold uppercase tracking-wide text-[var(--color-ink-muted)] mb-4">
+                当前考试规则
+              </h3>
+              <div className="grid grid-cols-2 gap-4">
+                {[
+                  { label: '考试时长', value: `${state.settings.durationMinutes} 分钟` },
+                  { label: '题目数量', value: `${state.settings.questionCount} 题` },
+                  {
+                    label: '覆盖分类',
+                    value: `${state.settings.categoryIds.length || categories.length} 个`,
+                  },
+                  { label: '及格线', value: `${state.settings.passingScore} 分` },
+                ].map(({ label, value }) => (
+                  <div key={label} className="flex flex-col gap-0.5">
+                    <span className="text-lg font-bold text-[var(--color-ink)]">{value}</span>
+                    <span className="text-[0.7rem] text-[var(--color-ink-muted)]">{label}</span>
+                  </div>
+                ))}
+              </div>
+              <button
+                className="mt-4 text-xs font-semibold text-[var(--color-primary)] hover:text-[var(--color-primary-strong)] transition-colors"
+                onClick={openSettingsPanel}
+                type="button"
+              >
+                修改规则 →
               </button>
             </div>
-          </section>
-        </div>
 
-        <section className="exam-prep-strip">
-          {categories.map((category) => {
-            const count = executableProblems.filter(
-              (problem) => problem.categoryId === category.id,
-            ).length
-            return (
-              <article className="compact-card exam-prep-card" key={category.id}>
-                <span className="eyebrow">{category.id}</span>
-                <strong>{category.label}</strong>
-                <p>{count} 道可参与考试的题目。</p>
-              </article>
-            )
-          })}
-        </section>
+            {/* 题库统计 */}
+            <div className="bg-white border border-[var(--color-border)] rounded-[var(--radius-lg)] p-5">
+              <h3 className="text-xs font-bold uppercase tracking-wide text-[var(--color-ink-muted)] mb-4">
+                可用题库
+              </h3>
+              <div className="flex flex-col gap-0.5 mb-4">
+                <span className="text-3xl font-extrabold text-[var(--color-primary)]">
+                  {executableProblems.length}
+                </span>
+                <span className="text-xs text-[var(--color-ink-muted)]">道可参与考试的题目</span>
+              </div>
+              <div className="flex flex-col gap-1.5">
+                {categories.map((cat) => {
+                  const count = executableProblems.filter((p) => p.categoryId === cat.id).length
+                  return (
+                    <div key={cat.id} className="flex items-center justify-between text-xs">
+                      <span className="text-[var(--color-ink-secondary)]">{cat.label}</span>
+                      <span className="font-semibold text-[var(--color-ink)]">{count} 题</span>
+                    </div>
+                  )
+                })}
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </AppShell>
   )
