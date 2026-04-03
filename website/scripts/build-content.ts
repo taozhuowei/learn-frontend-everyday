@@ -32,7 +32,7 @@ const __dirname = path.dirname(__filename)
 const websiteRoot = path.resolve(__dirname, '..')
 const repoRoot = path.resolve(websiteRoot, '..')
 const docsRoot = path.join(repoRoot, 'docs')
-const practiceRoot = path.join(docsRoot, '实践')
+const practiceRoot = path.join(repoRoot, 'problems')
 const generatedRoot = path.join(websiteRoot, 'src', 'generated')
 
 function ensureDir(dirPath: string) {
@@ -58,6 +58,135 @@ function extractTag(source: string, tagName: string) {
 
 function stripHeaderComment(source: string) {
   return source.replace(/^\s*\/\*\*[\s\S]*?\*\/\s*/m, '').trim()
+}
+
+/**
+ * Extract a function/class skeleton from source code.
+ * Keeps function and method signatures, replaces bodies with empty {}.
+ * Handles: prototype extensions, standalone functions, class declarations.
+ */
+function extractSkeleton(rawSource: string): string {
+  const source = stripHeaderComment(rawSource)
+
+  let result = ''
+  let i = 0
+  let depth = 0
+  const braceIsClass: boolean[] = []
+  const braceIndent: string[] = []
+  let inString = false
+  let stringChar = ''
+  let inLineComment = false
+  let inBlockComment = false
+
+  function isOutputting(): boolean {
+    for (let d = 0; d < depth; d++) {
+      if (!braceIsClass[d]) return false
+    }
+    return true
+  }
+
+  while (i < source.length) {
+    const c = source[i]
+    const next = source[i + 1] ?? ''
+
+    if (inString) {
+      if (isOutputting()) result += c
+      if (c === '\\') {
+        i++
+        if (isOutputting()) result += source[i]
+        i++
+        continue
+      }
+      if (c === stringChar) inString = false
+      i++
+      continue
+    }
+
+    if (inLineComment) {
+      if (c === '\n') {
+        inLineComment = false
+        if (isOutputting()) result += c
+      }
+      i++
+      continue
+    }
+
+    if (inBlockComment) {
+      if (c === '*' && next === '/') {
+        inBlockComment = false
+        i += 2
+      } else {
+        i++
+      }
+      continue
+    }
+
+    if (c === '/' && next === '/') {
+      inLineComment = true
+      i += 2
+      continue
+    }
+
+    if (c === '/' && next === '*') {
+      inBlockComment = true
+      i += 2
+      continue
+    }
+
+    if (c === '"' || c === "'" || c === '`') {
+      inString = true
+      stringChar = c
+      if (isOutputting()) result += c
+      i++
+      continue
+    }
+
+    if (c === '{') {
+      const lineStart = source.lastIndexOf('\n', i - 1) + 1
+      const precedingLine = source.slice(lineStart, i)
+      const isClass = /\bclass\b/.test(precedingLine)
+      const indent = (precedingLine.match(/^(\s*)/) ?? ['', ''])[1]
+
+      if (isOutputting()) {
+        result += c
+        if (!isClass) result += '\n'
+      }
+
+      braceIsClass[depth] = isClass
+      braceIndent[depth] = indent
+      depth++
+      i++
+      continue
+    }
+
+    if (c === '}') {
+      depth--
+      const wasClass = braceIsClass[depth]
+      const indent = braceIndent[depth]
+      braceIsClass.pop()
+      braceIndent.pop()
+
+      if (isOutputting()) {
+        if (!wasClass) {
+          // Class methods get trailing newline for separation; top-level functions don't
+          result += depth === 0 ? indent + '}' : indent + '}\n'
+        } else {
+          result += c
+        }
+      } else if (depth === 0) {
+        // Closing the outermost function body
+        result += '\n}'
+      }
+
+      i++
+      continue
+    }
+
+    if (isOutputting()) result += c
+    i++
+  }
+
+  return result.replace(/\n{3,}/g, '\n\n').trim()
 }
 
 function validateJsSource(relativePath: string, source: string) {
@@ -251,7 +380,11 @@ function buildProblems() {
       approachText,
       paramsText,
       returnText,
-      template: stripHeaderComment(source),
+      // Component problems display the full source code; only function problems use the skeleton
+      template:
+        executionConfig.executionMode === 'component'
+          ? stripHeaderComment(source)
+          : extractSkeleton(source),
       solutionCode: stripHeaderComment(source),
       basicCases,
       fullCases,
@@ -272,6 +405,8 @@ function main() {
   const problems = buildProblems()
   const knowledgeArticles = buildKnowledge()
   const browserProblems = problems.filter((problem) => problem.executionMode === 'browser')
+  const componentProblems = problems.filter((problem) => problem.executionMode === 'component')
+  const localProblems = problems.filter((problem) => problem.executionMode === 'local')
 
   writeGeneratedFile(
     'problems.ts',
@@ -306,7 +441,8 @@ function main() {
       {
         problems: problems.length,
         browserProblems: browserProblems.length,
-        localProblems: problems.length - browserProblems.length,
+        componentProblems: componentProblems.length,
+        localProblems: localProblems.length,
         knowledgeArticles: knowledgeArticles.length,
       },
       null,

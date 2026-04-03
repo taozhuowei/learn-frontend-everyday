@@ -1,23 +1,17 @@
+/**
+ * Component: AppShell
+ * Purpose: 全局布局框架，包含 48px 顶栏导航（品牌 CF + CodeForge）和页面容器结构。
+ */
+
 import type { ReactNode } from 'react'
 import { NavLink } from 'react-router-dom'
+import { Settings2 } from 'lucide-react'
 import { useAppState } from '../context/AppStateContext'
 import { SettingsDrawer } from './SettingsDrawer'
-
-function SettingsIcon() {
-  return (
-    <svg aria-hidden="true" className="lc-settings-icon" viewBox="0 0 24 24">
-      <path
-        d="M10.95 2.6a1 1 0 0 1 2.1 0l.22 1.63a7.86 7.86 0 0 1 1.9.79l1.32-.98a1 1 0 0 1 1.49.18l1.22 1.72a1 1 0 0 1-.2 1.4l-1.3.96c.2.61.32 1.25.36 1.9l1.6.23a1 1 0 0 1 .84 1v2.1a1 1 0 0 1-.84 1l-1.6.23a7.84 7.84 0 0 1-.79 1.9l.98 1.32a1 1 0 0 1-.18 1.49l-1.72 1.22a1 1 0 0 1-1.4-.2l-.96-1.3c-.61.2-1.25.32-1.9.36l-.23 1.6a1 1 0 0 1-1 .84h-2.1a1 1 0 0 1-1-.84l-.23-1.6a7.84 7.84 0 0 1-1.9-.79l-1.32.98a1 1 0 0 1-1.49-.18L3.8 18.4a1 1 0 0 1 .2-1.4l1.3-.96a7.9 7.9 0 0 1-.36-1.9l-1.6-.23a1 1 0 0 1-.84-1v-2.1a1 1 0 0 1 .84-1l1.6-.23c.1-.66.36-1.3.79-1.9l-.98-1.32a1 1 0 0 1 .18-1.49L6.65 4a1 1 0 0 1 1.4.2l.96 1.3c.61-.2 1.25-.32 1.9-.36l.23-1.6ZM12 8.5A3.5 3.5 0 1 0 12 15.5 3.5 3.5 0 0 0 12 8.5Z"
-        fill="currentColor"
-      />
-    </svg>
-  )
-}
 
 export function AppShell({
   eyebrow,
   title,
-  description,
   actions,
   children,
   showTopbar = true,
@@ -25,7 +19,6 @@ export function AppShell({
 }: {
   eyebrow?: string
   title: string
-  description?: string
   actions?: ReactNode
   children: ReactNode
   showTopbar?: boolean
@@ -37,80 +30,81 @@ export function AppShell({
   } = useAppState()
 
   return (
-    <div className={`lc-shell ${showTopbar ? '' : 'lc-shell-topbarless'}`}>
+    <div className="h-screen flex flex-col overflow-hidden">
       {showTopbar ? (
-        <header className="lc-topbar">
-          <div className="lc-topbar-brand">
-            <NavLink className="lc-brand" to="/">
-              <span className="lc-brand-icon">AC</span>
-              <span className="lc-brand-text">AtelierCode</span>
-            </NavLink>
-          </div>
-
-          <nav aria-label="主导航" className="lc-nav">
+        <header className="h-12 flex items-center justify-between px-5 bg-white border-b border-[var(--color-border)] shrink-0 z-50">
+          <div className="flex items-center gap-6">
             <NavLink
-              className={({ isActive }) => `lc-nav-link ${isActive ? 'lc-nav-link-active' : ''}`}
-              end
+              className="flex items-center gap-2 font-extrabold text-[0.95rem] tracking-tight"
               to="/"
             >
-              首页
+              <span
+                className="w-7 h-7 rounded-[7px] bg-[var(--color-primary)] text-white text-xs font-extrabold flex items-center justify-center shrink-0"
+                aria-hidden="true"
+              >
+                CF
+              </span>
+              <span className="text-[var(--color-ink)]">CodeForge</span>
             </NavLink>
-            <NavLink
-              className={({ isActive }) => `lc-nav-link ${isActive ? 'lc-nav-link-active' : ''}`}
-              to="/learn"
-            >
-              学习
-            </NavLink>
-            <NavLink
-              className={({ isActive }) => `lc-nav-link ${isActive ? 'lc-nav-link-active' : ''}`}
-              to="/library"
-            >
-              题库
-            </NavLink>
-            <NavLink
-              className={({ isActive }) => `lc-nav-link ${isActive ? 'lc-nav-link-active' : ''}`}
-              to="/exam"
-            >
-              考试
-            </NavLink>
-            <NavLink
-              className={({ isActive }) => `lc-nav-link ${isActive ? 'lc-nav-link-active' : ''}`}
-              to="/theory"
-            >
-              理论
-            </NavLink>
-          </nav>
 
-          <div className="lc-topbar-actions">
+            <nav aria-label="主导航" className="flex items-center gap-1">
+              {[
+                { to: '/', label: '首页', end: true },
+                { to: '/learn', label: '学习' },
+                { to: '/exam', label: '考试' },
+                { to: '/theory', label: '理论' },
+              ].map(({ to, label, end }) => (
+                <NavLink
+                  key={to}
+                  className={({ isActive }) =>
+                    `px-3 h-12 flex items-center text-sm font-semibold border-b-2 transition-colors ${
+                      isActive
+                        ? 'border-[var(--color-primary)] text-[var(--color-ink)]'
+                        : 'border-transparent text-[var(--color-ink-tertiary)] hover:text-[var(--color-ink)]'
+                    }`
+                  }
+                  end={end}
+                  to={to}
+                >
+                  {label}
+                </NavLink>
+              ))}
+            </nav>
+          </div>
+
+          <div className="flex items-center gap-2">
             <button
               aria-expanded={settingsDrawerOpen}
               aria-label="打开配置面板"
-              className="lc-icon-btn"
+              className="w-8 h-8 flex items-center justify-center rounded-md text-[var(--color-ink-tertiary)] hover:bg-[var(--color-surface-secondary)] hover:text-[var(--color-ink)] transition-colors"
               onClick={toggleSettingsPanel}
+              title="考试设置"
               type="button"
             >
-              <SettingsIcon />
+              <Settings2 size={16} />
             </button>
-            <span aria-hidden="true" className="lc-avatar">
-              A
-            </span>
           </div>
         </header>
       ) : null}
 
-      <main className={`lc-main ${showPageHeader ? '' : 'lc-main-headerless'}`}>
+      <main className="flex-1 flex flex-col min-h-0 overflow-hidden">
         {showPageHeader ? (
-          <section className="lc-page-header">
-            <div className="lc-page-title">
-              {eyebrow ? <span className="lc-eyebrow">{eyebrow}</span> : null}
-              <h1>{title}</h1>
-              {description ? <p>{description}</p> : null}
+          <div className="px-5 pt-4 pb-3 border-b border-[var(--color-border)] bg-white shrink-0">
+            {eyebrow ? (
+              <span className="text-[0.6875rem] font-bold uppercase tracking-widest text-[var(--color-primary-ink)] block mb-0.5">
+                {eyebrow}
+              </span>
+            ) : null}
+            <div className="flex items-center justify-between gap-4">
+              <h1 className="text-xl font-bold tracking-tight text-[var(--color-ink)] truncate">
+                {title}
+              </h1>
+              {actions ? <div className="flex items-center gap-2 shrink-0">{actions}</div> : null}
             </div>
-            {actions ? <div className="lc-page-actions">{actions}</div> : null}
-          </section>
+          </div>
         ) : null}
 
-        <section className="lc-page-content">{children}</section>
+        <div className="flex-1 min-h-0 overflow-hidden">{children}</div>
       </main>
 
       {settingsDrawerOpen ? <SettingsDrawer /> : null}

@@ -1,6 +1,19 @@
-import { useEffect, useRef, useCallback } from 'react'
+/**
+ * Component: CodeWorkspace
+ * Purpose: Monaco 代码编辑器面板，包含题目标题、格式化按钮和编辑器主体。
+ * 通过 editorRef 向父组件暴露 getValue()，不使用 window 全局变量。
+ */
+
+import { useEffect, useRef, useCallback, useImperativeHandle, forwardRef } from 'react'
 import Editor, { type BeforeMount, type OnMount } from '@monaco-editor/react'
+import { AlignLeft } from 'lucide-react'
 import type * as monaco from 'monaco-editor'
+
+export interface CodeEditorHandle {
+  getValue: () => string
+  triggerSuggest: () => void
+  isSuggestVisible: () => boolean
+}
 
 export interface WorkspaceAction {
   label: string
@@ -8,26 +21,42 @@ export interface WorkspaceAction {
   variant?: 'primary' | 'ghost'
 }
 
-export function CodeWorkspace({
-  title,
-  description,
-  language = 'javascript',
-  value,
-  onChange,
-  actions,
-  footer,
-}: {
-  title: string
-  description: string
-  language?: string
-  value: string
-  onChange: (value: string) => void
-  actions?: WorkspaceAction[]
-  footer?: React.ReactNode
-}) {
+const LANGUAGE_MAP: Record<string, string> = {
+  js: 'javascript',
+  ts: 'typescript',
+  jsx: 'javascript',
+  tsx: 'typescript',
+  vue: 'html',
+}
+
+export const CodeWorkspace = forwardRef<
+  CodeEditorHandle,
+  {
+    title: string
+    description?: string
+    language?: string
+    value: string
+    onChange: (value: string) => void
+    actions?: WorkspaceAction[]
+    footer?: React.ReactNode
+  }
+>(function CodeWorkspace(
+  { title, description, language = 'javascript', value, onChange, actions, footer },
+  ref,
+) {
+  const resolvedLanguage = LANGUAGE_MAP[language] ?? language
   const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(null)
   const monacoRef = useRef<typeof monaco | null>(null)
   const syncingRef = useRef(false)
+
+  useImperativeHandle(ref, () => ({
+    getValue: () => editorRef.current?.getValue() ?? '',
+    triggerSuggest: () => {
+      editorRef.current?.focus()
+      editorRef.current?.trigger('practice-tests', 'editor.action.triggerSuggest', {})
+    },
+    isSuggestVisible: () => Boolean(document.querySelector('.suggest-widget.visible')),
+  }))
 
   useEffect(() => {
     const model = editorRef.current?.getModel()
@@ -39,7 +68,6 @@ export function CodeWorkspace({
     model.setValue(value)
   }, [value])
 
-  // 格式化代码函数
   const formatCode = useCallback(async () => {
     const editor = editorRef.current
     if (!editor) return
@@ -51,9 +79,7 @@ export function CodeWorkspace({
     }
   }, [])
 
-  // 粘贴时自动格式化
   const handlePaste = useCallback(async () => {
-    // 延迟执行格式化，等待粘贴完成
     setTimeout(() => {
       formatCode()
     }, 100)
@@ -62,8 +88,7 @@ export function CodeWorkspace({
   const handleBeforeMount: BeforeMount = (monacoInstance) => {
     monacoRef.current = monacoInstance
 
-    // 定义 LeetCode 风格的浅色主题
-    monacoInstance.editor.defineTheme('leetcode-light', {
+    monacoInstance.editor.defineTheme('cf-light', {
       base: 'vs',
       inherit: true,
       rules: [
@@ -85,8 +110,6 @@ export function CodeWorkspace({
         'editor.lineHighlightBorder': '#00000000',
         'editor.selectionBackground': '#DBEAFE',
         'editor.selectionHighlightBackground': '#EFF6FF',
-        'editor.wordHighlightBackground': '#EFF6FF',
-        'editor.wordHighlightStrongBackground': '#DBEAFE',
         'editorCursor.foreground': '#2563EB',
         'editorWhitespace.foreground': '#D1D5DB',
         'editorIndentGuide.background1': '#E5E7EB',
@@ -113,58 +136,45 @@ export function CodeWorkspace({
   const handleMount: OnMount = (editor: monaco.editor.IStandaloneCodeEditor) => {
     editorRef.current = editor
 
-    window.__setPracticeEditorValue__ = (nextValue) => {
-      const model = editor.getModel()
-      if (!model) {
-        return
-      }
-
-      syncingRef.current = true
-      model.setValue(nextValue)
-      onChange(nextValue)
-    }
-
-    window.__getPracticeEditorValue__ = () => editor.getValue()
-    window.__triggerPracticeSuggest__ = () => {
-      editor.focus()
-      editor.trigger('practice-tests', 'editor.action.triggerSuggest', {})
-    }
-    window.__isPracticeSuggestVisible__ = () =>
-      Boolean(document.querySelector('.suggest-widget.visible'))
-
-    // 添加粘贴事件监听
     editor.onDidPaste(() => {
       handlePaste()
     })
   }
 
   return (
-    <section className="lc-panel lc-workspace-panel">
-      <div className="lc-panel-header lc-workspace-header">
-        <div className="lc-panel-header-left">
-          <span className="lc-panel-title">{title}</span>
-          <span className="lc-panel-subtitle">{description}</span>
+    <section className="flex flex-col h-full bg-white border border-[var(--color-border)] rounded-[var(--radius-lg)] overflow-hidden">
+      {/* Header */}
+      <div className="flex items-center justify-between px-4 h-10 border-b border-[var(--color-border)] shrink-0 gap-3">
+        <div className="flex items-center gap-2 min-w-0">
+          <span className="text-sm font-bold text-[var(--color-ink)] whitespace-nowrap">
+            {title}
+          </span>
+          {description ? (
+            <span
+              className="text-xs text-[var(--color-ink-tertiary)] truncate max-w-xs"
+              title={description}
+            >
+              {description}
+            </span>
+          ) : null}
         </div>
-        <div className="lc-workspace-actions">
+        <div className="flex items-center gap-1.5 shrink-0">
           <button
-            className="lc-btn lc-btn-ghost lc-btn-sm"
+            className="flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-semibold text-[var(--color-ink-tertiary)] hover:bg-[var(--color-surface-secondary)] hover:text-[var(--color-ink)] transition-colors border border-transparent hover:border-[var(--color-border)]"
             onClick={formatCode}
             title="格式化代码 (Alt+Shift+F)"
             type="button"
           >
-            <svg className="lc-icon" fill="none" height="16" viewBox="0 0 24 24" width="16">
-              <path
-                d="M3 6h18M3 12h18M3 18h18"
-                stroke="currentColor"
-                strokeLinecap="round"
-                strokeWidth="2"
-              />
-            </svg>
+            <AlignLeft size={14} />
             格式化
           </button>
           {actions?.map((action) => (
             <button
-              className={`lc-btn ${action.variant === 'ghost' ? 'lc-btn-ghost' : 'lc-btn-primary'} lc-btn-sm`}
+              className={`flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-semibold transition-colors ${
+                action.variant === 'ghost'
+                  ? 'text-[var(--color-ink-tertiary)] hover:bg-[var(--color-surface-secondary)] border border-[var(--color-border)]'
+                  : 'bg-[var(--color-primary)] text-white hover:bg-[var(--color-primary-strong)]'
+              }`}
               key={action.label}
               onClick={action.onClick}
               type="button"
@@ -175,11 +185,12 @@ export function CodeWorkspace({
         </div>
       </div>
 
-      <div className="lc-editor-container">
+      {/* Editor */}
+      <div className="cf-editor-container">
         <Editor
           beforeMount={handleBeforeMount}
           height="100%"
-          language={language}
+          language={resolvedLanguage}
           onChange={(nextValue) => {
             if (syncingRef.current) {
               syncingRef.current = false
@@ -207,24 +218,24 @@ export function CodeWorkspace({
             scrollBeyondLastLine: false,
             smoothScrolling: true,
             renderLineHighlight: 'line',
-            bracketPairColorization: {
-              enabled: true,
-            },
+            bracketPairColorization: { enabled: true },
             suggestOnTriggerCharacters: true,
             scrollbar: {
-              verticalScrollbarSize: 10,
-              horizontalScrollbarSize: 10,
+              verticalScrollbarSize: 6,
+              horizontalScrollbarSize: 6,
             },
             wordWrap: 'on',
             formatOnPaste: true,
             formatOnType: true,
           }}
-          theme="leetcode-light"
+          theme="cf-light"
           value={value}
         />
       </div>
 
-      {footer ? <div className="lc-workspace-footer">{footer}</div> : null}
+      {footer ? (
+        <div className="shrink-0 border-t border-[var(--color-border)]">{footer}</div>
+      ) : null}
     </section>
   )
-}
+})

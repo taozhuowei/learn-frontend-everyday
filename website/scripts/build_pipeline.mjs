@@ -19,6 +19,7 @@ const scriptsDir = path.dirname(fileURLToPath(import.meta.url))
 const websiteRoot = path.resolve(scriptsDir, '..')
 const repoRoot = path.resolve(websiteRoot, '..')
 const docsRoot = path.join(repoRoot, 'docs')
+const problemsRoot = path.join(repoRoot, 'problems')
 
 const prettierCli = path.join(websiteRoot, 'node_modules', 'prettier', 'bin', 'prettier.cjs')
 const tsxCli = path.join(websiteRoot, 'node_modules', 'tsx', 'dist', 'cli.mjs')
@@ -97,7 +98,7 @@ async function formatDocsFiles(docsFiles) {
  * @returns {{ docsFiles: string[], docsState: { hash: string, files: string[] } }}
  */
 function getCurrentDocsState() {
-  const docsFiles = collectDocsInputFiles(docsRoot)
+  const docsFiles = [...collectDocsInputFiles(docsRoot), ...collectDocsInputFiles(problemsRoot)]
   const docsState = createDocsInputsState(repoRoot, docsFiles)
 
   return { docsFiles, docsState }

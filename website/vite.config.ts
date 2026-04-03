@@ -1,5 +1,6 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
+import tailwindcss from '@tailwindcss/vite'
 import path from 'path'
 // @ts-expect-error Shared Node build helpers are authored as .mjs runtime modules.
 import { CHUNK_WARNING_LIMIT_KB, getManualChunk } from './scripts/build_config.mjs'
@@ -11,7 +12,7 @@ const pagesBase = process.env.GITHUB_ACTIONS && repositoryName ? `/${repositoryN
 // https://vite.dev/config/
 export default defineConfig({
   base: pagesBase,
-  plugins: [react()],
+  plugins: [react(), tailwindcss()],
   build: {
     chunkSizeWarningLimit: CHUNK_WARNING_LIMIT_KB,
     rollupOptions: {

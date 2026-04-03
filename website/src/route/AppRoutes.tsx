@@ -17,33 +17,26 @@ const ExamResultPage = lazy(() =>
 const LearnPage = lazy(() =>
   import('../pages/LearnPage').then((module) => ({ default: module.LearnPage })),
 )
-const LibraryPage = lazy(() =>
-  import('../pages/LibraryPage').then((module) => ({ default: module.LibraryPage })),
+const TheoryListPage = lazy(() =>
+  import('../pages/TheoryListPage').then((module) => ({ default: module.TheoryListPage })),
 )
-const LibraryDetailPage = lazy(() =>
-  import('../pages/LibraryDetailPage').then((module) => ({ default: module.LibraryDetailPage })),
-)
-const TheoryPage = lazy(() =>
-  import('../pages/TheoryPage').then((module) => ({ default: module.TheoryPage })),
-)
-const SettingsRedirectPage = lazy(() =>
-  import('../pages/SettingsRedirectPage').then((module) => ({
-    default: module.SettingsRedirectPage,
-  })),
+const TheoryArticlePage = lazy(() =>
+  import('../pages/TheoryArticlePage').then((module) => ({ default: module.TheoryArticlePage })),
 )
 const NotFoundPage = lazy(() =>
   import('../pages/NotFoundPage').then((module) => ({ default: module.NotFoundPage })),
 )
 
-const firstProblemId = problems[0]?.id ?? 'map'
+const firstProblemId =
+  problems.find((p) => p.executionMode !== 'local')?.id ?? problems[0]?.id ?? ''
 
 function RouteLoadingFallback() {
   return (
-    <div aria-live="polite" className="route-loading-screen" role="status">
-      <section className="panel route-loading-panel">
-        <span className="panel-title">Loading page...</span>
-        <p className="panel-description">
-          Route modules are loading on demand to keep the main bundle small.
+    <div aria-live="polite" role="status" className="flex items-center justify-center h-screen">
+      <section className="bg-white border border-[var(--color-border)] rounded-[var(--radius-lg)] p-6 flex flex-col gap-2">
+        <span className="text-sm font-semibold text-[var(--color-ink)]">加载中...</span>
+        <p className="text-xs text-[var(--color-ink-tertiary)] m-0">
+          正在按需加载页面模块，请稍候。
         </p>
       </section>
     </div>
@@ -61,11 +54,8 @@ export function AppRoutes() {
           <Route element={<ExamResultPage />} path="exam/result" />
           <Route element={<Navigate replace to={`/learn/${firstProblemId}`} />} path="learn" />
           <Route element={<LearnPage />} path="learn/:problemId" />
-          <Route element={<LibraryPage />} path="library" />
-          <Route element={<LibraryDetailPage />} path="library/:problemId" />
-          <Route element={<TheoryPage />} path="theory" />
-          <Route element={<TheoryPage />} path="theory/:slug" />
-          <Route element={<SettingsRedirectPage />} path="settings" />
+          <Route element={<TheoryListPage />} path="theory" />
+          <Route element={<TheoryArticlePage />} path="theory/:slug" />
         </Route>
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
