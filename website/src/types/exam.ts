@@ -62,6 +62,8 @@ export interface ExecutionResponse {
 export interface ExecutionRequest {
   source: string
   cases: JudgeCase[]
+  /** 标准答案代码，用于为自定义用例自动生成期望输出 */
+  solutionCode?: string
 }
 
 export interface ProblemSummaryCard {

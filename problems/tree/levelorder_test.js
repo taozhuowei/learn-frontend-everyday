@@ -10,7 +10,7 @@ module.exports = [
   },
   {
     input: "levelOrder({ val: 9, left: null, right: null })",
-    expected: [9],
+    expected: [[9]],
   },
   {
     input:

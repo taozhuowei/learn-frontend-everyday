@@ -13,22 +13,15 @@ Function.prototype.myApply = function (context, argsArray) {
   context =
     context === null || context === undefined ? globalThis : Object(context);
 
-  // 2. 处理参数数组：确保 argsArray 为数组或类数组，否则使用空数组
-  if (typeof argsArray !== "object" && typeof argsArray !== "function") {
-    throw new TypeError("CreateListFromArrayLike called on non-object");
-  }
-  argsArray = Array.from(argsArray);
+  // 2. 处理参数数组：null/undefined 时使用空数组，否则转为数组
+  argsArray = argsArray == null ? [] : Array.from(argsArray);
 
   // 3. 临时绑定：将函数作为上下文的属性，使用 Symbol 避免命名冲突
   const fnSymbol = Symbol("fn");
   context[fnSymbol] = this;
 
-  let result;
-  if (argsArray == null) {
-    result = context[fnSymbol]();
-  } else {
-    result = context[fnSymbol](...argsArray);
-  }
+  // 4. 执行函数，统一展开参数数组
+  const result = context[fnSymbol](...argsArray);
 
   delete context[fnSymbol];
   return result;

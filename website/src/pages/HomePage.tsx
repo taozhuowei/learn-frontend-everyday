@@ -9,8 +9,6 @@ import { AppShell } from '../components/AppShell'
 import { knowledgeArticles } from '../generated/knowledge'
 import { problems } from '../generated/problems'
 
-const firstLearnProblem = problems.find((p) => p.executionMode === 'browser') ?? problems[0]
-
 const stats = {
   total: problems.length,
   browser: problems.filter((p) => p.executionMode === 'browser').length,
@@ -31,7 +29,7 @@ const featureCards: FeatureCard[] = [
   {
     title: '学习模式',
     description: '三栏工作区，左侧读题与参考答案，中间写代码，右侧查看样例与提交结果。',
-    href: `/learn/${firstLearnProblem?.id ?? 'map'}`,
+    href: '/learn',
     icon: <BookOpen size={22} />,
     accent: 'amber',
     stat: `${stats.total} 道题目`,
@@ -91,7 +89,7 @@ const accentMap: Record<string, { bg: string; border: string; icon: string; badg
 
 export function HomePage() {
   return (
-    <AppShell showPageHeader={false} title="首页">
+    <AppShell showPageHeader={false} showTopbar={false} title="首页">
       <div className="h-full overflow-y-auto">
         {/* Hero */}
         <div className="relative overflow-hidden bg-white border-b border-[var(--color-border)]">

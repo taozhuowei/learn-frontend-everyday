@@ -13,6 +13,7 @@ export function AppShell({
   eyebrow,
   title,
   actions,
+  headerRight,
   children,
   showTopbar = true,
   showPageHeader = true,
@@ -20,6 +21,7 @@ export function AppShell({
   eyebrow?: string
   title: string
   actions?: ReactNode
+  headerRight?: ReactNode
   children: ReactNode
   showTopbar?: boolean
   showPageHeader?: boolean
@@ -73,6 +75,7 @@ export function AppShell({
           </div>
 
           <div className="flex items-center gap-2">
+            {headerRight ? <div className="flex items-center">{headerRight}</div> : null}
             <button
               aria-expanded={settingsDrawerOpen}
               aria-label="打开配置面板"
@@ -89,14 +92,14 @@ export function AppShell({
 
       <main className="flex-1 flex flex-col min-h-0 overflow-hidden">
         {showPageHeader ? (
-          <div className="px-5 pt-4 pb-3 border-b border-[var(--color-border)] bg-white shrink-0">
+          <div className="px-5 pt-2 pb-2 border-b border-[var(--color-border)] bg-white shrink-0">
             {eyebrow ? (
-              <span className="text-[0.6875rem] font-bold uppercase tracking-widest text-[var(--color-primary-ink)] block mb-0.5">
+              <span className="text-[0.625rem] font-bold uppercase tracking-widest text-[var(--color-primary-ink)] block mb-0.5">
                 {eyebrow}
               </span>
             ) : null}
             <div className="flex items-center justify-between gap-4">
-              <h1 className="text-xl font-bold tracking-tight text-[var(--color-ink)] truncate">
+              <h1 className="text-base font-bold tracking-tight text-[var(--color-ink)] truncate">
                 {title}
               </h1>
               {actions ? <div className="flex items-center gap-2 shrink-0">{actions}</div> : null}

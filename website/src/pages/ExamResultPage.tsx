@@ -130,11 +130,7 @@ export function ExamResultPage() {
   )
 
   return (
-    <AppShell
-      eyebrow="结果"
-      title={state.result.passed ? '本轮通过' : '本轮未通过'}
-      actions={actions}
-    >
+    <AppShell title={state.result.passed ? '本轮通过' : '本轮未通过'} actions={actions}>
       <div className="h-full flex flex-col bg-[var(--color-canvas)]">
         {/* Metrics Row */}
         <div className="px-5 py-4 bg-white border-b border-[var(--color-border)]">

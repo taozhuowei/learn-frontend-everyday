@@ -30,7 +30,7 @@ Array.prototype.myFilter = function (callback, thisArg) {
     // 只处理真实存在的元素（跳过空元素）
     if (i in arr) {
       // 回调返回 true，就放进结果数组
-      if (callback(arr[i], i, arr)) {
+      if (callback.call(thisArg, arr[i], i, arr)) {
         result.push(arr[i]);
       }
     }

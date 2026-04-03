@@ -42,7 +42,6 @@ function stringifyLogEntry(value: unknown) {
   if (typeof value === 'string') {
     return value
   }
-
   try {
     return JSON.stringify(value, null, 2)
   } catch {
@@ -50,26 +49,27 @@ function stringifyLogEntry(value: unknown) {
   }
 }
 
-async function runSingleCase(evaluator: (input: string) => Promise<unknown>, testCase: JudgeCase) {
+async function runSingleCase(
+  evaluator: (input: string) => Promise<unknown>,
+  testCase: JudgeCase,
+): Promise<ExecutionCaseResult> {
   const start = performance.now()
-
   try {
     const actual = await Promise.race([
       evaluator(testCase.input),
-      new Promise((_, reject) => {
+      new Promise<never>((_, reject) => {
         setTimeout(() => reject(new Error('执行超时')), testCase.timeoutMs ?? 1500)
       }),
     ])
-
     return {
       caseId: testCase.id,
       description: testCase.description,
       passed: deepEqual(actual, testCase.expected),
       expected: normalize(testCase.expected),
       actual: normalize(actual),
-      logs: [] as string[],
+      logs: [],
       durationMs: Math.round(performance.now() - start),
-    } satisfies ExecutionCaseResult
+    }
   } catch (error) {
     return {
       caseId: testCase.id,
@@ -77,10 +77,10 @@ async function runSingleCase(evaluator: (input: string) => Promise<unknown>, tes
       passed: false,
       expected: normalize(testCase.expected),
       actual: { __type: 'error' },
-      logs: [] as string[],
+      logs: [],
       error: error instanceof Error ? error.message : String(error),
       durationMs: Math.round(performance.now() - start),
-    } satisfies ExecutionCaseResult
+    }
   }
 }
 
@@ -130,26 +130,52 @@ function createEvaluator(source: string) {
     undefined,
   )
 
-  return {
-    buffer,
-    execute,
-  }
+  return { buffer, execute }
 }
 
 async function executeRequest(request: ExecutionRequest): Promise<ExecutionResponse> {
-  const { buffer, execute } = createEvaluator(request.source)
+  const user = createEvaluator(request.source)
+  const solution = request.solutionCode ? createEvaluator(request.solutionCode) : null
   const results: ExecutionCaseResult[] = []
 
   for (const testCase of request.cases) {
-    const before = buffer.length
-    const result = await runSingleCase(execute, testCase)
-    result.logs = buffer.slice(before)
+    const before = user.buffer.length
+    let result: ExecutionCaseResult
+
+    // 自定义用例：先用标准答案获取期望输出，再与用户代码输出比对
+    if (solution && testCase.id.startsWith('custom-')) {
+      const start = performance.now()
+      try {
+        const expected = await Promise.race([
+          solution.execute(testCase.input),
+          new Promise<never>((_, reject) => {
+            setTimeout(() => reject(new Error('执行超时')), testCase.timeoutMs ?? 1500)
+          }),
+        ])
+        result = await runSingleCase(user.execute, { ...testCase, expected } as JudgeCase)
+      } catch {
+        result = {
+          caseId: testCase.id,
+          description: testCase.description,
+          passed: false,
+          expected: { __type: 'error' },
+          actual: { __type: 'error' },
+          logs: [],
+          error: '请检查用例：标准答案运行此用例失败',
+          durationMs: Math.round(performance.now() - start),
+        }
+      }
+    } else {
+      result = await runSingleCase(user.execute, testCase)
+    }
+
+    result.logs = user.buffer.slice(before)
     results.push(result)
   }
 
   return {
     summary: {
-      passedCount: results.filter((item) => item.passed).length,
+      passedCount: results.filter((r) => r.passed).length,
       totalCount: results.length,
     },
     results,
@@ -159,11 +185,7 @@ async function executeRequest(request: ExecutionRequest): Promise<ExecutionRespo
 self.onmessage = async (event: MessageEvent<{ id: number; payload: ExecutionRequest }>) => {
   try {
     const response = await executeRequest(event.data.payload)
-    self.postMessage({
-      id: event.data.id,
-      ok: true,
-      response,
-    })
+    self.postMessage({ id: event.data.id, ok: true, response })
   } catch (error) {
     self.postMessage({
       id: event.data.id,

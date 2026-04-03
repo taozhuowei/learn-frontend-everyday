@@ -168,14 +168,14 @@ function extractSkeleton(rawSource: string): string {
 
       if (isOutputting()) {
         if (!wasClass) {
-          // Class methods get trailing newline for separation; top-level functions don't
-          result += depth === 0 ? indent + '}' : indent + '}\n'
+          // Add a blank line before closing brace so template has room to write code
+          result += depth === 0 ? indent + '\n}' : indent + '\n}\n'
         } else {
           result += c
         }
       } else if (depth === 0) {
         // Closing the outermost function body
-        result += '\n}'
+        result += '\n\n}'
       }
 
       i++

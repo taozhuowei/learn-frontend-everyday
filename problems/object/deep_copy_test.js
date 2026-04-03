@@ -11,7 +11,7 @@ module.exports = [
   },
   {
     input:
-      '(() => { const source = { date: new Date("2024-01-01T00:00:00.000Z") }; const clone = deepCopy({ date }); return clone.date instanceof Date })()',
+      '(() => { const source = { date: new Date("2024-01-01T00:00:00.000Z") }; const clone = deepCopy(source); return clone.date instanceof Date })()',
     expected: true,
   },
   {
