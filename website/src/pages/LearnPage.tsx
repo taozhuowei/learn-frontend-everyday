@@ -5,12 +5,12 @@
  * Data flow: Resolve the current problem from route params, edit source locally, then run browser-safe cases through the code runner.
  */
 
-import { Suspense, lazy, useRef, useState } from 'react'
+import { Suspense, lazy, useEffect, useRef, useState } from 'react'
 import { Navigate, useParams } from 'react-router-dom'
-import { Check, Play } from 'lucide-react'
+import { Check, Hand, MousePointer2, Play } from 'lucide-react'
 import { AppShell } from '../components/AppShell'
 import { CasePanel } from '../components/CasePanel'
-import { CodeBlock } from '../components/CodeBlock'
+import { CodeBlock, type CodeBlockInteractionMode } from '../components/CodeBlock'
 import type { CodeEditorHandle } from '../components/CodeWorkspace'
 import { LoadingPanel } from '../components/LoadingPanel'
 import { MarkdownContent } from '../components/MarkdownContent'
@@ -26,6 +26,19 @@ const CodeWorkspace = lazy(() =>
 )
 
 const firstProblemId = problems[0]?.id ?? ''
+const SOLUTION_INTERACTION_MODE_STORAGE_KEY = 'practice_solution_interaction_mode'
+const DEFAULT_SOLUTION_INTERACTION_MODE: CodeBlockInteractionMode = 'pan'
+
+function readStoredSolutionInteractionMode(): CodeBlockInteractionMode {
+  if (typeof window === 'undefined') {
+    return DEFAULT_SOLUTION_INTERACTION_MODE
+  }
+
+  const storedMode = window.localStorage.getItem(SOLUTION_INTERACTION_MODE_STORAGE_KEY)
+  return storedMode === 'pan' || storedMode === 'select'
+    ? storedMode
+    : DEFAULT_SOLUTION_INTERACTION_MODE
+}
 
 function createInitialSource(problem: ProblemRecord) {
   if (problem.template) return problem.template
@@ -39,10 +52,14 @@ function ProblemInfoPanel({
   problem,
   activeTab,
   onTabChange,
+  solutionInteractionMode,
+  onSolutionInteractionModeChange,
 }: {
   problem: ProblemRecord
   activeTab: DetailTab
   onTabChange: (tab: DetailTab) => void
+  solutionInteractionMode: CodeBlockInteractionMode
+  onSolutionInteractionModeChange: (mode: CodeBlockInteractionMode) => void
 }) {
   return (
     <aside className="flex flex-col h-full bg-white border border-[var(--color-border)] rounded-[var(--radius-lg)] overflow-hidden">
@@ -79,8 +96,45 @@ function ProblemInfoPanel({
 
         {activeTab === 'solution' ? (
           <div>
-            <h3 className="text-sm font-bold text-[var(--color-ink)] mb-3">标准答案</h3>
-            <CodeBlock code={problem.solutionCode} language={problem.sourceType} />
+            <div className="mb-3 flex items-start justify-between gap-3">
+              <h3 className="pt-1 text-sm font-bold text-[var(--color-ink)]">标准答案</h3>
+              <div
+                aria-label="答案代码浏览模式"
+                className="flex items-center gap-1 rounded-[var(--radius-md)] border border-[var(--color-border)] bg-[var(--color-surface-secondary)] p-1"
+                role="tablist"
+              >
+                {[
+                  { icon: Hand, id: 'pan' as const, label: '手型浏览' },
+                  { icon: MousePointer2, id: 'select' as const, label: '文本选择' },
+                ].map((option) => {
+                  const Icon = option.icon
+                  const isActive = solutionInteractionMode === option.id
+
+                  return (
+                    <button
+                      aria-selected={isActive}
+                      className={`flex items-center gap-1 rounded-[var(--radius-sm)] px-2.5 py-1 text-xs font-semibold transition-colors ${
+                        isActive
+                          ? 'bg-white text-[var(--color-ink)] shadow-sm'
+                          : 'text-[var(--color-ink-tertiary)] hover:text-[var(--color-ink)]'
+                      }`}
+                      key={option.id}
+                      onClick={() => onSolutionInteractionModeChange(option.id)}
+                      role="tab"
+                      type="button"
+                    >
+                      <Icon size={12} />
+                      {option.label}
+                    </button>
+                  )
+                })}
+              </div>
+            </div>
+            <CodeBlock
+              code={problem.solutionCode}
+              interactionMode={solutionInteractionMode}
+              language={problem.sourceType}
+            />
           </div>
         ) : null}
       </div>
@@ -108,6 +162,13 @@ function LearnProblemView({ problem }: { problem: ProblemRecord }) {
   const [busyAction, setBusyAction] = useState<'run' | 'submit' | null>(null)
   const [customCaseInput, setCustomCaseInput] = useState('')
   const [activeTab, setActiveTab] = useState<DetailTab>('description')
+  const [solutionInteractionMode, setSolutionInteractionMode] = useState<CodeBlockInteractionMode>(
+    () => readStoredSolutionInteractionMode(),
+  )
+
+  useEffect(() => {
+    window.localStorage.setItem(SOLUTION_INTERACTION_MODE_STORAGE_KEY, solutionInteractionMode)
+  }, [solutionInteractionMode])
 
   function updateSource(nextSource: string) {
     sourceRef.current = nextSource
@@ -188,8 +249,10 @@ function LearnProblemView({ problem }: { problem: ProblemRecord }) {
             <div className="h-full pr-1">
               <ProblemInfoPanel
                 activeTab={activeTab}
+                onSolutionInteractionModeChange={setSolutionInteractionMode}
                 onTabChange={setActiveTab}
                 problem={problem}
+                solutionInteractionMode={solutionInteractionMode}
               />
             </div>
           }
