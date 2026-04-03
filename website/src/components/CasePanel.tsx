@@ -18,9 +18,7 @@ export function CasePanel({
   execution,
   consoleExecution,
   customCaseInput,
-  customCaseExpected,
   onCustomInputChange,
-  onCustomExpectedChange,
   actions,
   hideConsoleDetails = false,
 }: {
@@ -29,17 +27,12 @@ export function CasePanel({
   execution: ExecutionResponse | null
   consoleExecution?: ExecutionResponse | null
   customCaseInput?: string
-  customCaseExpected?: string
   onCustomInputChange?: (value: string) => void
-  onCustomExpectedChange?: (value: string) => void
   actions?: ReactNode
   /** 考试模式传 true：控制台只显示通过率摘要，不展示用例详情 */
   hideConsoleDetails?: boolean
 }) {
-  const hasCustomInput =
-    typeof customCaseInput === 'string' &&
-    Boolean(onCustomInputChange) &&
-    Boolean(onCustomExpectedChange)
+  const hasCustomInput = typeof customCaseInput === 'string' && Boolean(onCustomInputChange)
   const activeConsoleExecution = consoleExecution ?? execution
   const [activeTab, setActiveTab] = useState<PanelTab>('cases')
 
@@ -50,19 +43,12 @@ export function CasePanel({
   return (
     <aside className="flex flex-col h-full bg-white border border-[var(--color-border)] rounded-[var(--radius-lg)] overflow-hidden">
       {/* Panel header */}
-      <div className="flex items-center justify-between px-4 h-10 border-b border-[var(--color-border)] shrink-0">
+      <div className="flex items-center justify-between px-4 h-11 border-b border-[var(--color-border)] shrink-0">
         <span className="text-sm font-bold text-[var(--color-ink)]">{title}</span>
         <span className="text-xs text-[var(--color-ink-muted)] font-semibold">
           {cases.length} 个用例
         </span>
       </div>
-
-      {/* Actions bar */}
-      {actions ? (
-        <div className="px-3 py-2 border-b border-[var(--color-border)] shrink-0 flex justify-end">
-          {actions}
-        </div>
-      ) : null}
 
       {/* Tabs */}
       <div
@@ -91,10 +77,10 @@ export function CasePanel({
       </div>
 
       {/* Tab content */}
-      <div className="flex-1 overflow-y-auto p-3">
+      <div className="flex-1 overflow-y-auto p-4">
         {/* 测试用例 tab */}
         {activeTab === 'cases' ? (
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-3">
             {cases.map((testCase) => {
               const result = execution?.results.find((item) => item.caseId === testCase.id)
               const hasPassed = result?.passed === true
@@ -102,7 +88,7 @@ export function CasePanel({
 
               return (
                 <div
-                  className={`rounded-md border p-3 text-xs font-mono ${
+                  className={`rounded-md border p-4 text-xs font-mono ${
                     hasPassed
                       ? 'border-[var(--color-success)] bg-[var(--color-success-light)]'
                       : hasFailed
@@ -111,7 +97,7 @@ export function CasePanel({
                   }`}
                   key={testCase.id}
                 >
-                  <div className="flex items-center justify-between mb-1.5">
+                  <div className="flex items-center justify-between mb-2.5">
                     <span className="font-semibold text-[var(--color-ink-secondary)] not-italic font-sans text-[0.6875rem]">
                       {testCase.description}
                     </span>
@@ -130,10 +116,6 @@ export function CasePanel({
                         待运行
                       </span>
                     )}
-                  </div>
-                  <div className="mb-1">
-                    <span className="text-[var(--color-ink-muted)]">输入：</span>
-                    <span className="text-[var(--color-ink)]">{testCase.input}</span>
                   </div>
                   {result ? (
                     <>
@@ -185,23 +167,14 @@ export function CasePanel({
                   <textarea
                     className="px-2.5 py-2 rounded-md border border-[var(--color-border)] text-xs font-mono bg-white resize-none focus:border-[var(--color-primary)] transition-colors"
                     onChange={(event) => onCustomInputChange?.(event.target.value)}
-                    placeholder="例如：[1,2,3].map(v => v * 2)"
+                    placeholder="例如：sum(1, 2)"
                     rows={3}
                     value={customCaseInput}
                   />
                 </div>
-                <div className="flex flex-col gap-1">
-                  <label className="text-xs text-[var(--color-ink-secondary)] font-semibold">
-                    期望输出 (JSON)
-                  </label>
-                  <textarea
-                    className="px-2.5 py-2 rounded-md border border-[var(--color-border)] text-xs font-mono bg-white resize-none focus:border-[var(--color-primary)] transition-colors"
-                    onChange={(event) => onCustomExpectedChange?.(event.target.value)}
-                    placeholder="例如：[2, 4, 6]"
-                    rows={2}
-                    value={customCaseExpected}
-                  />
-                </div>
+                <p className="text-xs text-[var(--color-ink-tertiary)]">
+                  期望输出由标准答案自动生成，运行后显示
+                </p>
               </div>
             ) : null}
           </div>
@@ -270,6 +243,13 @@ export function CasePanel({
           </div>
         ) : null}
       </div>
+
+      {/* Bottom actions bar */}
+      {actions ? (
+        <div className="px-4 py-2.5 border-t border-[var(--color-border)] shrink-0 flex justify-end bg-white">
+          {actions}
+        </div>
+      ) : null}
     </aside>
   )
 }

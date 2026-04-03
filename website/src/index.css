@@ -65,29 +65,6 @@ textarea {
   outline: none;
 }
 
-/* ─── Drag handle (ResizableWorkspace) ─── */
-.cf-drag-handle {
-  width: 5px;
-  flex-shrink: 0;
-  border-radius: 3px;
-  cursor: col-resize;
-  background: transparent;
-  transition: background 150ms;
-  position: relative;
-}
-.cf-drag-handle::after {
-  content: '';
-  position: absolute;
-  inset: 4px 0;
-  border-radius: 3px;
-  background: var(--color-border);
-  transition: background 150ms;
-}
-.cf-drag-handle:hover::after,
-.cf-drag-handle.dragging::after {
-  background: var(--color-primary);
-}
-
 /* ─── Monaco editor container ─── */
 .cf-editor-container {
   flex: 1;

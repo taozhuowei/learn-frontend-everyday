@@ -36,7 +36,6 @@ export function ExamEntryPage() {
           调整规则
         </button>
       }
-      eyebrow="考试模式"
       title="准备好进入模拟考试了吗？"
     >
       <div className="h-full overflow-y-auto">
