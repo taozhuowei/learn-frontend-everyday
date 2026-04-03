@@ -39,14 +39,14 @@ export function ExamEntryPage() {
       title="准备好进入模拟考试了吗？"
     >
       <div className="h-full overflow-y-auto">
-        <div className="max-w-3xl mx-auto px-6 py-10 flex flex-col gap-8">
+        <div className="max-w-3xl mx-auto px-6 py-6 flex flex-col gap-5">
           {/* Hero */}
-          <section className="text-center py-4">
-            <div className="w-14 h-14 rounded-[var(--radius-lg)] bg-[var(--color-primary-soft)] flex items-center justify-center mx-auto mb-4">
-              <Trophy size={26} className="text-[var(--color-primary)]" />
+          <section className="text-center py-2">
+            <div className="w-12 h-12 rounded-[var(--radius-lg)] bg-[var(--color-primary-soft)] flex items-center justify-center mx-auto mb-2">
+              <Trophy size={22} className="text-[var(--color-primary)]" />
             </div>
-            <h2 className="text-2xl font-bold text-[var(--color-ink)] mb-2">完整模拟考试链路</h2>
-            <p className="text-sm text-[var(--color-ink-secondary)] leading-relaxed max-w-md mx-auto mb-6">
+            <h2 className="text-xl font-bold text-[var(--color-ink)] mb-2">完整模拟考试链路</h2>
+            <p className="text-sm text-[var(--color-ink-secondary)] leading-relaxed max-w-md mx-auto mb-4">
               系统将根据当前配置随机抽取题目，保留计时、切题、运行与提交的完整流程。
               浏览器可自动判题的题目（JS 函数题和组件题）均纳入题库。
             </p>
@@ -62,7 +62,7 @@ export function ExamEntryPage() {
           {/* 规则 + 题库统计 */}
           <div className="grid grid-cols-2 gap-4">
             {/* 当前规则 */}
-            <div className="bg-white border border-[var(--color-border)] rounded-[var(--radius-lg)] p-5">
+            <div className="bg-white border border-[var(--color-border)] rounded-[var(--radius-lg)] p-4">
               <h3 className="text-xs font-bold uppercase tracking-wide text-[var(--color-ink-muted)] mb-4">
                 当前考试规则
               </h3>
@@ -92,7 +92,7 @@ export function ExamEntryPage() {
             </div>
 
             {/* 题库统计 */}
-            <div className="bg-white border border-[var(--color-border)] rounded-[var(--radius-lg)] p-5">
+            <div className="bg-white border border-[var(--color-border)] rounded-[var(--radius-lg)] p-4">
               <h3 className="text-xs font-bold uppercase tracking-wide text-[var(--color-ink-muted)] mb-4">
                 可用题库
               </h3>
@@ -102,7 +102,7 @@ export function ExamEntryPage() {
                 </span>
                 <span className="text-xs text-[var(--color-ink-muted)]">道可参与考试的题目</span>
               </div>
-              <div className="flex flex-col gap-1.5">
+              <div className="flex flex-col gap-1">
                 {categories.map((cat) => {
                   const count = executableProblems.filter((p) => p.categoryId === cat.id).length
                   return (
