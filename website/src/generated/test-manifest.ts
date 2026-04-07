@@ -6,7 +6,7 @@ export const generatedTestManifest = [
     "categoryName": "数组方法",
     "executionMode": "browser",
     "basicCaseCount": 3,
-    "fullCaseCount": 5
+    "fullCaseCount": 14
   },
   {
     "problemId": "flat",
@@ -114,7 +114,7 @@ export const generatedTestManifest = [
     "categoryName": "对象方法",
     "executionMode": "browser",
     "basicCaseCount": 3,
-    "fullCaseCount": 5
+    "fullCaseCount": 6
   },
   {
     "problemId": "instanceof",
@@ -284,8 +284,8 @@ export const generatedTestManifest = [
     "categoryId": "with_react",
     "categoryName": "React 组件",
     "executionMode": "component",
-    "basicCaseCount": 3,
-    "fullCaseCount": 5
+    "basicCaseCount": 0,
+    "fullCaseCount": 0
   },
   {
     "problemId": "countdown",
@@ -293,8 +293,8 @@ export const generatedTestManifest = [
     "categoryId": "with_react",
     "categoryName": "React 组件",
     "executionMode": "component",
-    "basicCaseCount": 3,
-    "fullCaseCount": 5
+    "basicCaseCount": 0,
+    "fullCaseCount": 0
   },
   {
     "problemId": "cascader",
@@ -302,7 +302,7 @@ export const generatedTestManifest = [
     "categoryId": "with_vue",
     "categoryName": "Vue 组件",
     "executionMode": "component",
-    "basicCaseCount": 3,
-    "fullCaseCount": 5
+    "basicCaseCount": 0,
+    "fullCaseCount": 0
   }
 ]

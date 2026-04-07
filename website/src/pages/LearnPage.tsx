@@ -18,6 +18,9 @@ import { ProblemDescriptionContent } from '../components/ProblemDescriptionConte
 import { SplitPane } from '../components/SplitPane'
 import { problems } from '../generated/problems'
 import type { JudgeCase, ProblemRecord } from '../types/content'
+import { ComponentLearnPage } from './ComponentLearnPage'
+
+import type { CustomCase } from '../components/CasePanel'
 import type { ExecutionResponse } from '../types/exam'
 import { runCode } from '../utils/codeRunner'
 
@@ -151,6 +154,11 @@ export function LearnPage() {
     return <Navigate replace to={`/learn/${firstProblemId}`} />
   }
 
+  // 组件题使用三栏布局
+  if (problem.isComponent) {
+    return <ComponentLearnPage problem={problem} />
+  }
+
   return <LearnProblemView key={problem.id} problem={problem} />
 }
 
@@ -161,7 +169,7 @@ function LearnProblemView({ problem }: { problem: ProblemRecord }) {
   const [sampleExecution, setSampleExecution] = useState<ExecutionResponse | null>(null)
   const [consoleExecution, setConsoleExecution] = useState<ExecutionResponse | null>(null)
   const [busyAction, setBusyAction] = useState<'run' | 'submit' | null>(null)
-  const [customCaseInput, setCustomCaseInput] = useState('')
+  const [customCases, setCustomCases] = useState<CustomCase[]>([])
   const [activeTab, setActiveTab] = useState<DetailTab>('description')
   const [solutionInteractionMode, setSolutionInteractionMode] = useState<CodeBlockInteractionMode>(
     () => readStoredSolutionInteractionMode(),
@@ -176,16 +184,16 @@ function LearnProblemView({ problem }: { problem: ProblemRecord }) {
     setSource(nextSource)
   }
 
-  function parseCustomCase(): JudgeCase | null {
-    if (!customCaseInput.trim()) return null
-
-    return {
-      id: 'custom-run-case',
-      type: 'basic',
-      description: '自定义用例',
-      input: customCaseInput,
-      expected: undefined,
-    }
+  function parseCustomCases(): JudgeCase[] {
+    return customCases
+      .filter((c) => c.input.trim())
+      .map((c, index) => ({
+        id: c.id,
+        type: 'basic' as const,
+        description: `自定义用例 ${index + 1}`,
+        input: c.input,
+        expected: undefined,
+      }))
   }
 
   async function executeCases(kind: 'run' | 'submit') {
@@ -193,8 +201,8 @@ function LearnProblemView({ problem }: { problem: ProblemRecord }) {
 
     const sourceCode = editorRef.current?.getValue() ?? sourceRef.current
     const baseCases = kind === 'run' ? problem.basicCases : problem.fullCases
-    const customCase = kind === 'run' ? parseCustomCase() : null
-    const cases = customCase ? [...baseCases, customCase] : baseCases
+    const customCasesParsed = kind === 'run' ? parseCustomCases() : []
+    const cases = [...baseCases, ...customCasesParsed]
     setBusyAction(kind)
 
     try {
@@ -312,9 +320,9 @@ function LearnProblemView({ problem }: { problem: ProblemRecord }) {
                       }
                       cases={problem.basicCases}
                       consoleExecution={consoleExecution}
-                      customCaseInput={isAutoJudge ? customCaseInput : undefined}
+                      customCases={isAutoJudge ? customCases : undefined}
                       execution={sampleExecution}
-                      onCustomInputChange={isAutoJudge ? setCustomCaseInput : undefined}
+                      onCustomCasesChange={isAutoJudge ? setCustomCases : undefined}
                       title="测试与判题"
                     />
                   </div>
