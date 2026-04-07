@@ -49,6 +49,13 @@ function stringifyLogEntry(value: unknown) {
   }
 }
 
+type LogLevel = 'log' | 'info' | 'warn' | 'error'
+
+interface StructuredLog {
+  level: LogLevel
+  args: string[]
+}
+
 async function runSingleCase(
   evaluator: (input: string) => Promise<unknown>,
   testCase: JudgeCase,
@@ -85,12 +92,20 @@ async function runSingleCase(
 }
 
 function createEvaluator(source: string) {
-  const buffer: string[] = []
+  const buffer: StructuredLog[] = []
+  const createLogMethod =
+    (level: LogLevel) =>
+    (...args: unknown[]) => {
+      buffer.push({
+        level,
+        args: args.map((arg) => stringifyLogEntry(arg)),
+      })
+    }
   const shadowConsole = {
-    log: (...args: unknown[]) => buffer.push(args.map((arg) => stringifyLogEntry(arg)).join(' ')),
-    info: (...args: unknown[]) => buffer.push(args.map((arg) => stringifyLogEntry(arg)).join(' ')),
-    warn: (...args: unknown[]) => buffer.push(args.map((arg) => stringifyLogEntry(arg)).join(' ')),
-    error: (...args: unknown[]) => buffer.push(args.map((arg) => stringifyLogEntry(arg)).join(' ')),
+    log: createLogMethod('log'),
+    info: createLogMethod('info'),
+    warn: createLogMethod('warn'),
+    error: createLogMethod('error'),
   }
 
   const evaluatorFactory = new Function(

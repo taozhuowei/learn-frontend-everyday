@@ -8,24 +8,12 @@ import path from 'node:path'
 import vm from 'node:vm'
 import { fileURLToPath } from 'node:url'
 import {
-  getBasicCases,
   getCategoryName,
   getExecutionConfig,
   hasSkipTag,
   humanizeSlug,
-  normalizeCaseDefinitions,
+  validateTestCases,
 } from './content_rules.mjs'
-
-type MinimalCase = {
-  input: string
-  expected: unknown
-}
-
-type KnowledgeHeading = {
-  depth: number
-  text: string
-  slug: string
-}
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
@@ -60,11 +48,6 @@ function stripHeaderComment(source: string) {
   return source.replace(/^\s*\/\*\*[\s\S]*?\*\/\s*/m, '').trim()
 }
 
-/**
- * Extract a function/class skeleton from source code.
- * Keeps function and method signatures, replaces bodies with empty {}.
- * Handles: prototype extensions, standalone functions, class declarations.
- */
 function extractSkeleton(rawSource: string): string {
   const source = stripHeaderComment(rawSource)
 
@@ -168,13 +151,11 @@ function extractSkeleton(rawSource: string): string {
 
       if (isOutputting()) {
         if (!wasClass) {
-          // Add a blank line before closing brace so template has room to write code
           result += depth === 0 ? indent + '\n}' : indent + '\n}\n'
         } else {
           result += c
         }
       } else if (depth === 0) {
-        // Closing the outermost function body
         result += '\n\n}'
       }
 
@@ -262,7 +243,7 @@ function sanitizeSlug(value: string) {
 
 function extractHeadings(markdown: string) {
   const counters = new Map<string, number>()
-  const headings: KnowledgeHeading[] = []
+  const headings: Array<{ depth: number; text: string; slug: string }> = []
 
   for (const line of markdown.split('\n')) {
     const match = line.match(/^(#{1,6})\s+(.+)$/)
@@ -316,20 +297,31 @@ function buildKnowledge() {
   })
 }
 
-function loadTestDefinition(filePath: string): MinimalCase[] {
+function loadTestCases(
+  filePath: string,
+  categoryId: string,
+): { examples: unknown[]; hidden: unknown[] } {
+  // 组件题（Vue/React）不需要测试文件，人工确认即可
+  if (categoryId === 'with_vue' || categoryId === 'with_react') {
+    return { examples: [], hidden: [] }
+  }
+
   if (!fs.existsSync(filePath)) {
     throw new Error(`${toPosix(path.relative(repoRoot, filePath))} 缺少同级测试文件。`)
   }
 
   const sandbox = {
-    module: { exports: [] as MinimalCase[] },
+    module: { exports: {} as { examples: unknown[]; hidden: unknown[] } },
     exports: {},
   }
 
   const source = fs.readFileSync(filePath, 'utf8')
   vm.runInNewContext(source, sandbox, { filename: filePath, timeout: 1000 })
 
-  return sandbox.module.exports
+  const testCases = sandbox.module.exports
+  validateTestCases(testCases, toPosix(path.relative(repoRoot, filePath)))
+
+  return testCases
 }
 
 function buildProblems() {
@@ -358,11 +350,10 @@ function buildProblems() {
     }
 
     const testPath = path.join(path.dirname(filePath), `${path.basename(relativeKey)}_test.js`)
-    const rawCases = loadTestDefinition(testPath)
-    const fullCases = normalizeCaseDefinitions(rawCases, toPosix(path.relative(repoRoot, testPath)))
-    const basicCases = getBasicCases(fullCases)
-    const stem = path.basename(relativeKey)
     const categoryId = relativeKey.split('/')[0]
+    const testCases = loadTestCases(testPath, categoryId)
+
+    const stem = path.basename(relativeKey)
     const sourceType = path.extname(filePath).slice(1)
     const executionConfig = getExecutionConfig(sourceType)
 
@@ -380,14 +371,38 @@ function buildProblems() {
       approachText,
       paramsText,
       returnText,
-      // Component problems display the full source code; only function problems use the skeleton
       template:
         executionConfig.executionMode === 'component'
           ? stripHeaderComment(source)
           : extractSkeleton(source),
       solutionCode: stripHeaderComment(source),
-      basicCases,
-      fullCases,
+      testCases,
+      // 兼容性字段
+      basicCases: testCases.examples.map((c, i) => ({
+        id: `case-${i + 1}`,
+        type: 'basic',
+        description: `示例 ${i + 1}`,
+        input: JSON.stringify(c.input),
+        expected: c.expected,
+      })),
+      fullCases: [
+        ...testCases.examples.map((c, i) => ({
+          id: `case-${i + 1}`,
+          type: 'basic',
+          description: `示例 ${i + 1}`,
+          input: JSON.stringify(c.input),
+          expected: c.expected,
+        })),
+        ...testCases.hidden.map((c, i) => ({
+          id: `hidden-${i + 1}`,
+          type: 'edge',
+          description: `隐藏 ${i + 1}`,
+          input: JSON.stringify(c.input),
+          expected: c.expected,
+        })),
+      ],
+      // 组件题标记（无需判题，人工确认）
+      isComponent: executionConfig.executionMode === 'component',
       sourcePath: toPosix(path.relative(repoRoot, filePath)),
       testPath: toPosix(path.relative(repoRoot, testPath)),
     })
@@ -410,12 +425,18 @@ function main() {
 
   writeGeneratedFile(
     'problems.ts',
-    `import type { ProblemRecord } from '../types/content'\n\nexport const problems: ProblemRecord[] = ${JSON.stringify(problems, null, 2)}\n`,
+    `import type { ProblemRecord } from '../types/content'
+
+export const problems: ProblemRecord[] = ${JSON.stringify(problems, null, 2)}
+`,
   )
 
   writeGeneratedFile(
     'knowledge.ts',
-    `import type { KnowledgeArticle } from '../types/content'\n\nexport const knowledgeArticles: KnowledgeArticle[] = ${JSON.stringify(knowledgeArticles, null, 2)}\n`,
+    `import type { KnowledgeArticle } from '../types/content'
+
+export const knowledgeArticles: KnowledgeArticle[] = ${JSON.stringify(knowledgeArticles, null, 2)}
+`,
   )
 
   writeGeneratedFile(
@@ -427,12 +448,13 @@ function main() {
         categoryId: problem.categoryId,
         categoryName: problem.categoryName,
         executionMode: problem.executionMode,
-        basicCaseCount: problem.basicCases.length,
-        fullCaseCount: problem.fullCases.length,
+        basicCaseCount: problem.testCases.examples.length,
+        fullCaseCount: problem.testCases.examples.length + problem.testCases.hidden.length,
       })),
       null,
       2,
-    )}\n`,
+    )}
+`,
   )
 
   writeGeneratedFile(
@@ -447,7 +469,8 @@ function main() {
       },
       null,
       2,
-    )}\n`,
+    )}
+`,
   )
 
   console.log(

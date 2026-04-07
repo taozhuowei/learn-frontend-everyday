@@ -72,7 +72,6 @@ async function formatWebsiteFiles() {
       './PRD.md',
       './src/**/*.{ts,tsx,css}',
       './scripts/**/*.{ts,mjs,json}',
-      './test/**/*.{ts,mjs}',
     ],
     websiteRoot,
   )

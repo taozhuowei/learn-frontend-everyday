@@ -17,92 +17,343 @@ export const problems: ProblemRecord[] = [
     "returnText": "返回一个新数组，里面包含所有通过回调判断的元素，元素顺序与原数组保持一致。",
     "template": "Array.prototype.myFilter = function (callback, thisArg) {\n\n};",
     "solutionCode": "Array.prototype.myFilter = function (callback, thisArg) {\n  // 1. 检查 this 是否合法\n  if (this === null || this === undefined) {\n    throw new TypeError(\"Array.prototype.myFilter called on null or undefined\");\n  }\n\n  // 2. 检查回调必须是函数\n  if (typeof callback !== \"function\") {\n    throw new TypeError(callback + \" is not a function\");\n  }\n\n  // 3. 拿到数组 & 长度\n  const arr = this;\n  // 使用位运算符确保 length 是一个非负整数，同时为结果数组预分配空间\n  const len = arr.length >>> 0;\n  const result = [];\n\n  // 4. 遍历 + 过滤\n  for (let i = 0; i < len; i++) {\n    // 只处理真实存在的元素（跳过空元素）\n    if (i in arr) {\n      // 回调返回 true，就放进结果数组\n      if (callback.call(thisArg, arr[i], i, arr)) {\n        result.push(arr[i]);\n      }\n    }\n  }\n\n  // 5. 返回新数组\n  return result;\n};",
+    "testCases": {
+      "examples": [
+        {
+          "input": {
+            "arr": [
+              1,
+              2,
+              3,
+              4
+            ],
+            "fn": "x => x % 2 === 0"
+          },
+          "expected": [
+            2,
+            4
+          ]
+        },
+        {
+          "input": {
+            "arr": [
+              5,
+              6,
+              7,
+              8
+            ],
+            "fn": "x => x > 6"
+          },
+          "expected": [
+            7,
+            8
+          ]
+        },
+        {
+          "input": {
+            "arr": [
+              1,
+              null,
+              3,
+              0
+            ],
+            "fn": "Boolean"
+          },
+          "expected": [
+            1,
+            3
+          ]
+        }
+      ],
+      "hidden": [
+        {
+          "input": {
+            "arr": [],
+            "fn": "() => true"
+          },
+          "expected": []
+        },
+        {
+          "input": {
+            "arr": [
+              1,
+              2,
+              3
+            ],
+            "fn": "() => false"
+          },
+          "expected": []
+        },
+        {
+          "input": {
+            "arr": [
+              1,
+              2,
+              3
+            ],
+            "fn": "() => true"
+          },
+          "expected": [
+            1,
+            2,
+            3
+          ]
+        },
+        {
+          "input": {
+            "arr": [
+              null,
+              null,
+              3
+            ],
+            "fn": "x => x > 0"
+          },
+          "expected": [
+            3
+          ]
+        },
+        {
+          "input": {
+            "arr": [
+              1,
+              2,
+              3
+            ],
+            "fn": null
+          },
+          "expected": {
+            "error": "TypeError"
+          }
+        },
+        {
+          "input": {
+            "arr": [
+              1,
+              2,
+              3
+            ]
+          },
+          "expected": {
+            "error": "TypeError"
+          }
+        },
+        {
+          "input": {
+            "arr": [
+              1,
+              2,
+              3
+            ],
+            "fn": 123
+          },
+          "expected": {
+            "error": "TypeError"
+          }
+        },
+        {
+          "input": {
+            "arr": null,
+            "fn": "() => true"
+          },
+          "expected": {
+            "error": "TypeError"
+          }
+        },
+        {
+          "input": {
+            "fn": "() => true"
+          },
+          "expected": {
+            "error": "TypeError"
+          }
+        },
+        {
+          "input": {
+            "arr": [
+              3,
+              4,
+              5
+            ],
+            "fn": "function(x) { return x > this.min }",
+            "thisArg": {
+              "min": 3
+            }
+          },
+          "expected": [
+            4,
+            5
+          ]
+        },
+        {
+          "input": {
+            "arr": "Array(10000).fill(0).map((_,i)=>i)",
+            "fn": "x => x % 2 === 0"
+          },
+          "expected": "Array(5000).fill(0).map((_,i)=>i*2)"
+        }
+      ]
+    },
     "basicCases": [
       {
         "id": "case-1",
         "type": "basic",
-        "description": "基础用例 1",
-        "input": "[1, 2, 3, 4].myFilter((value) => value % 2 === 0)",
+        "description": "示例 1",
+        "input": "{\"arr\":[1,2,3,4],\"fn\":\"x => x % 2 === 0\"}",
         "expected": [
           2,
           4
-        ],
-        "timeoutMs": 2000
+        ]
       },
       {
         "id": "case-2",
         "type": "basic",
-        "description": "基础用例 2",
-        "input": "[3, 4, 5].myFilter(function (value) { return value > this.limit }, { limit: 3 })",
+        "description": "示例 2",
+        "input": "{\"arr\":[5,6,7,8],\"fn\":\"x => x > 6\"}",
         "expected": [
-          4,
-          5
-        ],
-        "timeoutMs": 2000
+          7,
+          8
+        ]
       },
       {
         "id": "case-3",
         "type": "basic",
-        "description": "基础用例 3",
-        "input": "(() => { const array = [1, , 3, 0]; return array.myFilter(Boolean) })()",
+        "description": "示例 3",
+        "input": "{\"arr\":[1,null,3,0],\"fn\":\"Boolean\"}",
         "expected": [
           1,
           3
-        ],
-        "timeoutMs": 2000
+        ]
       }
     ],
     "fullCases": [
       {
         "id": "case-1",
         "type": "basic",
-        "description": "基础用例 1",
-        "input": "[1, 2, 3, 4].myFilter((value) => value % 2 === 0)",
+        "description": "示例 1",
+        "input": "{\"arr\":[1,2,3,4],\"fn\":\"x => x % 2 === 0\"}",
         "expected": [
           2,
           4
-        ],
-        "timeoutMs": 2000
+        ]
       },
       {
         "id": "case-2",
         "type": "basic",
-        "description": "基础用例 2",
-        "input": "[3, 4, 5].myFilter(function (value) { return value > this.limit }, { limit: 3 })",
+        "description": "示例 2",
+        "input": "{\"arr\":[5,6,7,8],\"fn\":\"x => x > 6\"}",
         "expected": [
-          4,
-          5
-        ],
-        "timeoutMs": 2000
+          7,
+          8
+        ]
       },
       {
         "id": "case-3",
         "type": "basic",
-        "description": "基础用例 3",
-        "input": "(() => { const array = [1, , 3, 0]; return array.myFilter(Boolean) })()",
+        "description": "示例 3",
+        "input": "{\"arr\":[1,null,3,0],\"fn\":\"Boolean\"}",
         "expected": [
           1,
           3
-        ],
-        "timeoutMs": 2000
+        ]
       },
       {
-        "id": "case-4",
+        "id": "hidden-1",
         "type": "edge",
-        "description": "边界用例 1",
-        "input": "[].myFilter(() => true)",
-        "expected": [],
-        "timeoutMs": 2000
+        "description": "隐藏 1",
+        "input": "{\"arr\":[],\"fn\":\"() => true\"}",
+        "expected": []
       },
       {
-        "id": "case-5",
-        "type": "exception",
-        "description": "异常用例 1",
-        "input": "(() => { try { [1].myFilter(null) } catch (error) { return error instanceof TypeError } })()",
-        "expected": true,
-        "timeoutMs": 2000
+        "id": "hidden-2",
+        "type": "edge",
+        "description": "隐藏 2",
+        "input": "{\"arr\":[1,2,3],\"fn\":\"() => false\"}",
+        "expected": []
+      },
+      {
+        "id": "hidden-3",
+        "type": "edge",
+        "description": "隐藏 3",
+        "input": "{\"arr\":[1,2,3],\"fn\":\"() => true\"}",
+        "expected": [
+          1,
+          2,
+          3
+        ]
+      },
+      {
+        "id": "hidden-4",
+        "type": "edge",
+        "description": "隐藏 4",
+        "input": "{\"arr\":[null,null,3],\"fn\":\"x => x > 0\"}",
+        "expected": [
+          3
+        ]
+      },
+      {
+        "id": "hidden-5",
+        "type": "edge",
+        "description": "隐藏 5",
+        "input": "{\"arr\":[1,2,3],\"fn\":null}",
+        "expected": {
+          "error": "TypeError"
+        }
+      },
+      {
+        "id": "hidden-6",
+        "type": "edge",
+        "description": "隐藏 6",
+        "input": "{\"arr\":[1,2,3]}",
+        "expected": {
+          "error": "TypeError"
+        }
+      },
+      {
+        "id": "hidden-7",
+        "type": "edge",
+        "description": "隐藏 7",
+        "input": "{\"arr\":[1,2,3],\"fn\":123}",
+        "expected": {
+          "error": "TypeError"
+        }
+      },
+      {
+        "id": "hidden-8",
+        "type": "edge",
+        "description": "隐藏 8",
+        "input": "{\"arr\":null,\"fn\":\"() => true\"}",
+        "expected": {
+          "error": "TypeError"
+        }
+      },
+      {
+        "id": "hidden-9",
+        "type": "edge",
+        "description": "隐藏 9",
+        "input": "{\"fn\":\"() => true\"}",
+        "expected": {
+          "error": "TypeError"
+        }
+      },
+      {
+        "id": "hidden-10",
+        "type": "edge",
+        "description": "隐藏 10",
+        "input": "{\"arr\":[3,4,5],\"fn\":\"function(x) { return x > this.min }\",\"thisArg\":{\"min\":3}}",
+        "expected": [
+          4,
+          5
+        ]
+      },
+      {
+        "id": "hidden-11",
+        "type": "edge",
+        "description": "隐藏 11",
+        "input": "{\"arr\":\"Array(10000).fill(0).map((_,i)=>i)\",\"fn\":\"x => x % 2 === 0\"}",
+        "expected": "Array(5000).fill(0).map((_,i)=>i*2)"
       }
     ],
+    "isComponent": false,
     "sourcePath": "problems/array/filter.js",
     "testPath": "problems/array/filter_test.js"
   },
@@ -122,24 +373,92 @@ export const problems: ProblemRecord[] = [
     "returnText": "返回一个新的数组，其中嵌套数组会在允许的深度范围内被展开，原数组保持不变。",
     "template": "Array.prototype.myFlat = function (depth = 1) {\n\n};",
     "solutionCode": "Array.prototype.myFlat = function (depth = 1) {\n  // 1. 检查 this 合法性\n  if (this == null) {\n    throw new TypeError(\"Cannot read property 'myFlat' of null or undefined\");\n  }\n\n  // 2. 把调用者转成对象（规范写法）\n  const arr = this;\n  const result = [];\n\n  // 3. 定义递归拍平函数\n  function flatDeep(array, currentDepth) {\n    for (const item of array) {\n      // 判断是否是数组 && 是否还能继续拍平\n      if (Array.isArray(item) && currentDepth < depth) {\n        flatDeep(item, currentDepth + 1); // 递归\n      } else {\n        result.push(item); // 不是数组直接放入结果\n      }\n    }\n  }\n\n  // 4. 开始递归拍平，默认深度从 0 开始\n  flatDeep(arr, 0);\n\n  return result;\n};",
+    "testCases": {
+      "examples": [
+        {
+          "input": {
+            "arr": "1, [2, 3]",
+            "fn": "() => {}"
+          },
+          "expected": [
+            1,
+            2,
+            3
+          ]
+        },
+        {
+          "input": {
+            "arr": "1, [2, [3, [4]]]",
+            "fn": "2"
+          },
+          "expected": [
+            1,
+            2,
+            3,
+            [
+              4
+            ]
+          ]
+        },
+        {
+          "input": {
+            "arr": "1, [2, [3]]",
+            "fn": "1"
+          },
+          "expected": [
+            1,
+            2,
+            [
+              3
+            ]
+          ]
+        }
+      ],
+      "hidden": [
+        {
+          "input": {
+            "arr": "1, [2]",
+            "fn": "0"
+          },
+          "expected": [
+            1,
+            [
+              2
+            ]
+          ]
+        },
+        {
+          "input": {
+            "arr": "1, [2, [3, [4, [5]]]]",
+            "fn": "Infinity"
+          },
+          "expected": [
+            1,
+            2,
+            3,
+            4,
+            5
+          ]
+        }
+      ]
+    },
     "basicCases": [
       {
         "id": "case-1",
         "type": "basic",
-        "description": "基础用例 1",
-        "input": "[1, [2, 3]].myFlat()",
+        "description": "示例 1",
+        "input": "{\"arr\":\"1, [2, 3]\",\"fn\":\"() => {}\"}",
         "expected": [
           1,
           2,
           3
-        ],
-        "timeoutMs": 2000
+        ]
       },
       {
         "id": "case-2",
         "type": "basic",
-        "description": "基础用例 2",
-        "input": "[1, [2, [3, [4]]]].myFlat(2)",
+        "description": "示例 2",
+        "input": "{\"arr\":\"1, [2, [3, [4]]]\",\"fn\":\"2\"}",
         "expected": [
           1,
           2,
@@ -147,42 +466,39 @@ export const problems: ProblemRecord[] = [
           [
             4
           ]
-        ],
-        "timeoutMs": 2000
+        ]
       },
       {
         "id": "case-3",
         "type": "basic",
-        "description": "基础用例 3",
-        "input": "[1, [2, [3]]].myFlat(1)",
+        "description": "示例 3",
+        "input": "{\"arr\":\"1, [2, [3]]\",\"fn\":\"1\"}",
         "expected": [
           1,
           2,
           [
             3
           ]
-        ],
-        "timeoutMs": 2000
+        ]
       }
     ],
     "fullCases": [
       {
         "id": "case-1",
         "type": "basic",
-        "description": "基础用例 1",
-        "input": "[1, [2, 3]].myFlat()",
+        "description": "示例 1",
+        "input": "{\"arr\":\"1, [2, 3]\",\"fn\":\"() => {}\"}",
         "expected": [
           1,
           2,
           3
-        ],
-        "timeoutMs": 2000
+        ]
       },
       {
         "id": "case-2",
         "type": "basic",
-        "description": "基础用例 2",
-        "input": "[1, [2, [3, [4]]]].myFlat(2)",
+        "description": "示例 2",
+        "input": "{\"arr\":\"1, [2, [3, [4]]]\",\"fn\":\"2\"}",
         "expected": [
           1,
           2,
@@ -190,51 +506,48 @@ export const problems: ProblemRecord[] = [
           [
             4
           ]
-        ],
-        "timeoutMs": 2000
+        ]
       },
       {
         "id": "case-3",
         "type": "basic",
-        "description": "基础用例 3",
-        "input": "[1, [2, [3]]].myFlat(1)",
+        "description": "示例 3",
+        "input": "{\"arr\":\"1, [2, [3]]\",\"fn\":\"1\"}",
         "expected": [
           1,
           2,
           [
             3
           ]
-        ],
-        "timeoutMs": 2000
+        ]
       },
       {
-        "id": "case-4",
+        "id": "hidden-1",
         "type": "edge",
-        "description": "边界用例 1",
-        "input": "[1, [2]].myFlat(0)",
+        "description": "隐藏 1",
+        "input": "{\"arr\":\"1, [2]\",\"fn\":\"0\"}",
         "expected": [
           1,
           [
             2
           ]
-        ],
-        "timeoutMs": 2000
+        ]
       },
       {
-        "id": "case-5",
-        "type": "exception",
-        "description": "异常用例 1",
-        "input": "[1, [2, [3, [4, [5]]]]].myFlat(Infinity)",
+        "id": "hidden-2",
+        "type": "edge",
+        "description": "隐藏 2",
+        "input": "{\"arr\":\"1, [2, [3, [4, [5]]]]\",\"fn\":\"Infinity\"}",
         "expected": [
           1,
           2,
           3,
           4,
           5
-        ],
-        "timeoutMs": 2000
+        ]
       }
     ],
+    "isComponent": false,
     "sourcePath": "problems/array/flat.js",
     "testPath": "problems/array/flat_test.js"
   },
@@ -254,74 +567,103 @@ export const problems: ProblemRecord[] = [
     "returnText": "不返回结果数组，函数执行完成后始终得到 undefined。",
     "template": "Array.prototype.myForEach = function (callback, thisArg) {\n\n};",
     "solutionCode": "Array.prototype.myForEach = function (callback, thisArg) {\n  if (this == null) {\n    throw new TypeError(\n      \"Cannot read property 'myForEach' of null or undefined\",\n    );\n  }\n  if (typeof callback !== \"function\") {\n    throw new TypeError(callback + \" is not a function\");\n  }\n\n  // 将调用者转为对象，获取长度\n  const array = Object(this);\n  // 使用位运算符确保 length 是一个非负整数，同时为结果数组预分配空间\n  const len = array.length >>> 0;\n\n  for (let i = 0; i < len; i++) {\n    if (i in array) {\n      callback.call(thisArg, array[i], i, array);\n    }\n  }\n};",
+    "testCases": {
+      "examples": [
+        {
+          "input": {
+            "args": "(value) => { sum += value }); return sum })("
+          },
+          "expected": 6
+        },
+        {
+          "input": {
+            "args": "function (value) { total += value + this.base }, context); return total })("
+          },
+          "expected": 23
+        },
+        {
+          "input": {
+            "args": "() => { count += 1 }); return count })("
+          },
+          "expected": 2
+        }
+      ],
+      "hidden": [
+        {
+          "input": {
+            "args": "() => { called = true }); return called })("
+          },
+          "expected": false
+        },
+        {
+          "input": {
+            "args": "'nope') } catch (error) { return error instanceof TypeError } })("
+          },
+          "expected": true
+        }
+      ]
+    },
     "basicCases": [
       {
         "id": "case-1",
         "type": "basic",
-        "description": "基础用例 1",
-        "input": "(() => { let sum = 0; [1, 2, 3].myForEach((value) => { sum += value }); return sum })()",
-        "expected": 6,
-        "timeoutMs": 2000
+        "description": "示例 1",
+        "input": "{\"args\":\"(value) => { sum += value }); return sum })(\"}",
+        "expected": 6
       },
       {
         "id": "case-2",
         "type": "basic",
-        "description": "基础用例 2",
-        "input": "(() => { const context = { base: 10 }; let total = 0; [1, 2].myForEach(function (value) { total += value + this.base }, context); return total })()",
-        "expected": 23,
-        "timeoutMs": 2000
+        "description": "示例 2",
+        "input": "{\"args\":\"function (value) { total += value + this.base }, context); return total })(\"}",
+        "expected": 23
       },
       {
         "id": "case-3",
         "type": "basic",
-        "description": "基础用例 3",
-        "input": "(() => { let count = 0; const array = [1, , 3]; array.myForEach(() => { count += 1 }); return count })()",
-        "expected": 2,
-        "timeoutMs": 2000
+        "description": "示例 3",
+        "input": "{\"args\":\"() => { count += 1 }); return count })(\"}",
+        "expected": 2
       }
     ],
     "fullCases": [
       {
         "id": "case-1",
         "type": "basic",
-        "description": "基础用例 1",
-        "input": "(() => { let sum = 0; [1, 2, 3].myForEach((value) => { sum += value }); return sum })()",
-        "expected": 6,
-        "timeoutMs": 2000
+        "description": "示例 1",
+        "input": "{\"args\":\"(value) => { sum += value }); return sum })(\"}",
+        "expected": 6
       },
       {
         "id": "case-2",
         "type": "basic",
-        "description": "基础用例 2",
-        "input": "(() => { const context = { base: 10 }; let total = 0; [1, 2].myForEach(function (value) { total += value + this.base }, context); return total })()",
-        "expected": 23,
-        "timeoutMs": 2000
+        "description": "示例 2",
+        "input": "{\"args\":\"function (value) { total += value + this.base }, context); return total })(\"}",
+        "expected": 23
       },
       {
         "id": "case-3",
         "type": "basic",
-        "description": "基础用例 3",
-        "input": "(() => { let count = 0; const array = [1, , 3]; array.myForEach(() => { count += 1 }); return count })()",
-        "expected": 2,
-        "timeoutMs": 2000
+        "description": "示例 3",
+        "input": "{\"args\":\"() => { count += 1 }); return count })(\"}",
+        "expected": 2
       },
       {
-        "id": "case-4",
+        "id": "hidden-1",
         "type": "edge",
-        "description": "边界用例 1",
-        "input": "(() => { let called = false; [].myForEach(() => { called = true }); return called })()",
-        "expected": false,
-        "timeoutMs": 2000
+        "description": "隐藏 1",
+        "input": "{\"args\":\"() => { called = true }); return called })(\"}",
+        "expected": false
       },
       {
-        "id": "case-5",
-        "type": "exception",
-        "description": "异常用例 1",
-        "input": "(() => { try { [1].myForEach('nope') } catch (error) { return error instanceof TypeError } })()",
-        "expected": true,
-        "timeoutMs": 2000
+        "id": "hidden-2",
+        "type": "edge",
+        "description": "隐藏 2",
+        "input": "{\"args\":\"'nope') } catch (error) { return error instanceof TypeError } })(\"}",
+        "expected": true
       }
     ],
+    "isComponent": false,
     "sourcePath": "problems/array/forEach.js",
     "testPath": "problems/array/forEach_test.js"
   },
@@ -341,100 +683,145 @@ export const problems: ProblemRecord[] = [
     "returnText": "返回一个新数组，长度与原数组一致，已存在元素的位置会被映射成回调返回值，空槽会被保留。",
     "template": "Array.prototype.myMap = function (callback, thisArg) {\n\n};",
     "solutionCode": "Array.prototype.myMap = function (callback, thisArg) {\n  if (this == null) {\n    throw new TypeError(\"Cannot read property 'myMap' of null or undefined\");\n  }\n  if (typeof callback !== \"function\") {\n    throw new TypeError(callback + \" is not a function\");\n  }\n\n  // 将调用者转为对象，获取长度\n  const array = Object(this);\n  // 使用位运算符确保 length 是一个非负整数，同时为结果数组预分配空间\n  const len = array.length >>> 0;\n  const result = new Array(len);\n\n  for (let i = 0; i < len; i++) {\n    if (i in array) {\n      result[i] = callback.call(thisArg, array[i], i, array);\n    }\n  }\n\n  return result;\n};",
+    "testCases": {
+      "examples": [
+        {
+          "input": {
+            "arr": "1, 2, 3",
+            "fn": "(value) => value * 2"
+          },
+          "expected": [
+            2,
+            4,
+            6
+          ]
+        },
+        {
+          "input": {
+            "arr": "'a', 'b'",
+            "fn": "function (value) { return this.prefix + value }, { prefix: 'x-' }"
+          },
+          "expected": [
+            "x-a",
+            "x-b"
+          ]
+        },
+        {
+          "input": {
+            "args": "(value) => value * 2); return [result.length, 1 in result, 2 in result, result[0], result[2]] })("
+          },
+          "expected": [
+            3,
+            false,
+            true,
+            2,
+            6
+          ]
+        }
+      ],
+      "hidden": [
+        {
+          "input": {
+            "arr": "",
+            "fn": "() => 1"
+          },
+          "expected": []
+        },
+        {
+          "input": {
+            "args": "null) } catch (error) { return error instanceof TypeError } })("
+          },
+          "expected": true
+        }
+      ]
+    },
     "basicCases": [
       {
         "id": "case-1",
         "type": "basic",
-        "description": "基础用例 1",
-        "input": "[1, 2, 3].myMap((value) => value * 2)",
+        "description": "示例 1",
+        "input": "{\"arr\":\"1, 2, 3\",\"fn\":\"(value) => value * 2\"}",
         "expected": [
           2,
           4,
           6
-        ],
-        "timeoutMs": 2000
+        ]
       },
       {
         "id": "case-2",
         "type": "basic",
-        "description": "基础用例 2",
-        "input": "['a', 'b'].myMap(function (value) { return this.prefix + value }, { prefix: 'x-' })",
+        "description": "示例 2",
+        "input": "{\"arr\":\"'a', 'b'\",\"fn\":\"function (value) { return this.prefix + value }, { prefix: 'x-' }\"}",
         "expected": [
           "x-a",
           "x-b"
-        ],
-        "timeoutMs": 2000
+        ]
       },
       {
         "id": "case-3",
         "type": "basic",
-        "description": "基础用例 3",
-        "input": "(() => { const result = [1, , 3].myMap((value) => value * 2); return [result.length, 1 in result, 2 in result, result[0], result[2]] })()",
+        "description": "示例 3",
+        "input": "{\"args\":\"(value) => value * 2); return [result.length, 1 in result, 2 in result, result[0], result[2]] })(\"}",
         "expected": [
           3,
           false,
           true,
           2,
           6
-        ],
-        "timeoutMs": 2000
+        ]
       }
     ],
     "fullCases": [
       {
         "id": "case-1",
         "type": "basic",
-        "description": "基础用例 1",
-        "input": "[1, 2, 3].myMap((value) => value * 2)",
+        "description": "示例 1",
+        "input": "{\"arr\":\"1, 2, 3\",\"fn\":\"(value) => value * 2\"}",
         "expected": [
           2,
           4,
           6
-        ],
-        "timeoutMs": 2000
+        ]
       },
       {
         "id": "case-2",
         "type": "basic",
-        "description": "基础用例 2",
-        "input": "['a', 'b'].myMap(function (value) { return this.prefix + value }, { prefix: 'x-' })",
+        "description": "示例 2",
+        "input": "{\"arr\":\"'a', 'b'\",\"fn\":\"function (value) { return this.prefix + value }, { prefix: 'x-' }\"}",
         "expected": [
           "x-a",
           "x-b"
-        ],
-        "timeoutMs": 2000
+        ]
       },
       {
         "id": "case-3",
         "type": "basic",
-        "description": "基础用例 3",
-        "input": "(() => { const result = [1, , 3].myMap((value) => value * 2); return [result.length, 1 in result, 2 in result, result[0], result[2]] })()",
+        "description": "示例 3",
+        "input": "{\"args\":\"(value) => value * 2); return [result.length, 1 in result, 2 in result, result[0], result[2]] })(\"}",
         "expected": [
           3,
           false,
           true,
           2,
           6
-        ],
-        "timeoutMs": 2000
+        ]
       },
       {
-        "id": "case-4",
+        "id": "hidden-1",
         "type": "edge",
-        "description": "边界用例 1",
-        "input": "[].myMap(() => 1)",
-        "expected": [],
-        "timeoutMs": 2000
+        "description": "隐藏 1",
+        "input": "{\"arr\":\"\",\"fn\":\"() => 1\"}",
+        "expected": []
       },
       {
-        "id": "case-5",
-        "type": "exception",
-        "description": "异常用例 1",
-        "input": "(() => { try { [1].myMap(null) } catch (error) { return error instanceof TypeError } })()",
-        "expected": true,
-        "timeoutMs": 2000
+        "id": "hidden-2",
+        "type": "edge",
+        "description": "隐藏 2",
+        "input": "{\"args\":\"null) } catch (error) { return error instanceof TypeError } })(\"}",
+        "expected": true
       }
     ],
+    "isComponent": false,
     "sourcePath": "problems/array/map.js",
     "testPath": "problems/array/map_test.js"
   },
@@ -454,74 +841,106 @@ export const problems: ProblemRecord[] = [
     "returnText": "返回整个归并过程结束后的最终累加结果，结果类型由 callback 的返回值决定。",
     "template": "Array.prototype.myReduce = function (callback, initialValue) {\n\n};",
     "solutionCode": "Array.prototype.myReduce = function (callback, initialValue) {\n  if (this == null) {\n    throw new TypeError(\"Cannot read property 'myReduce' of null or undefined\");\n  }\n  if (typeof callback !== \"function\") {\n    throw new TypeError(callback + \" is not a function\");\n  }\n\n  // 将调用者转为对象，获取长度\n  const array = Object(this);\n  // 使用位运算符确保 length 是一个非负整数，同时为结果数组预分配空间\n  const len = array.length >>> 0;\n  // accumulator 用于存储累加结果，k 是当前索引\n  let k = 0;\n  let accumulator;\n\n  // 处理初始值：如果没有提供 initialValue，使用数组中第一个存在的元素作为初始值\n  if (initialValue === undefined) {\n    let isValueSet = false;\n    // 找到第一个存在的元素作为初始值\n    for (; k < len; k++) {\n      if (k in array) {\n        accumulator = array[k];\n        isValueSet = true;\n        k++;\n        break;\n      }\n    }\n    if (!isValueSet) {\n      throw new TypeError(\"Reduce of empty array with no initial value\");\n    }\n  } else {\n    accumulator = initialValue;\n  }\n\n  for (; k < len; k++) {\n    if (k in array) {\n      accumulator = callback(accumulator, array[k], k, array);\n    }\n  }\n\n  return accumulator;\n};",
+    "testCases": {
+      "examples": [
+        {
+          "input": {
+            "arr": "1, 2, 3",
+            "fn": "(sum, value) => sum + value, 0"
+          },
+          "expected": 6
+        },
+        {
+          "input": {
+            "arr": "1, 2, 3",
+            "fn": "(sum, value) => sum + value"
+          },
+          "expected": 6
+        },
+        {
+          "input": {
+            "arr": "{ count: 1 }, { count: 2 }",
+            "fn": "(sum, item) => sum + item.count, 0"
+          },
+          "expected": 3
+        }
+      ],
+      "hidden": [
+        {
+          "input": {
+            "args": "(sum, value) => sum + value, 0) })("
+          },
+          "expected": 3
+        },
+        {
+          "input": {
+            "args": "(sum, value) => sum + value) } catch (error) { return error instanceof TypeError } })("
+          },
+          "expected": true
+        }
+      ]
+    },
     "basicCases": [
       {
         "id": "case-1",
         "type": "basic",
-        "description": "基础用例 1",
-        "input": "[1, 2, 3].myReduce((sum, value) => sum + value, 0)",
-        "expected": 6,
-        "timeoutMs": 2000
+        "description": "示例 1",
+        "input": "{\"arr\":\"1, 2, 3\",\"fn\":\"(sum, value) => sum + value, 0\"}",
+        "expected": 6
       },
       {
         "id": "case-2",
         "type": "basic",
-        "description": "基础用例 2",
-        "input": "[1, 2, 3].myReduce((sum, value) => sum + value)",
-        "expected": 6,
-        "timeoutMs": 2000
+        "description": "示例 2",
+        "input": "{\"arr\":\"1, 2, 3\",\"fn\":\"(sum, value) => sum + value\"}",
+        "expected": 6
       },
       {
         "id": "case-3",
         "type": "basic",
-        "description": "基础用例 3",
-        "input": "[{ count: 1 }, { count: 2 }].myReduce((sum, item) => sum + item.count, 0)",
-        "expected": 3,
-        "timeoutMs": 2000
+        "description": "示例 3",
+        "input": "{\"arr\":\"{ count: 1 }, { count: 2 }\",\"fn\":\"(sum, item) => sum + item.count, 0\"}",
+        "expected": 3
       }
     ],
     "fullCases": [
       {
         "id": "case-1",
         "type": "basic",
-        "description": "基础用例 1",
-        "input": "[1, 2, 3].myReduce((sum, value) => sum + value, 0)",
-        "expected": 6,
-        "timeoutMs": 2000
+        "description": "示例 1",
+        "input": "{\"arr\":\"1, 2, 3\",\"fn\":\"(sum, value) => sum + value, 0\"}",
+        "expected": 6
       },
       {
         "id": "case-2",
         "type": "basic",
-        "description": "基础用例 2",
-        "input": "[1, 2, 3].myReduce((sum, value) => sum + value)",
-        "expected": 6,
-        "timeoutMs": 2000
+        "description": "示例 2",
+        "input": "{\"arr\":\"1, 2, 3\",\"fn\":\"(sum, value) => sum + value\"}",
+        "expected": 6
       },
       {
         "id": "case-3",
         "type": "basic",
-        "description": "基础用例 3",
-        "input": "[{ count: 1 }, { count: 2 }].myReduce((sum, item) => sum + item.count, 0)",
-        "expected": 3,
-        "timeoutMs": 2000
+        "description": "示例 3",
+        "input": "{\"arr\":\"{ count: 1 }, { count: 2 }\",\"fn\":\"(sum, item) => sum + item.count, 0\"}",
+        "expected": 3
       },
       {
-        "id": "case-4",
+        "id": "hidden-1",
         "type": "edge",
-        "description": "边界用例 1",
-        "input": "(() => { const array = [, 1, 2]; return array.myReduce((sum, value) => sum + value, 0) })()",
-        "expected": 3,
-        "timeoutMs": 2000
+        "description": "隐藏 1",
+        "input": "{\"args\":\"(sum, value) => sum + value, 0) })(\"}",
+        "expected": 3
       },
       {
-        "id": "case-5",
-        "type": "exception",
-        "description": "异常用例 1",
-        "input": "(() => { try { [].myReduce((sum, value) => sum + value) } catch (error) { return error instanceof TypeError } })()",
-        "expected": true,
-        "timeoutMs": 2000
+        "id": "hidden-2",
+        "type": "edge",
+        "description": "隐藏 2",
+        "input": "{\"args\":\"(sum, value) => sum + value) } catch (error) { return error instanceof TypeError } })(\"}",
+        "expected": true
       }
     ],
+    "isComponent": false,
     "sourcePath": "problems/array/reduce.js",
     "testPath": "problems/array/reduce_test.js"
   },
@@ -541,74 +960,103 @@ export const problems: ProblemRecord[] = [
     "returnText": "返回目标函数在指定上下文下执行后的结果。",
     "template": "Function.prototype.myApply = function (context, argsArray) {\n\n};",
     "solutionCode": "Function.prototype.myApply = function (context, argsArray) {\n  // 1. 处理上下文：null/undefined 转为 globalThis，其他转为对象\n  context =\n    context === null || context === undefined ? globalThis : Object(context);\n\n  // 2. 处理参数数组：null/undefined 时使用空数组，否则转为数组\n  argsArray = argsArray == null ? [] : Array.from(argsArray);\n\n  // 3. 临时绑定：将函数作为上下文的属性，使用 Symbol 避免命名冲突\n  const fnSymbol = Symbol(\"fn\");\n  context[fnSymbol] = this;\n\n  // 4. 执行函数，统一展开参数数组\n  const result = context[fnSymbol](...argsArray);\n\n  delete context[fnSymbol];\n  return result;\n};",
+    "testCases": {
+      "examples": [
+        {
+          "input": {
+            "args": "a, b) { return this.base + a + b } return add.myApply({ base: 1 }, [2, 3]) })("
+          },
+          "expected": 6
+        },
+        {
+          "input": {
+            "args": "extra) { return this.base + extra } const result = read.myApply(null, [2]); delete globalThis.base; return result })("
+          },
+          "expected": 6
+        },
+        {
+          "input": {
+            "args": ") { return Object.prototype.toString.call(this) } return tag.myApply('hi') })("
+          },
+          "expected": "[object String]"
+        }
+      ],
+      "hidden": [
+        {
+          "input": {
+            "args": "a, b) { return [a, b].join('-') } return join.myApply({}, { 0: 'x', 1: 'y', length: 2 }) })("
+          },
+          "expected": "x-y"
+        },
+        {
+          "input": {
+            "args": "{}, null, []) } catch (error) { return error instanceof TypeError } })("
+          },
+          "expected": true
+        }
+      ]
+    },
     "basicCases": [
       {
         "id": "case-1",
         "type": "basic",
-        "description": "基础用例 1",
-        "input": "(() => { function add(a, b) { return this.base + a + b } return add.myApply({ base: 1 }, [2, 3]) })()",
-        "expected": 6,
-        "timeoutMs": 2000
+        "description": "示例 1",
+        "input": "{\"args\":\"a, b) { return this.base + a + b } return add.myApply({ base: 1 }, [2, 3]) })(\"}",
+        "expected": 6
       },
       {
         "id": "case-2",
         "type": "basic",
-        "description": "基础用例 2",
-        "input": "(() => { globalThis.base = 4; function read(extra) { return this.base + extra } const result = read.myApply(null, [2]); delete globalThis.base; return result })()",
-        "expected": 6,
-        "timeoutMs": 2000
+        "description": "示例 2",
+        "input": "{\"args\":\"extra) { return this.base + extra } const result = read.myApply(null, [2]); delete globalThis.base; return result })(\"}",
+        "expected": 6
       },
       {
         "id": "case-3",
         "type": "basic",
-        "description": "基础用例 3",
-        "input": "(() => { function tag() { return Object.prototype.toString.call(this) } return tag.myApply('hi') })()",
-        "expected": "[object String]",
-        "timeoutMs": 2000
+        "description": "示例 3",
+        "input": "{\"args\":\") { return Object.prototype.toString.call(this) } return tag.myApply('hi') })(\"}",
+        "expected": "[object String]"
       }
     ],
     "fullCases": [
       {
         "id": "case-1",
         "type": "basic",
-        "description": "基础用例 1",
-        "input": "(() => { function add(a, b) { return this.base + a + b } return add.myApply({ base: 1 }, [2, 3]) })()",
-        "expected": 6,
-        "timeoutMs": 2000
+        "description": "示例 1",
+        "input": "{\"args\":\"a, b) { return this.base + a + b } return add.myApply({ base: 1 }, [2, 3]) })(\"}",
+        "expected": 6
       },
       {
         "id": "case-2",
         "type": "basic",
-        "description": "基础用例 2",
-        "input": "(() => { globalThis.base = 4; function read(extra) { return this.base + extra } const result = read.myApply(null, [2]); delete globalThis.base; return result })()",
-        "expected": 6,
-        "timeoutMs": 2000
+        "description": "示例 2",
+        "input": "{\"args\":\"extra) { return this.base + extra } const result = read.myApply(null, [2]); delete globalThis.base; return result })(\"}",
+        "expected": 6
       },
       {
         "id": "case-3",
         "type": "basic",
-        "description": "基础用例 3",
-        "input": "(() => { function tag() { return Object.prototype.toString.call(this) } return tag.myApply('hi') })()",
-        "expected": "[object String]",
-        "timeoutMs": 2000
+        "description": "示例 3",
+        "input": "{\"args\":\") { return Object.prototype.toString.call(this) } return tag.myApply('hi') })(\"}",
+        "expected": "[object String]"
       },
       {
-        "id": "case-4",
+        "id": "hidden-1",
         "type": "edge",
-        "description": "边界用例 1",
-        "input": "(() => { function join(a, b) { return [a, b].join('-') } return join.myApply({}, { 0: 'x', 1: 'y', length: 2 }) })()",
-        "expected": "x-y",
-        "timeoutMs": 2000
+        "description": "隐藏 1",
+        "input": "{\"args\":\"a, b) { return [a, b].join('-') } return join.myApply({}, { 0: 'x', 1: 'y', length: 2 }) })(\"}",
+        "expected": "x-y"
       },
       {
-        "id": "case-5",
-        "type": "exception",
-        "description": "异常用例 1",
-        "input": "(() => { try { Function.prototype.myApply.call({}, null, []) } catch (error) { return error instanceof TypeError } })()",
-        "expected": true,
-        "timeoutMs": 2000
+        "id": "hidden-2",
+        "type": "edge",
+        "description": "隐藏 2",
+        "input": "{\"args\":\"{}, null, []) } catch (error) { return error instanceof TypeError } })(\"}",
+        "expected": true
       }
     ],
+    "isComponent": false,
     "sourcePath": "problems/function/apply.js",
     "testPath": "problems/function/apply_test.js"
   },
@@ -628,74 +1076,103 @@ export const problems: ProblemRecord[] = [
     "returnText": "返回一个新的绑定函数，它会记住指定的 this 和预置参数，并支持继续接收剩余参数。",
     "template": "Function.prototype.myBind = function (context, ...presetArgs) {\n\n};",
     "solutionCode": "Function.prototype.myBind = function (context, ...presetArgs) {\n  // 1. 调用者必须是函数\n  if (typeof this !== \"function\") {\n    throw new TypeError(\"Bind must be called on a function\");\n  }\n\n  const originalFn = this; // 保存原函数\n\n  // 2. 返回绑定函数\n  function boundFn(...args) {\n    return originalFn.call(\n      new.target === boundFn ? this : context, // 判断是不是 new 调用, new 的时候 this 指向实例，否则指向绑定的 context\n      ...presetArgs,\n      ...args,\n    );\n  }\n\n  // 3. 正确处理原型：用 Object.create 继承，不直接赋值\n  if (originalFn.prototype) {\n    boundFn.prototype = Object.create(originalFn.prototype);\n  }\n\n  return boundFn;\n};",
+    "testCases": {
+      "examples": [
+        {
+          "input": {
+            "args": "a, b) { return this.base + a + b } const bound = add.myBind({ base: 1 }, 2); return bound(3) })("
+          },
+          "expected": 6
+        },
+        {
+          "input": {
+            "args": "name) { this.name = name } Person.prototype.getName = function () { return this.name }; const BoundPerson = Person.myBind({ ignored: true }); const person = new BoundPerson('Tom'); return person.getName() })("
+          },
+          "expected": "Tom"
+        },
+        {
+          "input": {
+            "args": "a, b, c) { return a * b * c } const bound = multiply.myBind(null, 2, 3); return bound(4) })("
+          },
+          "expected": 24
+        }
+      ],
+      "hidden": [
+        {
+          "input": {
+            "args": ") { return Object.prototype.toString.call(this) } const bound = read.myBind('x'); return bound() })("
+          },
+          "expected": "[object String]"
+        },
+        {
+          "input": {
+            "args": "{}, null) } catch (error) { return error instanceof TypeError } })("
+          },
+          "expected": true
+        }
+      ]
+    },
     "basicCases": [
       {
         "id": "case-1",
         "type": "basic",
-        "description": "基础用例 1",
-        "input": "(() => { function add(a, b) { return this.base + a + b } const bound = add.myBind({ base: 1 }, 2); return bound(3) })()",
-        "expected": 6,
-        "timeoutMs": 2000
+        "description": "示例 1",
+        "input": "{\"args\":\"a, b) { return this.base + a + b } const bound = add.myBind({ base: 1 }, 2); return bound(3) })(\"}",
+        "expected": 6
       },
       {
         "id": "case-2",
         "type": "basic",
-        "description": "基础用例 2",
-        "input": "(() => { function Person(name) { this.name = name } Person.prototype.getName = function () { return this.name }; const BoundPerson = Person.myBind({ ignored: true }); const person = new BoundPerson('Tom'); return person.getName() })()",
-        "expected": "Tom",
-        "timeoutMs": 2000
+        "description": "示例 2",
+        "input": "{\"args\":\"name) { this.name = name } Person.prototype.getName = function () { return this.name }; const BoundPerson = Person.myBind({ ignored: true }); const person = new BoundPerson('Tom'); return person.getName() })(\"}",
+        "expected": "Tom"
       },
       {
         "id": "case-3",
         "type": "basic",
-        "description": "基础用例 3",
-        "input": "(() => { function multiply(a, b, c) { return a * b * c } const bound = multiply.myBind(null, 2, 3); return bound(4) })()",
-        "expected": 24,
-        "timeoutMs": 2000
+        "description": "示例 3",
+        "input": "{\"args\":\"a, b, c) { return a * b * c } const bound = multiply.myBind(null, 2, 3); return bound(4) })(\"}",
+        "expected": 24
       }
     ],
     "fullCases": [
       {
         "id": "case-1",
         "type": "basic",
-        "description": "基础用例 1",
-        "input": "(() => { function add(a, b) { return this.base + a + b } const bound = add.myBind({ base: 1 }, 2); return bound(3) })()",
-        "expected": 6,
-        "timeoutMs": 2000
+        "description": "示例 1",
+        "input": "{\"args\":\"a, b) { return this.base + a + b } const bound = add.myBind({ base: 1 }, 2); return bound(3) })(\"}",
+        "expected": 6
       },
       {
         "id": "case-2",
         "type": "basic",
-        "description": "基础用例 2",
-        "input": "(() => { function Person(name) { this.name = name } Person.prototype.getName = function () { return this.name }; const BoundPerson = Person.myBind({ ignored: true }); const person = new BoundPerson('Tom'); return person.getName() })()",
-        "expected": "Tom",
-        "timeoutMs": 2000
+        "description": "示例 2",
+        "input": "{\"args\":\"name) { this.name = name } Person.prototype.getName = function () { return this.name }; const BoundPerson = Person.myBind({ ignored: true }); const person = new BoundPerson('Tom'); return person.getName() })(\"}",
+        "expected": "Tom"
       },
       {
         "id": "case-3",
         "type": "basic",
-        "description": "基础用例 3",
-        "input": "(() => { function multiply(a, b, c) { return a * b * c } const bound = multiply.myBind(null, 2, 3); return bound(4) })()",
-        "expected": 24,
-        "timeoutMs": 2000
+        "description": "示例 3",
+        "input": "{\"args\":\"a, b, c) { return a * b * c } const bound = multiply.myBind(null, 2, 3); return bound(4) })(\"}",
+        "expected": 24
       },
       {
-        "id": "case-4",
+        "id": "hidden-1",
         "type": "edge",
-        "description": "边界用例 1",
-        "input": "(() => { function read() { return Object.prototype.toString.call(this) } const bound = read.myBind('x'); return bound() })()",
-        "expected": "[object String]",
-        "timeoutMs": 2000
+        "description": "隐藏 1",
+        "input": "{\"args\":\") { return Object.prototype.toString.call(this) } const bound = read.myBind('x'); return bound() })(\"}",
+        "expected": "[object String]"
       },
       {
-        "id": "case-5",
-        "type": "exception",
-        "description": "异常用例 1",
-        "input": "(() => { try { Function.prototype.myBind.call({}, null) } catch (error) { return error instanceof TypeError } })()",
-        "expected": true,
-        "timeoutMs": 2000
+        "id": "hidden-2",
+        "type": "edge",
+        "description": "隐藏 2",
+        "input": "{\"args\":\"{}, null) } catch (error) { return error instanceof TypeError } })(\"}",
+        "expected": true
       }
     ],
+    "isComponent": false,
     "sourcePath": "problems/function/bind.js",
     "testPath": "problems/function/bind_test.js"
   },
@@ -715,74 +1192,103 @@ export const problems: ProblemRecord[] = [
     "returnText": "返回目标函数在指定上下文和参数下执行后的结果。",
     "template": "Function.prototype.myCall = function (context, ...args) {\n\n};",
     "solutionCode": "Function.prototype.myCall = function (context, ...args) {\n  // 1. 调用者必须是函数\n  if (typeof this !== \"function\") {\n    throw new TypeError(\"Call must be called on a function\");\n  }\n\n  // 2. 处理上下文：null/undefined 转为 globalThis，其他转为对象\n  context =\n    context === null || context === undefined ? globalThis : Object(context);\n\n  // 3. 临时绑定：将函数作为上下文的属性，使用 Symbol 避免命名冲突\n  const fnSymbol = Symbol(\"fn\");\n  context[fnSymbol] = this;\n\n  // 4. 执行调用：展开参数列表调用函数\n  const result = context[fnSymbol](...args);\n\n  // 5. 清理恢复：删除临时属性，返回函数执行结果\n  delete context[fnSymbol];\n\n  return result;\n};",
+    "testCases": {
+      "examples": [
+        {
+          "input": {
+            "args": "a, b) { return this.base + a + b } return add.myCall({ base: 1 }, 2, 3) })("
+          },
+          "expected": 6
+        },
+        {
+          "input": {
+            "args": "extra) { return this.base + extra } const result = read.myCall(null, 2); delete globalThis.base; return result })("
+          },
+          "expected": 7
+        },
+        {
+          "input": {
+            "args": ") { return Object.prototype.toString.call(this) } return tag.myCall('hi') })("
+          },
+          "expected": "[object String]"
+        }
+      ],
+      "hidden": [
+        {
+          "input": {
+            "args": ") { return this.value } return getValue.myCall({ value: 'ok' }) })("
+          },
+          "expected": "ok"
+        },
+        {
+          "input": {
+            "args": "{}, null) } catch (error) { return error instanceof TypeError } })("
+          },
+          "expected": true
+        }
+      ]
+    },
     "basicCases": [
       {
         "id": "case-1",
         "type": "basic",
-        "description": "基础用例 1",
-        "input": "(() => { function add(a, b) { return this.base + a + b } return add.myCall({ base: 1 }, 2, 3) })()",
-        "expected": 6,
-        "timeoutMs": 2000
+        "description": "示例 1",
+        "input": "{\"args\":\"a, b) { return this.base + a + b } return add.myCall({ base: 1 }, 2, 3) })(\"}",
+        "expected": 6
       },
       {
         "id": "case-2",
         "type": "basic",
-        "description": "基础用例 2",
-        "input": "(() => { globalThis.base = 5; function read(extra) { return this.base + extra } const result = read.myCall(null, 2); delete globalThis.base; return result })()",
-        "expected": 7,
-        "timeoutMs": 2000
+        "description": "示例 2",
+        "input": "{\"args\":\"extra) { return this.base + extra } const result = read.myCall(null, 2); delete globalThis.base; return result })(\"}",
+        "expected": 7
       },
       {
         "id": "case-3",
         "type": "basic",
-        "description": "基础用例 3",
-        "input": "(() => { function tag() { return Object.prototype.toString.call(this) } return tag.myCall('hi') })()",
-        "expected": "[object String]",
-        "timeoutMs": 2000
+        "description": "示例 3",
+        "input": "{\"args\":\") { return Object.prototype.toString.call(this) } return tag.myCall('hi') })(\"}",
+        "expected": "[object String]"
       }
     ],
     "fullCases": [
       {
         "id": "case-1",
         "type": "basic",
-        "description": "基础用例 1",
-        "input": "(() => { function add(a, b) { return this.base + a + b } return add.myCall({ base: 1 }, 2, 3) })()",
-        "expected": 6,
-        "timeoutMs": 2000
+        "description": "示例 1",
+        "input": "{\"args\":\"a, b) { return this.base + a + b } return add.myCall({ base: 1 }, 2, 3) })(\"}",
+        "expected": 6
       },
       {
         "id": "case-2",
         "type": "basic",
-        "description": "基础用例 2",
-        "input": "(() => { globalThis.base = 5; function read(extra) { return this.base + extra } const result = read.myCall(null, 2); delete globalThis.base; return result })()",
-        "expected": 7,
-        "timeoutMs": 2000
+        "description": "示例 2",
+        "input": "{\"args\":\"extra) { return this.base + extra } const result = read.myCall(null, 2); delete globalThis.base; return result })(\"}",
+        "expected": 7
       },
       {
         "id": "case-3",
         "type": "basic",
-        "description": "基础用例 3",
-        "input": "(() => { function tag() { return Object.prototype.toString.call(this) } return tag.myCall('hi') })()",
-        "expected": "[object String]",
-        "timeoutMs": 2000
+        "description": "示例 3",
+        "input": "{\"args\":\") { return Object.prototype.toString.call(this) } return tag.myCall('hi') })(\"}",
+        "expected": "[object String]"
       },
       {
-        "id": "case-4",
+        "id": "hidden-1",
         "type": "edge",
-        "description": "边界用例 1",
-        "input": "(() => { function getValue() { return this.value } return getValue.myCall({ value: 'ok' }) })()",
-        "expected": "ok",
-        "timeoutMs": 2000
+        "description": "隐藏 1",
+        "input": "{\"args\":\") { return this.value } return getValue.myCall({ value: 'ok' }) })(\"}",
+        "expected": "ok"
       },
       {
-        "id": "case-5",
-        "type": "exception",
-        "description": "异常用例 1",
-        "input": "(() => { try { Function.prototype.myCall.call({}, null) } catch (error) { return error instanceof TypeError } })()",
-        "expected": true,
-        "timeoutMs": 2000
+        "id": "hidden-2",
+        "type": "edge",
+        "description": "隐藏 2",
+        "input": "{\"args\":\"{}, null) } catch (error) { return error instanceof TypeError } })(\"}",
+        "expected": true
       }
     ],
+    "isComponent": false,
     "sourcePath": "problems/function/call.js",
     "testPath": "problems/function/call_test.js"
   },
@@ -802,74 +1308,103 @@ export const problems: ProblemRecord[] = [
     "returnText": "如果链表存在环则返回环入口节点；如果不存在环则返回 null。",
     "template": "function detectCycle(head) {\n\n}",
     "solutionCode": "function detectCycle(head) {\n  if (!head || !head.next) return null;\n\n  let slow = head;\n  let fast = head;\n\n  while (fast !== null && fast.next !== null) {\n    slow = slow.next;\n    fast = fast.next.next;\n\n    if (slow === fast) {\n      let ptr1 = head;\n      let ptr2 = slow;\n\n      while (ptr1 !== ptr2) {\n        ptr1 = ptr1.next;\n        ptr2 = ptr2.next;\n      }\n\n      return ptr1;\n    }\n  }\n\n  return null;\n}",
+    "testCases": {
+      "examples": [
+        {
+          "input": {
+            "args": "head).val })("
+          },
+          "expected": 2
+        },
+        {
+          "input": {
+            "args": "node).val })("
+          },
+          "expected": 1
+        },
+        {
+          "input": {
+            "args": "null"
+          },
+          "expected": null
+        }
+      ],
+      "hidden": [
+        {
+          "input": {
+            "args": "head) })("
+          },
+          "expected": null
+        },
+        {
+          "input": {
+            "args": "{ length: 200 }, (_, index) => ({ val: index, next: null })); for (let index = 0; index < nodes.length - 1; index += 1) nodes[index].next = nodes[index + 1]; nodes[nodes.length - 1].next = nodes[120]; return detectCycle(nodes[0]).val })("
+          },
+          "expected": 120
+        }
+      ]
+    },
     "basicCases": [
       {
         "id": "case-1",
         "type": "basic",
-        "description": "基础用例 1",
-        "input": "(() => { const entry = { val: 2, next: { val: 3, next: null } }; const head = { val: 1, next: entry }; entry.next.next = entry; return detectCycle(head).val })()",
-        "expected": 2,
-        "timeoutMs": 2000
+        "description": "示例 1",
+        "input": "{\"args\":\"head).val })(\"}",
+        "expected": 2
       },
       {
         "id": "case-2",
         "type": "basic",
-        "description": "基础用例 2",
-        "input": "(() => { const node = { val: 1, next: null }; node.next = node; return detectCycle(node).val })()",
-        "expected": 1,
-        "timeoutMs": 2000
+        "description": "示例 2",
+        "input": "{\"args\":\"node).val })(\"}",
+        "expected": 1
       },
       {
         "id": "case-3",
         "type": "basic",
-        "description": "基础用例 3",
-        "input": "detectCycle(null)",
-        "expected": null,
-        "timeoutMs": 2000
+        "description": "示例 3",
+        "input": "{\"args\":\"null\"}",
+        "expected": null
       }
     ],
     "fullCases": [
       {
         "id": "case-1",
         "type": "basic",
-        "description": "基础用例 1",
-        "input": "(() => { const entry = { val: 2, next: { val: 3, next: null } }; const head = { val: 1, next: entry }; entry.next.next = entry; return detectCycle(head).val })()",
-        "expected": 2,
-        "timeoutMs": 2000
+        "description": "示例 1",
+        "input": "{\"args\":\"head).val })(\"}",
+        "expected": 2
       },
       {
         "id": "case-2",
         "type": "basic",
-        "description": "基础用例 2",
-        "input": "(() => { const node = { val: 1, next: null }; node.next = node; return detectCycle(node).val })()",
-        "expected": 1,
-        "timeoutMs": 2000
+        "description": "示例 2",
+        "input": "{\"args\":\"node).val })(\"}",
+        "expected": 1
       },
       {
         "id": "case-3",
         "type": "basic",
-        "description": "基础用例 3",
-        "input": "detectCycle(null)",
-        "expected": null,
-        "timeoutMs": 2000
+        "description": "示例 3",
+        "input": "{\"args\":\"null\"}",
+        "expected": null
       },
       {
-        "id": "case-4",
+        "id": "hidden-1",
         "type": "edge",
-        "description": "边界用例 1",
-        "input": "(() => { const head = { val: 1, next: { val: 2, next: null } }; return detectCycle(head) })()",
-        "expected": null,
-        "timeoutMs": 2000
+        "description": "隐藏 1",
+        "input": "{\"args\":\"head) })(\"}",
+        "expected": null
       },
       {
-        "id": "case-5",
-        "type": "exception",
-        "description": "异常用例 1",
-        "input": "(() => { const nodes = Array.from({ length: 200 }, (_, index) => ({ val: index, next: null })); for (let index = 0; index < nodes.length - 1; index += 1) nodes[index].next = nodes[index + 1]; nodes[nodes.length - 1].next = nodes[120]; return detectCycle(nodes[0]).val })()",
-        "expected": 120,
-        "timeoutMs": 2000
+        "id": "hidden-2",
+        "type": "edge",
+        "description": "隐藏 2",
+        "input": "{\"args\":\"{ length: 200 }, (_, index) => ({ val: index, next: null })); for (let index = 0; index < nodes.length - 1; index += 1) nodes[index].next = nodes[index + 1]; nodes[nodes.length - 1].next = nodes[120]; return detectCycle(nodes[0]).val })(\"}",
+        "expected": 120
       }
     ],
+    "isComponent": false,
     "sourcePath": "problems/linkedlist/findCycleEntry.js",
     "testPath": "problems/linkedlist/findCycleEntry_test.js"
   },
@@ -889,74 +1424,103 @@ export const problems: ProblemRecord[] = [
     "returnText": "如果链表中存在环则返回 true；如果不存在环则返回 false。",
     "template": "function hasCycle(head) {\n\n}",
     "solutionCode": "function hasCycle(head) {\n  if (!head || !head.next) return false;\n\n  let slow = head;\n  let fast = head;\n\n  while (fast !== null && fast.next !== null) {\n    slow = slow.next;\n    fast = fast.next.next;\n    if (slow === fast) return true;\n  }\n\n  return false;\n}",
+    "testCases": {
+      "examples": [
+        {
+          "input": {
+            "args": "head) })("
+          },
+          "expected": true
+        },
+        {
+          "input": {
+            "args": "head) })("
+          },
+          "expected": false
+        },
+        {
+          "input": {
+            "args": "null"
+          },
+          "expected": false
+        }
+      ],
+      "hidden": [
+        {
+          "input": {
+            "args": "node) })("
+          },
+          "expected": true
+        },
+        {
+          "input": {
+            "args": "{ length: 300 }, (_, index) => ({ val: index, next: null })); for (let index = 0; index < nodes.length - 1; index += 1) nodes[index].next = nodes[index + 1]; return hasCycle(nodes[0]) })("
+          },
+          "expected": false
+        }
+      ]
+    },
     "basicCases": [
       {
         "id": "case-1",
         "type": "basic",
-        "description": "基础用例 1",
-        "input": "(() => { const node2 = { val: 2, next: null }; const head = { val: 1, next: node2 }; node2.next = head; return hasCycle(head) })()",
-        "expected": true,
-        "timeoutMs": 2000
+        "description": "示例 1",
+        "input": "{\"args\":\"head) })(\"}",
+        "expected": true
       },
       {
         "id": "case-2",
         "type": "basic",
-        "description": "基础用例 2",
-        "input": "(() => { const head = { val: 1, next: { val: 2, next: null } }; return hasCycle(head) })()",
-        "expected": false,
-        "timeoutMs": 2000
+        "description": "示例 2",
+        "input": "{\"args\":\"head) })(\"}",
+        "expected": false
       },
       {
         "id": "case-3",
         "type": "basic",
-        "description": "基础用例 3",
-        "input": "hasCycle(null)",
-        "expected": false,
-        "timeoutMs": 2000
+        "description": "示例 3",
+        "input": "{\"args\":\"null\"}",
+        "expected": false
       }
     ],
     "fullCases": [
       {
         "id": "case-1",
         "type": "basic",
-        "description": "基础用例 1",
-        "input": "(() => { const node2 = { val: 2, next: null }; const head = { val: 1, next: node2 }; node2.next = head; return hasCycle(head) })()",
-        "expected": true,
-        "timeoutMs": 2000
+        "description": "示例 1",
+        "input": "{\"args\":\"head) })(\"}",
+        "expected": true
       },
       {
         "id": "case-2",
         "type": "basic",
-        "description": "基础用例 2",
-        "input": "(() => { const head = { val: 1, next: { val: 2, next: null } }; return hasCycle(head) })()",
-        "expected": false,
-        "timeoutMs": 2000
+        "description": "示例 2",
+        "input": "{\"args\":\"head) })(\"}",
+        "expected": false
       },
       {
         "id": "case-3",
         "type": "basic",
-        "description": "基础用例 3",
-        "input": "hasCycle(null)",
-        "expected": false,
-        "timeoutMs": 2000
+        "description": "示例 3",
+        "input": "{\"args\":\"null\"}",
+        "expected": false
       },
       {
-        "id": "case-4",
+        "id": "hidden-1",
         "type": "edge",
-        "description": "边界用例 1",
-        "input": "(() => { const node = { val: 1, next: null }; node.next = node; return hasCycle(node) })()",
-        "expected": true,
-        "timeoutMs": 2000
+        "description": "隐藏 1",
+        "input": "{\"args\":\"node) })(\"}",
+        "expected": true
       },
       {
-        "id": "case-5",
-        "type": "exception",
-        "description": "异常用例 1",
-        "input": "(() => { const nodes = Array.from({ length: 300 }, (_, index) => ({ val: index, next: null })); for (let index = 0; index < nodes.length - 1; index += 1) nodes[index].next = nodes[index + 1]; return hasCycle(nodes[0]) })()",
-        "expected": false,
-        "timeoutMs": 2000
+        "id": "hidden-2",
+        "type": "edge",
+        "description": "隐藏 2",
+        "input": "{\"args\":\"{ length: 300 }, (_, index) => ({ val: index, next: null })); for (let index = 0; index < nodes.length - 1; index += 1) nodes[index].next = nodes[index + 1]; return hasCycle(nodes[0]) })(\"}",
+        "expected": false
       }
     ],
+    "isComponent": false,
     "sourcePath": "problems/linkedlist/hasCycle.js",
     "testPath": "problems/linkedlist/hasCycle_test.js"
   },
@@ -976,93 +1540,134 @@ export const problems: ProblemRecord[] = [
     "returnText": "返回合并后的链表头节点。",
     "template": "function mergeTwoLists(list1, list2) {\n\n}\n\nfunction mergeTwoListsRecursive(list1, list2) {\n\n}",
     "solutionCode": "function mergeTwoLists(list1, list2) {\n  const dummy = { val: 0, next: null };\n  let tail = dummy;\n\n  while (list1 !== null && list2 !== null) {\n    if (list1.val <= list2.val) {\n      tail.next = list1;\n      list1 = list1.next;\n    } else {\n      tail.next = list2;\n      list2 = list2.next;\n    }\n    tail = tail.next;\n  }\n\n  tail.next = list1 !== null ? list1 : list2;\n\n  return dummy.next;\n}\n\n/**\n * @description 使用递归方式合并两个升序链表。函数需要在每一层递归中比较两个头节点，把较小节点作为当前结果头节点，再把剩余部分继续递归合并。实现时同样要处理任意一条链表为空、两边长度不同，以及递归终止后直接返回剩余链表的情况。\n * @approach\n * 1. 递归出口是其中一条链表为空，此时直接返回另一条链表。\n * 2. 比较两个头节点的值，较小节点作为当前层返回结果的头节点。\n * 3. 较小节点的 next 指向“剩余节点继续合并”的递归结果。\n * @params\n * list1：第一条升序链表的头节点。\n * list2：第二条升序链表的头节点。\n * @return\n * 返回合并后的链表头节点。\n */\nfunction mergeTwoListsRecursive(list1, list2) {\n  if (!list1) {\n    return list2;\n  }\n\n  if (!list2) {\n    return list1;\n  }\n\n  if (list1.val <= list2.val) {\n    list1.next = mergeTwoListsRecursive(list1.next, list2);\n    return list1;\n  }\n\n  list2.next = mergeTwoListsRecursive(list1, list2.next);\n  return list2;\n}",
+    "testCases": {
+      "examples": [
+        {
+          "input": {
+            "args": "l1, l2); const values = []; let current = head; while (current) { values.push(current.val); current = current.next } return values })("
+          },
+          "expected": [
+            1,
+            2,
+            3,
+            4
+          ]
+        },
+        {
+          "input": {
+            "args": "null, { val: 1, next: null }); const values = []; let current = head; while (current) { values.push(current.val); current = current.next } return values })("
+          },
+          "expected": [
+            1
+          ]
+        },
+        {
+          "input": {
+            "args": "null, null); return head })("
+          },
+          "expected": null
+        }
+      ],
+      "hidden": [
+        {
+          "input": {
+            "args": "l1, l2); const values = []; let current = head; while (current) { values.push(current.val); current = current.next } return values })("
+          },
+          "expected": [
+            1,
+            1,
+            1,
+            2
+          ]
+        },
+        {
+          "input": {
+            "args": "let index = start; index < 200; index += 2) { tail.next = { val: index, next: null }; tail = tail.next } return dummy.next }; const head = mergeTwoLists(build(0), build(1)); let current = head; let count = 0; while (current) { count += 1; current = current.next } return count })("
+          },
+          "expected": 200
+        }
+      ]
+    },
     "basicCases": [
       {
         "id": "case-1",
         "type": "basic",
-        "description": "基础用例 1",
-        "input": "(() => { const l1 = { val: 1, next: { val: 3, next: null } }; const l2 = { val: 2, next: { val: 4, next: null } }; const head = mergeTwoLists(l1, l2); const values = []; let current = head; while (current) { values.push(current.val); current = current.next } return values })()",
+        "description": "示例 1",
+        "input": "{\"args\":\"l1, l2); const values = []; let current = head; while (current) { values.push(current.val); current = current.next } return values })(\"}",
         "expected": [
           1,
           2,
           3,
           4
-        ],
-        "timeoutMs": 2000
+        ]
       },
       {
         "id": "case-2",
         "type": "basic",
-        "description": "基础用例 2",
-        "input": "(() => { const head = mergeTwoLists(null, { val: 1, next: null }); const values = []; let current = head; while (current) { values.push(current.val); current = current.next } return values })()",
+        "description": "示例 2",
+        "input": "{\"args\":\"null, { val: 1, next: null }); const values = []; let current = head; while (current) { values.push(current.val); current = current.next } return values })(\"}",
         "expected": [
           1
-        ],
-        "timeoutMs": 2000
+        ]
       },
       {
         "id": "case-3",
         "type": "basic",
-        "description": "基础用例 3",
-        "input": "(() => { const head = mergeTwoLists(null, null); return head })()",
-        "expected": null,
-        "timeoutMs": 2000
+        "description": "示例 3",
+        "input": "{\"args\":\"null, null); return head })(\"}",
+        "expected": null
       }
     ],
     "fullCases": [
       {
         "id": "case-1",
         "type": "basic",
-        "description": "基础用例 1",
-        "input": "(() => { const l1 = { val: 1, next: { val: 3, next: null } }; const l2 = { val: 2, next: { val: 4, next: null } }; const head = mergeTwoLists(l1, l2); const values = []; let current = head; while (current) { values.push(current.val); current = current.next } return values })()",
+        "description": "示例 1",
+        "input": "{\"args\":\"l1, l2); const values = []; let current = head; while (current) { values.push(current.val); current = current.next } return values })(\"}",
         "expected": [
           1,
           2,
           3,
           4
-        ],
-        "timeoutMs": 2000
+        ]
       },
       {
         "id": "case-2",
         "type": "basic",
-        "description": "基础用例 2",
-        "input": "(() => { const head = mergeTwoLists(null, { val: 1, next: null }); const values = []; let current = head; while (current) { values.push(current.val); current = current.next } return values })()",
+        "description": "示例 2",
+        "input": "{\"args\":\"null, { val: 1, next: null }); const values = []; let current = head; while (current) { values.push(current.val); current = current.next } return values })(\"}",
         "expected": [
           1
-        ],
-        "timeoutMs": 2000
+        ]
       },
       {
         "id": "case-3",
         "type": "basic",
-        "description": "基础用例 3",
-        "input": "(() => { const head = mergeTwoLists(null, null); return head })()",
-        "expected": null,
-        "timeoutMs": 2000
+        "description": "示例 3",
+        "input": "{\"args\":\"null, null); return head })(\"}",
+        "expected": null
       },
       {
-        "id": "case-4",
+        "id": "hidden-1",
         "type": "edge",
-        "description": "边界用例 1",
-        "input": "(() => { const l1 = { val: 1, next: { val: 1, next: null } }; const l2 = { val: 1, next: { val: 2, next: null } }; const head = mergeTwoLists(l1, l2); const values = []; let current = head; while (current) { values.push(current.val); current = current.next } return values })()",
+        "description": "隐藏 1",
+        "input": "{\"args\":\"l1, l2); const values = []; let current = head; while (current) { values.push(current.val); current = current.next } return values })(\"}",
         "expected": [
           1,
           1,
           1,
           2
-        ],
-        "timeoutMs": 2000
+        ]
       },
       {
-        "id": "case-5",
-        "type": "exception",
-        "description": "异常用例 1",
-        "input": "(() => { const build = (start) => { let dummy = { val: 0, next: null }; let tail = dummy; for (let index = start; index < 200; index += 2) { tail.next = { val: index, next: null }; tail = tail.next } return dummy.next }; const head = mergeTwoLists(build(0), build(1)); let current = head; let count = 0; while (current) { count += 1; current = current.next } return count })()",
-        "expected": 200,
-        "timeoutMs": 2000
+        "id": "hidden-2",
+        "type": "edge",
+        "description": "隐藏 2",
+        "input": "{\"args\":\"let index = start; index < 200; index += 2) { tail.next = { val: index, next: null }; tail = tail.next } return dummy.next }; const head = mergeTwoLists(build(0), build(1)); let current = head; let count = 0; while (current) { count += 1; current = current.next } return count })(\"}",
+        "expected": 200
       }
     ],
+    "isComponent": false,
     "sourcePath": "problems/linkedlist/mergeTwoLists.js",
     "testPath": "problems/linkedlist/mergeTwoLists_test.js"
   },
@@ -1082,82 +1687,115 @@ export const problems: ProblemRecord[] = [
     "returnText": "返回反转后的链表头节点。",
     "template": "function reverseList(head) {\n\n}\n\nfunction reverseListRecursive(head) {\n\n}",
     "solutionCode": "function reverseList(head) {\n  let prev = null;\n  let current = head;\n\n  while (current !== null) {\n    const next = current.next;\n    current.next = prev;\n    prev = current;\n    current = next;\n  }\n\n  return prev;\n}\n\n/**\n * @description 使用递归方式反转单链表。函数需要先让更靠后的子链表完成反转，再在回溯阶段把当前节点接到已经反转好的链表尾部，最终返回新的头节点。实现时要处理空链表和单节点链表，并在回溯时断开旧的 next 指向，避免形成环。\n * @approach\n * 1. 递归出口是空节点或单节点，此时它本身就是反转后的头节点。\n * 2. 先递归反转 head.next 后面的链表，拿到新的头节点。\n * 3. 回溯时把当前节点挂到原下一个节点的后面，再断开当前节点旧的 next 指向。\n * @params\n * head：待反转链表的头节点。\n * @return\n * 返回反转后的链表头节点。\n */\nfunction reverseListRecursive(head) {\n  if (!head || !head.next) {\n    return head;\n  }\n\n  const newHead = reverseListRecursive(head.next);\n  head.next.next = head;\n  head.next = null;\n\n  return newHead;\n}",
+    "testCases": {
+      "examples": [
+        {
+          "input": {
+            "args": "head); const values = []; let current = reversed; while (current) { values.push(current.val); current = current.next } return values })("
+          },
+          "expected": [
+            3,
+            2,
+            1
+          ]
+        },
+        {
+          "input": {
+            "args": "null"
+          },
+          "expected": null
+        },
+        {
+          "input": {
+            "args": "head).val })("
+          },
+          "expected": 9
+        }
+      ],
+      "hidden": [
+        {
+          "input": {
+            "args": "head); return reversed.next.val })("
+          },
+          "expected": 1
+        },
+        {
+          "input": {
+            "args": "let index = 0; index < 200; index += 1) head = { val: index, next: head }; const reversed = reverseList(head); let current = reversed; let count = 0; while (current) { count += 1; current = current.next } return count })("
+          },
+          "expected": 200
+        }
+      ]
+    },
     "basicCases": [
       {
         "id": "case-1",
         "type": "basic",
-        "description": "基础用例 1",
-        "input": "(() => { const head = { val: 1, next: { val: 2, next: { val: 3, next: null } } }; const reversed = reverseList(head); const values = []; let current = reversed; while (current) { values.push(current.val); current = current.next } return values })()",
+        "description": "示例 1",
+        "input": "{\"args\":\"head); const values = []; let current = reversed; while (current) { values.push(current.val); current = current.next } return values })(\"}",
         "expected": [
           3,
           2,
           1
-        ],
-        "timeoutMs": 2000
+        ]
       },
       {
         "id": "case-2",
         "type": "basic",
-        "description": "基础用例 2",
-        "input": "reverseList(null)",
-        "expected": null,
-        "timeoutMs": 2000
+        "description": "示例 2",
+        "input": "{\"args\":\"null\"}",
+        "expected": null
       },
       {
         "id": "case-3",
         "type": "basic",
-        "description": "基础用例 3",
-        "input": "(() => { const head = { val: 9, next: null }; return reverseList(head).val })()",
-        "expected": 9,
-        "timeoutMs": 2000
+        "description": "示例 3",
+        "input": "{\"args\":\"head).val })(\"}",
+        "expected": 9
       }
     ],
     "fullCases": [
       {
         "id": "case-1",
         "type": "basic",
-        "description": "基础用例 1",
-        "input": "(() => { const head = { val: 1, next: { val: 2, next: { val: 3, next: null } } }; const reversed = reverseList(head); const values = []; let current = reversed; while (current) { values.push(current.val); current = current.next } return values })()",
+        "description": "示例 1",
+        "input": "{\"args\":\"head); const values = []; let current = reversed; while (current) { values.push(current.val); current = current.next } return values })(\"}",
         "expected": [
           3,
           2,
           1
-        ],
-        "timeoutMs": 2000
+        ]
       },
       {
         "id": "case-2",
         "type": "basic",
-        "description": "基础用例 2",
-        "input": "reverseList(null)",
-        "expected": null,
-        "timeoutMs": 2000
+        "description": "示例 2",
+        "input": "{\"args\":\"null\"}",
+        "expected": null
       },
       {
         "id": "case-3",
         "type": "basic",
-        "description": "基础用例 3",
-        "input": "(() => { const head = { val: 9, next: null }; return reverseList(head).val })()",
-        "expected": 9,
-        "timeoutMs": 2000
+        "description": "示例 3",
+        "input": "{\"args\":\"head).val })(\"}",
+        "expected": 9
       },
       {
-        "id": "case-4",
+        "id": "hidden-1",
         "type": "edge",
-        "description": "边界用例 1",
-        "input": "(() => { const head = { val: 1, next: { val: 2, next: null } }; const reversed = reverseList(head); return reversed.next.val })()",
-        "expected": 1,
-        "timeoutMs": 2000
+        "description": "隐藏 1",
+        "input": "{\"args\":\"head); return reversed.next.val })(\"}",
+        "expected": 1
       },
       {
-        "id": "case-5",
-        "type": "exception",
-        "description": "异常用例 1",
-        "input": "(() => { let head = null; for (let index = 0; index < 200; index += 1) head = { val: index, next: head }; const reversed = reverseList(head); let current = reversed; let count = 0; while (current) { count += 1; current = current.next } return count })()",
-        "expected": 200,
-        "timeoutMs": 2000
+        "id": "hidden-2",
+        "type": "edge",
+        "description": "隐藏 2",
+        "input": "{\"args\":\"let index = 0; index < 200; index += 1) head = { val: index, next: head }; const reversed = reverseList(head); let current = reversed; let count = 0; while (current) { count += 1; current = current.next } return count })(\"}",
+        "expected": 200
       }
     ],
+    "isComponent": false,
     "sourcePath": "problems/linkedlist/reverseList.js",
     "testPath": "problems/linkedlist/reverseList_test.js"
   },
@@ -1177,74 +1815,199 @@ export const problems: ProblemRecord[] = [
     "returnText": "返回一个与原值结构等价但引用独立的新结果；基础类型会直接返回自身。",
     "template": "function deepClone(obj, cache = new WeakMap()) {\n\n}\n\nconst deepCopy = deepClone;",
     "solutionCode": "function deepClone(obj, cache = new WeakMap()) {\n  // 1. 基础类型处理：null 或非对象直接返回\n  if (obj === null || typeof obj !== \"object\") return obj;\n\n  // 2. 特殊对象处理：Date 和 RegExp 使用构造函数创建新实例\n  if (obj instanceof Date) return new Date(obj.getTime());\n  // RegExp 对象的属性（如 lastIndex）也需要复制，直接使用构造函数创建新实例\n  if (obj instanceof RegExp) return new RegExp(obj);\n\n  // 3. 循环引用处理：使用 WeakMap 缓存已拷贝的对象\n  if (cache.has(obj)) return cache.get(obj);\n\n  // 4. 递归拷贝：遍历对象所有键（包括 Symbol），递归深拷贝每个值\n  const clone = Array.isArray(obj) ? [] : {};\n  cache.set(obj, clone);\n\n  // 使用 Reflect.ownKeys 获取对象的所有键（包括 Symbol），确保完整拷贝\n  Reflect.ownKeys(obj).forEach((key) => {\n    clone[key] = deepClone(obj[key], cache);\n  });\n\n  return clone;\n}\n\nconst deepCopy = deepClone;",
+    "testCases": {
+      "examples": [
+        {
+          "input": {
+            "obj": {
+              "a": 1,
+              "b": {
+                "c": 2
+              }
+            }
+          },
+          "expected": {
+            "a": 1,
+            "b": {
+              "c": 2
+            }
+          }
+        },
+        {
+          "input": {
+            "obj": [
+              1,
+              [
+                2,
+                3
+              ],
+              {
+                "a": 4
+              }
+            ]
+          },
+          "expected": [
+            1,
+            [
+              2,
+              3
+            ],
+            {
+              "a": 4
+            }
+          ]
+        },
+        {
+          "input": {
+            "obj": {
+              "date": "new Date()"
+            }
+          },
+          "expected": {
+            "date": "[Date]"
+          }
+        }
+      ],
+      "hidden": [
+        {
+          "input": {
+            "obj": {
+              "a": 1,
+              "self": null
+            }
+          },
+          "expected": {
+            "a": 1,
+            "self": null
+          }
+        },
+        {
+          "input": {
+            "obj": "{ list: Array(100).fill(0).map((_, i) => ({ index: i })) }"
+          },
+          "expected": {
+            "list": "Array(100).fill(0).map((_, i) => ({ index: i }))"
+          }
+        },
+        {
+          "input": {
+            "obj": {
+              "regex": "/abc/gi"
+            }
+          },
+          "expected": {
+            "regex": "/abc/gi"
+          }
+        }
+      ]
+    },
     "basicCases": [
       {
         "id": "case-1",
         "type": "basic",
-        "description": "基础用例 1",
-        "input": "(() => { const source = { a: 1, nested: { b: 2 } }; const clone = deepCopy(source); clone.nested.b = 3; return source.nested.b })()",
-        "expected": 2,
-        "timeoutMs": 2000
+        "description": "示例 1",
+        "input": "{\"obj\":{\"a\":1,\"b\":{\"c\":2}}}",
+        "expected": {
+          "a": 1,
+          "b": {
+            "c": 2
+          }
+        }
       },
       {
         "id": "case-2",
         "type": "basic",
-        "description": "基础用例 2",
-        "input": "(() => { const source = [1, { value: 2 }]; const clone = deepCopy(source); clone[1].value = 4; return source[1].value })()",
-        "expected": 2,
-        "timeoutMs": 2000
+        "description": "示例 2",
+        "input": "{\"obj\":[1,[2,3],{\"a\":4}]}",
+        "expected": [
+          1,
+          [
+            2,
+            3
+          ],
+          {
+            "a": 4
+          }
+        ]
       },
       {
         "id": "case-3",
         "type": "basic",
-        "description": "基础用例 3",
-        "input": "(() => { const source = { date: new Date(\"2024-01-01T00:00:00.000Z\") }; const clone = deepCopy(source); return clone.date instanceof Date })()",
-        "expected": true,
-        "timeoutMs": 2000
+        "description": "示例 3",
+        "input": "{\"obj\":{\"date\":\"new Date()\"}}",
+        "expected": {
+          "date": "[Date]"
+        }
       }
     ],
     "fullCases": [
       {
         "id": "case-1",
         "type": "basic",
-        "description": "基础用例 1",
-        "input": "(() => { const source = { a: 1, nested: { b: 2 } }; const clone = deepCopy(source); clone.nested.b = 3; return source.nested.b })()",
-        "expected": 2,
-        "timeoutMs": 2000
+        "description": "示例 1",
+        "input": "{\"obj\":{\"a\":1,\"b\":{\"c\":2}}}",
+        "expected": {
+          "a": 1,
+          "b": {
+            "c": 2
+          }
+        }
       },
       {
         "id": "case-2",
         "type": "basic",
-        "description": "基础用例 2",
-        "input": "(() => { const source = [1, { value: 2 }]; const clone = deepCopy(source); clone[1].value = 4; return source[1].value })()",
-        "expected": 2,
-        "timeoutMs": 2000
+        "description": "示例 2",
+        "input": "{\"obj\":[1,[2,3],{\"a\":4}]}",
+        "expected": [
+          1,
+          [
+            2,
+            3
+          ],
+          {
+            "a": 4
+          }
+        ]
       },
       {
         "id": "case-3",
         "type": "basic",
-        "description": "基础用例 3",
-        "input": "(() => { const source = { date: new Date(\"2024-01-01T00:00:00.000Z\") }; const clone = deepCopy(source); return clone.date instanceof Date })()",
-        "expected": true,
-        "timeoutMs": 2000
+        "description": "示例 3",
+        "input": "{\"obj\":{\"date\":\"new Date()\"}}",
+        "expected": {
+          "date": "[Date]"
+        }
       },
       {
-        "id": "case-4",
+        "id": "hidden-1",
         "type": "edge",
-        "description": "边界用例 1",
-        "input": "(() => { const source = { a: 1 }; source.self = source; const clone = deepCopy(source); return clone !== source && clone.self === clone })()",
-        "expected": true,
-        "timeoutMs": 2000
+        "description": "隐藏 1",
+        "input": "{\"obj\":{\"a\":1,\"self\":null}}",
+        "expected": {
+          "a": 1,
+          "self": null
+        }
       },
       {
-        "id": "case-5",
-        "type": "exception",
-        "description": "异常用例 1",
-        "input": "(() => { const source = { list: Array.from({ length: 200 }, (_, index) => ({ index })) }; const clone = deepCopy(source); clone.list[0].index = 999; return source.list[0].index })()",
-        "expected": 0,
-        "timeoutMs": 2000
+        "id": "hidden-2",
+        "type": "edge",
+        "description": "隐藏 2",
+        "input": "{\"obj\":\"{ list: Array(100).fill(0).map((_, i) => ({ index: i })) }\"}",
+        "expected": {
+          "list": "Array(100).fill(0).map((_, i) => ({ index: i }))"
+        }
+      },
+      {
+        "id": "hidden-3",
+        "type": "edge",
+        "description": "隐藏 3",
+        "input": "{\"obj\":{\"regex\":\"/abc/gi\"}}",
+        "expected": {
+          "regex": "/abc/gi"
+        }
       }
     ],
+    "isComponent": false,
     "sourcePath": "problems/object/deep_copy.js",
     "testPath": "problems/object/deep_copy_test.js"
   },
@@ -1264,74 +2027,103 @@ export const problems: ProblemRecord[] = [
     "returnText": "如果 obj 的原型链上存在 constructor.prototype，则返回 true；否则返回 false。",
     "template": "function myInstanceof(obj, constructor) {\n\n}",
     "solutionCode": "function myInstanceof(obj, constructor) {\n  if (\n    obj == null ||\n    (typeof obj !== \"object\" && typeof obj !== \"function\") ||\n    typeof constructor !== \"function\"\n  ) {\n    return false;\n  }\n\n  let proto = Object.getPrototypeOf(obj);\n  const prototype = constructor.prototype;\n\n  while (proto !== null) {\n    if (proto === prototype) {\n      return true;\n    }\n    proto = Object.getPrototypeOf(proto);\n  }\n\n  return false;\n}",
+    "testCases": {
+      "examples": [
+        {
+          "input": {
+            "args": ") {} const person = new Person(); return myInstanceof(person, Person) })("
+          },
+          "expected": true
+        },
+        {
+          "input": {
+            "args": ") {} function Animal() {} const person = new Person(); return myInstanceof(person, Animal) })("
+          },
+          "expected": false
+        },
+        {
+          "input": {
+            "args": "'text', String"
+          },
+          "expected": false
+        }
+      ],
+      "hidden": [
+        {
+          "input": {
+            "args": "function demo() {}, Function"
+          },
+          "expected": true
+        },
+        {
+          "input": {
+            "args": "{}, {}"
+          },
+          "expected": false
+        }
+      ]
+    },
     "basicCases": [
       {
         "id": "case-1",
         "type": "basic",
-        "description": "基础用例 1",
-        "input": "(() => { function Person() {} const person = new Person(); return myInstanceof(person, Person) })()",
-        "expected": true,
-        "timeoutMs": 2000
+        "description": "示例 1",
+        "input": "{\"args\":\") {} const person = new Person(); return myInstanceof(person, Person) })(\"}",
+        "expected": true
       },
       {
         "id": "case-2",
         "type": "basic",
-        "description": "基础用例 2",
-        "input": "(() => { function Person() {} function Animal() {} const person = new Person(); return myInstanceof(person, Animal) })()",
-        "expected": false,
-        "timeoutMs": 2000
+        "description": "示例 2",
+        "input": "{\"args\":\") {} function Animal() {} const person = new Person(); return myInstanceof(person, Animal) })(\"}",
+        "expected": false
       },
       {
         "id": "case-3",
         "type": "basic",
-        "description": "基础用例 3",
-        "input": "myInstanceof('text', String)",
-        "expected": false,
-        "timeoutMs": 2000
+        "description": "示例 3",
+        "input": "{\"args\":\"'text', String\"}",
+        "expected": false
       }
     ],
     "fullCases": [
       {
         "id": "case-1",
         "type": "basic",
-        "description": "基础用例 1",
-        "input": "(() => { function Person() {} const person = new Person(); return myInstanceof(person, Person) })()",
-        "expected": true,
-        "timeoutMs": 2000
+        "description": "示例 1",
+        "input": "{\"args\":\") {} const person = new Person(); return myInstanceof(person, Person) })(\"}",
+        "expected": true
       },
       {
         "id": "case-2",
         "type": "basic",
-        "description": "基础用例 2",
-        "input": "(() => { function Person() {} function Animal() {} const person = new Person(); return myInstanceof(person, Animal) })()",
-        "expected": false,
-        "timeoutMs": 2000
+        "description": "示例 2",
+        "input": "{\"args\":\") {} function Animal() {} const person = new Person(); return myInstanceof(person, Animal) })(\"}",
+        "expected": false
       },
       {
         "id": "case-3",
         "type": "basic",
-        "description": "基础用例 3",
-        "input": "myInstanceof('text', String)",
-        "expected": false,
-        "timeoutMs": 2000
+        "description": "示例 3",
+        "input": "{\"args\":\"'text', String\"}",
+        "expected": false
       },
       {
-        "id": "case-4",
+        "id": "hidden-1",
         "type": "edge",
-        "description": "边界用例 1",
-        "input": "myInstanceof(function demo() {}, Function)",
-        "expected": true,
-        "timeoutMs": 2000
+        "description": "隐藏 1",
+        "input": "{\"args\":\"function demo() {}, Function\"}",
+        "expected": true
       },
       {
-        "id": "case-5",
-        "type": "exception",
-        "description": "异常用例 1",
-        "input": "myInstanceof({}, {})",
-        "expected": false,
-        "timeoutMs": 2000
+        "id": "hidden-2",
+        "type": "edge",
+        "description": "隐藏 2",
+        "input": "{\"args\":\"{}, {}\"}",
+        "expected": false
       }
     ],
+    "isComponent": false,
     "sourcePath": "problems/object/instanceof.js",
     "testPath": "problems/object/instanceof_test.js"
   },
@@ -1351,74 +2143,103 @@ export const problems: ProblemRecord[] = [
     "returnText": "返回按照 new 语义创建出来的实例；如果构造函数主动返回对象或函数，则返回该返回值。",
     "template": "function myNew(constructor, ...args) {\n\n}",
     "solutionCode": "function myNew(constructor, ...args) {\n  // 1. 输入校验：constructor 必须是函数\n  if (typeof constructor !== \"function\") {\n    throw new TypeError(\"Constructor must be a function\");\n  }\n\n  // 2. 创建空对象：使用 Object.create 创建以构造函数原型为原型的对象\n  const obj = Object.create(constructor.prototype);\n  // 3. 绑定 this：使用 apply 调用构造函数，将新对象作为 this\n  const result = constructor.apply(obj, args);\n\n  return result !== null &&\n    (typeof result === \"object\" || typeof result === \"function\")\n    ? result\n    : obj;\n}",
+    "testCases": {
+      "examples": [
+        {
+          "input": {
+            "args": "name) { this.name = name } Person.prototype.getName = function () { return this.name }; return myNew(Person, 'Tom').getName() })("
+          },
+          "expected": "Tom"
+        },
+        {
+          "input": {
+            "args": ") { this.value = 1; return { value: 2 } } return myNew(Factory).value })("
+          },
+          "expected": 2
+        },
+        {
+          "input": {
+            "args": ") { this.value = 3; return 4 } return myNew(Factory).value })("
+          },
+          "expected": 3
+        }
+      ],
+      "hidden": [
+        {
+          "input": {
+            "args": "null) } catch (error) { return error instanceof TypeError } })("
+          },
+          "expected": true
+        },
+        {
+          "input": {
+            "args": "a, b) { this.total = a + b } return myNew(Sum, 3, 4).total })("
+          },
+          "expected": 7
+        }
+      ]
+    },
     "basicCases": [
       {
         "id": "case-1",
         "type": "basic",
-        "description": "基础用例 1",
-        "input": "(() => { function Person(name) { this.name = name } Person.prototype.getName = function () { return this.name }; return myNew(Person, 'Tom').getName() })()",
-        "expected": "Tom",
-        "timeoutMs": 2000
+        "description": "示例 1",
+        "input": "{\"args\":\"name) { this.name = name } Person.prototype.getName = function () { return this.name }; return myNew(Person, 'Tom').getName() })(\"}",
+        "expected": "Tom"
       },
       {
         "id": "case-2",
         "type": "basic",
-        "description": "基础用例 2",
-        "input": "(() => { function Factory() { this.value = 1; return { value: 2 } } return myNew(Factory).value })()",
-        "expected": 2,
-        "timeoutMs": 2000
+        "description": "示例 2",
+        "input": "{\"args\":\") { this.value = 1; return { value: 2 } } return myNew(Factory).value })(\"}",
+        "expected": 2
       },
       {
         "id": "case-3",
         "type": "basic",
-        "description": "基础用例 3",
-        "input": "(() => { function Factory() { this.value = 3; return 4 } return myNew(Factory).value })()",
-        "expected": 3,
-        "timeoutMs": 2000
+        "description": "示例 3",
+        "input": "{\"args\":\") { this.value = 3; return 4 } return myNew(Factory).value })(\"}",
+        "expected": 3
       }
     ],
     "fullCases": [
       {
         "id": "case-1",
         "type": "basic",
-        "description": "基础用例 1",
-        "input": "(() => { function Person(name) { this.name = name } Person.prototype.getName = function () { return this.name }; return myNew(Person, 'Tom').getName() })()",
-        "expected": "Tom",
-        "timeoutMs": 2000
+        "description": "示例 1",
+        "input": "{\"args\":\"name) { this.name = name } Person.prototype.getName = function () { return this.name }; return myNew(Person, 'Tom').getName() })(\"}",
+        "expected": "Tom"
       },
       {
         "id": "case-2",
         "type": "basic",
-        "description": "基础用例 2",
-        "input": "(() => { function Factory() { this.value = 1; return { value: 2 } } return myNew(Factory).value })()",
-        "expected": 2,
-        "timeoutMs": 2000
+        "description": "示例 2",
+        "input": "{\"args\":\") { this.value = 1; return { value: 2 } } return myNew(Factory).value })(\"}",
+        "expected": 2
       },
       {
         "id": "case-3",
         "type": "basic",
-        "description": "基础用例 3",
-        "input": "(() => { function Factory() { this.value = 3; return 4 } return myNew(Factory).value })()",
-        "expected": 3,
-        "timeoutMs": 2000
+        "description": "示例 3",
+        "input": "{\"args\":\") { this.value = 3; return 4 } return myNew(Factory).value })(\"}",
+        "expected": 3
       },
       {
-        "id": "case-4",
+        "id": "hidden-1",
         "type": "edge",
-        "description": "边界用例 1",
-        "input": "(() => { try { myNew(null) } catch (error) { return error instanceof TypeError } })()",
-        "expected": true,
-        "timeoutMs": 2000
+        "description": "隐藏 1",
+        "input": "{\"args\":\"null) } catch (error) { return error instanceof TypeError } })(\"}",
+        "expected": true
       },
       {
-        "id": "case-5",
-        "type": "exception",
-        "description": "异常用例 1",
-        "input": "(() => { function Sum(a, b) { this.total = a + b } return myNew(Sum, 3, 4).total })()",
-        "expected": 7,
-        "timeoutMs": 2000
+        "id": "hidden-2",
+        "type": "edge",
+        "description": "隐藏 2",
+        "input": "{\"args\":\"a, b) { this.total = a + b } return myNew(Sum, 3, 4).total })(\"}",
+        "expected": 7
       }
     ],
+    "isComponent": false,
     "sourcePath": "problems/object/new.js",
     "testPath": "problems/object/new_test.js"
   },
@@ -1438,74 +2259,103 @@ export const problems: ProblemRecord[] = [
     "returnText": "返回一个可继续链式调用的 MyPromise 实例；then 也会返回新的 MyPromise。",
     "template": "class MyPromise {\n  \n  constructor(executor) {\n  \n}\n\n  \n  then(onFulfilled, onRejected) {\n  \n}\n\n  catch(onRejected) {\n  \n}\n\n  finally(callback) {\n  \n}\n\n  static resolve(value) {\n  \n}\n\n  static reject(reason) {\n  \n}\n\n}\n\nfunction resolvePromise(promise2, x, resolve, reject) {\n\n}",
     "solutionCode": "class MyPromise {\n  /**\n   * @param {Function} executor - 执行器函数\n   */\n  constructor(executor) {\n    this.state = \"pending\";\n    this.value = undefined;\n    this.reason = undefined;\n    this.onFulfilledCallbacks = [];\n    this.onRejectedCallbacks = [];\n\n    const resolve = (value) => {\n      if (this.state === \"pending\") {\n        this.state = \"fulfilled\";\n        this.value = value;\n        this.onFulfilledCallbacks.forEach((fn) => fn());\n      }\n    };\n\n    const reject = (reason) => {\n      if (this.state === \"pending\") {\n        this.state = \"rejected\";\n        this.reason = reason;\n        this.onRejectedCallbacks.forEach((fn) => fn());\n      }\n    };\n\n    try {\n      executor(resolve, reject);\n    } catch (error) {\n      reject(error);\n    }\n  }\n\n  /**\n   * @param {Function} [onFulfilled] - 成功回调\n   * @param {Function} [onRejected] - 失败回调\n   * @returns {MyPromise} 新 Promise 支持链式调用\n   */\n  then(onFulfilled, onRejected) {\n    onFulfilled =\n      typeof onFulfilled === \"function\" ? onFulfilled : (value) => value;\n    onRejected =\n      typeof onRejected === \"function\"\n        ? onRejected\n        : (reason) => {\n            throw reason;\n          };\n\n    const promise2 = new MyPromise((resolve, reject) => {\n      if (this.state === \"fulfilled\") {\n        setTimeout(() => {\n          try {\n            const x = onFulfilled(this.value);\n            resolvePromise(promise2, x, resolve, reject);\n          } catch (error) {\n            reject(error);\n          }\n        }, 0);\n      }\n\n      if (this.state === \"rejected\") {\n        setTimeout(() => {\n          try {\n            const x = onRejected(this.reason);\n            resolvePromise(promise2, x, resolve, reject);\n          } catch (error) {\n            reject(error);\n          }\n        }, 0);\n      }\n\n      if (this.state === \"pending\") {\n        this.onFulfilledCallbacks.push(() => {\n          setTimeout(() => {\n            try {\n              const x = onFulfilled(this.value);\n              resolvePromise(promise2, x, resolve, reject);\n            } catch (error) {\n              reject(error);\n            }\n          }, 0);\n        });\n\n        this.onRejectedCallbacks.push(() => {\n          setTimeout(() => {\n            try {\n              const x = onRejected(this.reason);\n              resolvePromise(promise2, x, resolve, reject);\n            } catch (error) {\n              reject(error);\n            }\n          }, 0);\n        });\n      }\n    });\n\n    return promise2;\n  }\n\n  catch(onRejected) {\n    return this.then(null, onRejected);\n  }\n\n  finally(callback) {\n    return this.then(\n      (value) => MyPromise.resolve(callback()).then(() => value),\n      (reason) =>\n        MyPromise.resolve(callback()).then(() => {\n          throw reason;\n        }),\n    );\n  }\n\n  static resolve(value) {\n    return new MyPromise((resolve) => resolve(value));\n  }\n\n  static reject(reason) {\n    return new MyPromise((_, reject) => reject(reason));\n  }\n}\n\nfunction resolvePromise(promise2, x, resolve, reject) {\n  if (promise2 === x) {\n    reject(new TypeError(\"Chaining cycle detected for promise\"));\n    return;\n  }\n\n  let called = false;\n  if (x != null && (typeof x === \"object\" || typeof x === \"function\")) {\n    try {\n      const then = x.then;\n      if (typeof then === \"function\") {\n        then.call(\n          x,\n          (y) => {\n            if (called) return;\n            called = true;\n            resolvePromise(promise2, y, resolve, reject);\n          },\n          (r) => {\n            if (called) return;\n            called = true;\n            reject(r);\n          },\n        );\n      } else {\n        resolve(x);\n      }\n    } catch (error) {\n      if (called) return;\n      called = true;\n      reject(error);\n    }\n  } else {\n    resolve(x);\n  }\n}",
+    "testCases": {
+      "examples": [
+        {
+          "input": {
+            "args": ") => { const result = await new MyPromise((resolve) => resolve(1)).then((value) => value + 1); return result })("
+          },
+          "expected": 2
+        },
+        {
+          "input": {
+            "args": ") => { const result = await new MyPromise((resolve) => setTimeout(() => resolve(\"ok\"), 10)); return result })("
+          },
+          "expected": "ok"
+        },
+        {
+          "input": {
+            "args": ") => { const result = await new MyPromise((resolve) => resolve(2)).then((value) => value * 3); return result })("
+          },
+          "expected": 6
+        }
+      ],
+      "hidden": [
+        {
+          "input": {
+            "args": ") => { try { await new MyPromise((resolve, reject) => reject(new Error(\"fail\"))) } catch (error) { return error.message } })("
+          },
+          "expected": "fail"
+        },
+        {
+          "input": {
+            "args": ") => { let current = new MyPromise((resolve) => resolve(0)); for (let index = 0; index < 20; index += 1) current = current.then((value) => value + 1); return current })("
+          },
+          "expected": 20
+        }
+      ]
+    },
     "basicCases": [
       {
         "id": "case-1",
         "type": "basic",
-        "description": "基础用例 1",
-        "input": "(async () => { const result = await new MyPromise((resolve) => resolve(1)).then((value) => value + 1); return result })()",
-        "expected": 2,
-        "timeoutMs": 2000
+        "description": "示例 1",
+        "input": "{\"args\":\") => { const result = await new MyPromise((resolve) => resolve(1)).then((value) => value + 1); return result })(\"}",
+        "expected": 2
       },
       {
         "id": "case-2",
         "type": "basic",
-        "description": "基础用例 2",
-        "input": "(async () => { const result = await new MyPromise((resolve) => setTimeout(() => resolve(\"ok\"), 10)); return result })()",
-        "expected": "ok",
-        "timeoutMs": 2000
+        "description": "示例 2",
+        "input": "{\"args\":\") => { const result = await new MyPromise((resolve) => setTimeout(() => resolve(\\\"ok\\\"), 10)); return result })(\"}",
+        "expected": "ok"
       },
       {
         "id": "case-3",
         "type": "basic",
-        "description": "基础用例 3",
-        "input": "(async () => { const result = await new MyPromise((resolve) => resolve(2)).then((value) => value * 3); return result })()",
-        "expected": 6,
-        "timeoutMs": 2000
+        "description": "示例 3",
+        "input": "{\"args\":\") => { const result = await new MyPromise((resolve) => resolve(2)).then((value) => value * 3); return result })(\"}",
+        "expected": 6
       }
     ],
     "fullCases": [
       {
         "id": "case-1",
         "type": "basic",
-        "description": "基础用例 1",
-        "input": "(async () => { const result = await new MyPromise((resolve) => resolve(1)).then((value) => value + 1); return result })()",
-        "expected": 2,
-        "timeoutMs": 2000
+        "description": "示例 1",
+        "input": "{\"args\":\") => { const result = await new MyPromise((resolve) => resolve(1)).then((value) => value + 1); return result })(\"}",
+        "expected": 2
       },
       {
         "id": "case-2",
         "type": "basic",
-        "description": "基础用例 2",
-        "input": "(async () => { const result = await new MyPromise((resolve) => setTimeout(() => resolve(\"ok\"), 10)); return result })()",
-        "expected": "ok",
-        "timeoutMs": 2000
+        "description": "示例 2",
+        "input": "{\"args\":\") => { const result = await new MyPromise((resolve) => setTimeout(() => resolve(\\\"ok\\\"), 10)); return result })(\"}",
+        "expected": "ok"
       },
       {
         "id": "case-3",
         "type": "basic",
-        "description": "基础用例 3",
-        "input": "(async () => { const result = await new MyPromise((resolve) => resolve(2)).then((value) => value * 3); return result })()",
-        "expected": 6,
-        "timeoutMs": 2000
+        "description": "示例 3",
+        "input": "{\"args\":\") => { const result = await new MyPromise((resolve) => resolve(2)).then((value) => value * 3); return result })(\"}",
+        "expected": 6
       },
       {
-        "id": "case-4",
+        "id": "hidden-1",
         "type": "edge",
-        "description": "边界用例 1",
-        "input": "(async () => { try { await new MyPromise((resolve, reject) => reject(new Error(\"fail\"))) } catch (error) { return error.message } })()",
-        "expected": "fail",
-        "timeoutMs": 2000
+        "description": "隐藏 1",
+        "input": "{\"args\":\") => { try { await new MyPromise((resolve, reject) => reject(new Error(\\\"fail\\\"))) } catch (error) { return error.message } })(\"}",
+        "expected": "fail"
       },
       {
-        "id": "case-5",
-        "type": "exception",
-        "description": "异常用例 1",
-        "input": "(async () => { let current = new MyPromise((resolve) => resolve(0)); for (let index = 0; index < 20; index += 1) current = current.then((value) => value + 1); return current })()",
-        "expected": 20,
-        "timeoutMs": 2000
+        "id": "hidden-2",
+        "type": "edge",
+        "description": "隐藏 2",
+        "input": "{\"args\":\") => { let current = new MyPromise((resolve) => resolve(0)); for (let index = 0; index < 20; index += 1) current = current.then((value) => value + 1); return current })(\"}",
+        "expected": 20
       }
     ],
+    "isComponent": false,
     "sourcePath": "problems/promise/promise.js",
     "testPath": "problems/promise/promise_test.js"
   },
@@ -1525,91 +2375,130 @@ export const problems: ProblemRecord[] = [
     "returnText": "返回一个新的 Promise；全部成功时兑现按原顺序组成的结果数组，任意一项失败时立即拒绝。",
     "template": "Promise.myAll = function (promises) {\n\n};\nPromise.myAll;",
     "solutionCode": "Promise.myAll = function (promises) {\n  return new Promise((resolve, reject) => {\n    const queue = Array.from(promises);\n    const length = queue.length;\n\n    if (length === 0) {\n      resolve([]);\n      return;\n    }\n\n    const results = new Array(length);\n    let completedCount = 0;\n    let isRejected = false;\n\n    queue.forEach((item, index) => {\n      Promise.resolve(item)\n        .then((value) => {\n          if (isRejected) return;\n          results[index] = value;\n          completedCount++;\n          if (completedCount === length) resolve(results);\n        })\n        .catch((reason) => {\n          if (isRejected) return;\n          isRejected = true;\n          reject(reason);\n        });\n    });\n  });\n};\nPromise.myAll;",
+    "testCases": {
+      "examples": [
+        {
+          "input": {
+            "args": ") => Promise.myAll([Promise.resolve(1), Promise.resolve(2)]))("
+          },
+          "expected": [
+            1,
+            2
+          ]
+        },
+        {
+          "input": {
+            "args": ") => Promise.myAll([1, Promise.resolve(2), 3]))("
+          },
+          "expected": [
+            1,
+            2,
+            3
+          ]
+        },
+        {
+          "input": {
+            "args": ") => Promise.myAll([]))("
+          },
+          "expected": []
+        }
+      ],
+      "hidden": [
+        {
+          "input": {
+            "args": ") => { try { await Promise.myAll([Promise.resolve(1), Promise.reject(new Error('fail'))]) } catch (error) { return error.message } })("
+          },
+          "expected": "fail"
+        },
+        {
+          "input": {
+            "args": ") => Promise.myAll([new Promise((resolve) => setTimeout(() => resolve('slow'), 20)), Promise.resolve('fast')]))("
+          },
+          "expected": [
+            "slow",
+            "fast"
+          ]
+        }
+      ]
+    },
     "basicCases": [
       {
         "id": "case-1",
         "type": "basic",
-        "description": "基础用例 1",
-        "input": "(async () => Promise.myAll([Promise.resolve(1), Promise.resolve(2)]))()",
+        "description": "示例 1",
+        "input": "{\"args\":\") => Promise.myAll([Promise.resolve(1), Promise.resolve(2)]))(\"}",
         "expected": [
           1,
           2
-        ],
-        "timeoutMs": 2000
+        ]
       },
       {
         "id": "case-2",
         "type": "basic",
-        "description": "基础用例 2",
-        "input": "(async () => Promise.myAll([1, Promise.resolve(2), 3]))()",
+        "description": "示例 2",
+        "input": "{\"args\":\") => Promise.myAll([1, Promise.resolve(2), 3]))(\"}",
         "expected": [
           1,
           2,
           3
-        ],
-        "timeoutMs": 2000
+        ]
       },
       {
         "id": "case-3",
         "type": "basic",
-        "description": "基础用例 3",
-        "input": "(async () => Promise.myAll([]))()",
-        "expected": [],
-        "timeoutMs": 2000
+        "description": "示例 3",
+        "input": "{\"args\":\") => Promise.myAll([]))(\"}",
+        "expected": []
       }
     ],
     "fullCases": [
       {
         "id": "case-1",
         "type": "basic",
-        "description": "基础用例 1",
-        "input": "(async () => Promise.myAll([Promise.resolve(1), Promise.resolve(2)]))()",
+        "description": "示例 1",
+        "input": "{\"args\":\") => Promise.myAll([Promise.resolve(1), Promise.resolve(2)]))(\"}",
         "expected": [
           1,
           2
-        ],
-        "timeoutMs": 2000
+        ]
       },
       {
         "id": "case-2",
         "type": "basic",
-        "description": "基础用例 2",
-        "input": "(async () => Promise.myAll([1, Promise.resolve(2), 3]))()",
+        "description": "示例 2",
+        "input": "{\"args\":\") => Promise.myAll([1, Promise.resolve(2), 3]))(\"}",
         "expected": [
           1,
           2,
           3
-        ],
-        "timeoutMs": 2000
+        ]
       },
       {
         "id": "case-3",
         "type": "basic",
-        "description": "基础用例 3",
-        "input": "(async () => Promise.myAll([]))()",
-        "expected": [],
-        "timeoutMs": 2000
+        "description": "示例 3",
+        "input": "{\"args\":\") => Promise.myAll([]))(\"}",
+        "expected": []
       },
       {
-        "id": "case-4",
+        "id": "hidden-1",
         "type": "edge",
-        "description": "边界用例 1",
-        "input": "(async () => { try { await Promise.myAll([Promise.resolve(1), Promise.reject(new Error('fail'))]) } catch (error) { return error.message } })()",
-        "expected": "fail",
-        "timeoutMs": 2000
+        "description": "隐藏 1",
+        "input": "{\"args\":\") => { try { await Promise.myAll([Promise.resolve(1), Promise.reject(new Error('fail'))]) } catch (error) { return error.message } })(\"}",
+        "expected": "fail"
       },
       {
-        "id": "case-5",
-        "type": "exception",
-        "description": "异常用例 1",
-        "input": "(async () => Promise.myAll([new Promise((resolve) => setTimeout(() => resolve('slow'), 20)), Promise.resolve('fast')]))()",
+        "id": "hidden-2",
+        "type": "edge",
+        "description": "隐藏 2",
+        "input": "{\"args\":\") => Promise.myAll([new Promise((resolve) => setTimeout(() => resolve('slow'), 20)), Promise.resolve('fast')]))(\"}",
         "expected": [
           "slow",
           "fast"
-        ],
-        "timeoutMs": 2000
+        ]
       }
     ],
+    "isComponent": false,
     "sourcePath": "problems/promise/promise_all.js",
     "testPath": "problems/promise/promise_all_test.js"
   },
@@ -1629,74 +2518,103 @@ export const problems: ProblemRecord[] = [
     "returnText": "返回一个新的 Promise，其状态由最先完成的任务决定。",
     "template": "Promise.myRace = function (promises) {\n\n};",
     "solutionCode": "Promise.myRace = function (promises) {\n  return new Promise((resolve, reject) => {\n    const queue = Array.from(promises);\n\n    if (queue.length === 0) {\n      return;\n    }\n\n    let is_settled = false;\n\n    queue.forEach((item) => {\n      Promise.resolve(item)\n        .then((value) => {\n          if (is_settled) {\n            return;\n          }\n\n          is_settled = true;\n          resolve(value);\n        })\n        .catch((reason) => {\n          if (is_settled) {\n            return;\n          }\n\n          is_settled = true;\n          reject(reason);\n        });\n    });\n  });\n};",
+    "testCases": {
+      "examples": [
+        {
+          "input": {
+            "args": ") => Promise.myRace([new Promise((resolve) => setTimeout(() => resolve('slow'), 20)), Promise.resolve('fast')]))("
+          },
+          "expected": "fast"
+        },
+        {
+          "input": {
+            "args": ") => { try { await Promise.myRace([new Promise((_, reject) => setTimeout(() => reject(new Error('boom')), 10)), new Promise((resolve) => setTimeout(() => resolve('ok'), 20))]) } catch (error) { return error.message } })("
+          },
+          "expected": "boom"
+        },
+        {
+          "input": {
+            "args": ") => Promise.myRace([3, Promise.resolve(4)]))("
+          },
+          "expected": 3
+        }
+      ],
+      "hidden": [
+        {
+          "input": {
+            "args": ") => { const pending = Promise.myRace([]); let settled = false; pending.then(() => { settled = true }, () => { settled = true }); await new Promise((resolve) => setTimeout(resolve, 20)); return settled })("
+          },
+          "expected": false
+        },
+        {
+          "input": {
+            "args": ") => Promise.myRace([new Promise((resolve) => setTimeout(() => resolve('first'), 5)), new Promise((resolve) => setTimeout(() => resolve('second'), 15))]))("
+          },
+          "expected": "first"
+        }
+      ]
+    },
     "basicCases": [
       {
         "id": "case-1",
         "type": "basic",
-        "description": "基础用例 1",
-        "input": "(async () => Promise.myRace([new Promise((resolve) => setTimeout(() => resolve('slow'), 20)), Promise.resolve('fast')]))()",
-        "expected": "fast",
-        "timeoutMs": 2000
+        "description": "示例 1",
+        "input": "{\"args\":\") => Promise.myRace([new Promise((resolve) => setTimeout(() => resolve('slow'), 20)), Promise.resolve('fast')]))(\"}",
+        "expected": "fast"
       },
       {
         "id": "case-2",
         "type": "basic",
-        "description": "基础用例 2",
-        "input": "(async () => { try { await Promise.myRace([new Promise((_, reject) => setTimeout(() => reject(new Error('boom')), 10)), new Promise((resolve) => setTimeout(() => resolve('ok'), 20))]) } catch (error) { return error.message } })()",
-        "expected": "boom",
-        "timeoutMs": 2000
+        "description": "示例 2",
+        "input": "{\"args\":\") => { try { await Promise.myRace([new Promise((_, reject) => setTimeout(() => reject(new Error('boom')), 10)), new Promise((resolve) => setTimeout(() => resolve('ok'), 20))]) } catch (error) { return error.message } })(\"}",
+        "expected": "boom"
       },
       {
         "id": "case-3",
         "type": "basic",
-        "description": "基础用例 3",
-        "input": "(async () => Promise.myRace([3, Promise.resolve(4)]))()",
-        "expected": 3,
-        "timeoutMs": 2000
+        "description": "示例 3",
+        "input": "{\"args\":\") => Promise.myRace([3, Promise.resolve(4)]))(\"}",
+        "expected": 3
       }
     ],
     "fullCases": [
       {
         "id": "case-1",
         "type": "basic",
-        "description": "基础用例 1",
-        "input": "(async () => Promise.myRace([new Promise((resolve) => setTimeout(() => resolve('slow'), 20)), Promise.resolve('fast')]))()",
-        "expected": "fast",
-        "timeoutMs": 2000
+        "description": "示例 1",
+        "input": "{\"args\":\") => Promise.myRace([new Promise((resolve) => setTimeout(() => resolve('slow'), 20)), Promise.resolve('fast')]))(\"}",
+        "expected": "fast"
       },
       {
         "id": "case-2",
         "type": "basic",
-        "description": "基础用例 2",
-        "input": "(async () => { try { await Promise.myRace([new Promise((_, reject) => setTimeout(() => reject(new Error('boom')), 10)), new Promise((resolve) => setTimeout(() => resolve('ok'), 20))]) } catch (error) { return error.message } })()",
-        "expected": "boom",
-        "timeoutMs": 2000
+        "description": "示例 2",
+        "input": "{\"args\":\") => { try { await Promise.myRace([new Promise((_, reject) => setTimeout(() => reject(new Error('boom')), 10)), new Promise((resolve) => setTimeout(() => resolve('ok'), 20))]) } catch (error) { return error.message } })(\"}",
+        "expected": "boom"
       },
       {
         "id": "case-3",
         "type": "basic",
-        "description": "基础用例 3",
-        "input": "(async () => Promise.myRace([3, Promise.resolve(4)]))()",
-        "expected": 3,
-        "timeoutMs": 2000
+        "description": "示例 3",
+        "input": "{\"args\":\") => Promise.myRace([3, Promise.resolve(4)]))(\"}",
+        "expected": 3
       },
       {
-        "id": "case-4",
+        "id": "hidden-1",
         "type": "edge",
-        "description": "边界用例 1",
-        "input": "(async () => { const pending = Promise.myRace([]); let settled = false; pending.then(() => { settled = true }, () => { settled = true }); await new Promise((resolve) => setTimeout(resolve, 20)); return settled })()",
-        "expected": false,
-        "timeoutMs": 2000
+        "description": "隐藏 1",
+        "input": "{\"args\":\") => { const pending = Promise.myRace([]); let settled = false; pending.then(() => { settled = true }, () => { settled = true }); await new Promise((resolve) => setTimeout(resolve, 20)); return settled })(\"}",
+        "expected": false
       },
       {
-        "id": "case-5",
-        "type": "exception",
-        "description": "异常用例 1",
-        "input": "(async () => Promise.myRace([new Promise((resolve) => setTimeout(() => resolve('first'), 5)), new Promise((resolve) => setTimeout(() => resolve('second'), 15))]))()",
-        "expected": "first",
-        "timeoutMs": 2000
+        "id": "hidden-2",
+        "type": "edge",
+        "description": "隐藏 2",
+        "input": "{\"args\":\") => Promise.myRace([new Promise((resolve) => setTimeout(() => resolve('first'), 5)), new Promise((resolve) => setTimeout(() => resolve('second'), 15))]))(\"}",
+        "expected": "first"
       }
     ],
+    "isComponent": false,
     "sourcePath": "problems/promise/promise_race.js",
     "testPath": "problems/promise/promise_race_test.js"
   },
@@ -1716,92 +2634,133 @@ export const problems: ProblemRecord[] = [
     "returnText": "返回按中序遍历顺序组成的数组。",
     "template": "function inorderTraversal(root) {\n\n}\n\nfunction inorderTraversalIterative(root) {\n\n}",
     "solutionCode": "function inorderTraversal(root) {\n  const result = [];\n\n  function traverse(node) {\n    if (!node) {\n      return;\n    }\n\n    traverse(node.left);\n    result.push(node.val);\n    traverse(node.right);\n  }\n\n  traverse(root);\n  return result;\n}\n\n/**\n * @description 使用显式栈实现二叉树中序遍历。目标仍然是按“左子树 -> 根节点 -> 右子树”的顺序返回节点值，但这一版不能依赖函数递归调用，而是要手动维护遍历路径。实现时要处理空树，并保证输出顺序与递归版本完全一致。\n * @approach\n * 1. 先一路向左，把沿途节点全部压栈。\n * 2. 弹出栈顶节点时，说明它的左子树已经处理完，可以记录当前值。\n * 3. 然后转向该节点的右子树，重复同样过程。\n * @params\n * root：二叉树根节点，空树时传入 null。\n * @return\n * 返回按中序遍历顺序组成的数组。\n */\nfunction inorderTraversalIterative(root) {\n  if (!root) {\n    return [];\n  }\n\n  const result = [];\n  const stack = [];\n  let current = root;\n\n  while (current || stack.length > 0) {\n    while (current) {\n      stack.push(current);\n      current = current.left;\n    }\n\n    current = stack.pop();\n    result.push(current.val);\n    current = current.right;\n  }\n\n  return result;\n}",
+    "testCases": {
+      "examples": [
+        {
+          "input": {
+            "args": "{ val: 1, left: { val: 2, left: null, right: null }, right: { val: 3, left: null, right: null } }"
+          },
+          "expected": [
+            2,
+            1,
+            3
+          ]
+        },
+        {
+          "input": {
+            "args": "null"
+          },
+          "expected": []
+        },
+        {
+          "input": {
+            "args": "{ val: 9, left: null, right: null }"
+          },
+          "expected": [
+            9
+          ]
+        }
+      ],
+      "hidden": [
+        {
+          "input": {
+            "args": "{ val: 1, left: { val: 2, left: { val: 4, left: null, right: null }, right: null }, right: { val: 3, left: null, right: { val: 5, left: null, right: null } } }"
+          },
+          "expected": [
+            4,
+            2,
+            1,
+            3,
+            5
+          ]
+        },
+        {
+          "input": {
+            "args": "let index = 1; index <= 80; index += 1) { current.right = { val: index, left: null, right: null }; current = current.right } return inorderTraversal(root).length })("
+          },
+          "expected": 81
+        }
+      ]
+    },
     "basicCases": [
       {
         "id": "case-1",
         "type": "basic",
-        "description": "基础用例 1",
-        "input": "inorderTraversal({ val: 1, left: { val: 2, left: null, right: null }, right: { val: 3, left: null, right: null } })",
+        "description": "示例 1",
+        "input": "{\"args\":\"{ val: 1, left: { val: 2, left: null, right: null }, right: { val: 3, left: null, right: null } }\"}",
         "expected": [
           2,
           1,
           3
-        ],
-        "timeoutMs": 2000
+        ]
       },
       {
         "id": "case-2",
         "type": "basic",
-        "description": "基础用例 2",
-        "input": "inorderTraversal(null)",
-        "expected": [],
-        "timeoutMs": 2000
+        "description": "示例 2",
+        "input": "{\"args\":\"null\"}",
+        "expected": []
       },
       {
         "id": "case-3",
         "type": "basic",
-        "description": "基础用例 3",
-        "input": "inorderTraversal({ val: 9, left: null, right: null })",
+        "description": "示例 3",
+        "input": "{\"args\":\"{ val: 9, left: null, right: null }\"}",
         "expected": [
           9
-        ],
-        "timeoutMs": 2000
+        ]
       }
     ],
     "fullCases": [
       {
         "id": "case-1",
         "type": "basic",
-        "description": "基础用例 1",
-        "input": "inorderTraversal({ val: 1, left: { val: 2, left: null, right: null }, right: { val: 3, left: null, right: null } })",
+        "description": "示例 1",
+        "input": "{\"args\":\"{ val: 1, left: { val: 2, left: null, right: null }, right: { val: 3, left: null, right: null } }\"}",
         "expected": [
           2,
           1,
           3
-        ],
-        "timeoutMs": 2000
+        ]
       },
       {
         "id": "case-2",
         "type": "basic",
-        "description": "基础用例 2",
-        "input": "inorderTraversal(null)",
-        "expected": [],
-        "timeoutMs": 2000
+        "description": "示例 2",
+        "input": "{\"args\":\"null\"}",
+        "expected": []
       },
       {
         "id": "case-3",
         "type": "basic",
-        "description": "基础用例 3",
-        "input": "inorderTraversal({ val: 9, left: null, right: null })",
+        "description": "示例 3",
+        "input": "{\"args\":\"{ val: 9, left: null, right: null }\"}",
         "expected": [
           9
-        ],
-        "timeoutMs": 2000
+        ]
       },
       {
-        "id": "case-4",
+        "id": "hidden-1",
         "type": "edge",
-        "description": "边界用例 1",
-        "input": "inorderTraversal({ val: 1, left: { val: 2, left: { val: 4, left: null, right: null }, right: null }, right: { val: 3, left: null, right: { val: 5, left: null, right: null } } })",
+        "description": "隐藏 1",
+        "input": "{\"args\":\"{ val: 1, left: { val: 2, left: { val: 4, left: null, right: null }, right: null }, right: { val: 3, left: null, right: { val: 5, left: null, right: null } } }\"}",
         "expected": [
           4,
           2,
           1,
           3,
           5
-        ],
-        "timeoutMs": 2000
+        ]
       },
       {
-        "id": "case-5",
-        "type": "exception",
-        "description": "异常用例 1",
-        "input": "(() => { let root = { val: 0, left: null, right: null }; let current = root; for (let index = 1; index <= 80; index += 1) { current.right = { val: index, left: null, right: null }; current = current.right } return inorderTraversal(root).length })()",
-        "expected": 81,
-        "timeoutMs": 2000
+        "id": "hidden-2",
+        "type": "edge",
+        "description": "隐藏 2",
+        "input": "{\"args\":\"let index = 1; index <= 80; index += 1) { current.right = { val: index, left: null, right: null }; current = current.right } return inorderTraversal(root).length })(\"}",
+        "expected": 81
       }
     ],
+    "isComponent": false,
     "sourcePath": "problems/tree/inorder.js",
     "testPath": "problems/tree/inorder_test.js"
   },
@@ -1821,74 +2780,103 @@ export const problems: ProblemRecord[] = [
     "returnText": "如果是有效 BST 返回 true，否则返回 false。",
     "template": "function isValidBST(root) {\n\n}\n\nfunction isValidBSTRecursive(root) {\n\n}",
     "solutionCode": "function isValidBST(root) {\n  let prev = null;\n  let isValid = true;\n\n  function inorder(node) {\n    if (!node || !isValid) {\n      return;\n    }\n\n    inorder(node.left);\n\n    if (prev !== null && node.val <= prev) {\n      isValid = false;\n      return;\n    }\n    prev = node.val;\n\n    inorder(node.right);\n  }\n\n  inorder(root);\n  return isValid;\n}\n\n/**\n * @description 使用上下界递归约束验证一棵二叉树是否满足 BST 条件。函数需要在遍历过程中持续记录当前节点允许落入的最小值和最大值，只要某个节点越过了这个合法区间，就说明整棵树不是二叉搜索树。实现时要正确处理空树，以及非法节点可能出现在任意深层位置的情况。\n * @approach\n * 1. 递归时为每个节点携带最小值和最大值边界。\n * 2. 当前节点必须严格大于最小边界，且严格小于最大边界。\n * 3. 左子树继承上界为当前节点值，右子树继承下界为当前节点值。\n * @params\n * root：二叉树根节点，空树时传入 null。\n * @return\n * 如果是有效 BST 返回 true，否则返回 false。\n */\nfunction isValidBSTRecursive(root) {\n  function validate(node, min, max) {\n    if (!node) {\n      return true;\n    }\n\n    if (\n      (min !== null && node.val <= min) ||\n      (max !== null && node.val >= max)\n    ) {\n      return false;\n    }\n\n    return (\n      validate(node.left, min, node.val) && validate(node.right, node.val, max)\n    );\n  }\n\n  return validate(root, null, null);\n}",
+    "testCases": {
+      "examples": [
+        {
+          "input": {
+            "args": "{ val: 2, left: { val: 1, left: null, right: null }, right: { val: 3, left: null, right: null } }"
+          },
+          "expected": true
+        },
+        {
+          "input": {
+            "args": "{ val: 5, left: { val: 1, left: null, right: null }, right: { val: 4, left: { val: 3, left: null, right: null }, right: { val: 6, left: null, right: null } } }"
+          },
+          "expected": false
+        },
+        {
+          "input": {
+            "args": "{ val: 10, left: { val: 5, left: null, right: { val: 12, left: null, right: null } }, right: { val: 15, left: null, right: null } }"
+          },
+          "expected": false
+        }
+      ],
+      "hidden": [
+        {
+          "input": {
+            "args": "{ val: 1, left: null, right: null }"
+          },
+          "expected": true
+        },
+        {
+          "input": {
+            "args": "null"
+          },
+          "expected": true
+        }
+      ]
+    },
     "basicCases": [
       {
         "id": "case-1",
         "type": "basic",
-        "description": "基础用例 1",
-        "input": "isValidBST({ val: 2, left: { val: 1, left: null, right: null }, right: { val: 3, left: null, right: null } })",
-        "expected": true,
-        "timeoutMs": 2000
+        "description": "示例 1",
+        "input": "{\"args\":\"{ val: 2, left: { val: 1, left: null, right: null }, right: { val: 3, left: null, right: null } }\"}",
+        "expected": true
       },
       {
         "id": "case-2",
         "type": "basic",
-        "description": "基础用例 2",
-        "input": "isValidBST({ val: 5, left: { val: 1, left: null, right: null }, right: { val: 4, left: { val: 3, left: null, right: null }, right: { val: 6, left: null, right: null } } })",
-        "expected": false,
-        "timeoutMs": 2000
+        "description": "示例 2",
+        "input": "{\"args\":\"{ val: 5, left: { val: 1, left: null, right: null }, right: { val: 4, left: { val: 3, left: null, right: null }, right: { val: 6, left: null, right: null } } }\"}",
+        "expected": false
       },
       {
         "id": "case-3",
         "type": "basic",
-        "description": "基础用例 3",
-        "input": "isValidBST({ val: 10, left: { val: 5, left: null, right: { val: 12, left: null, right: null } }, right: { val: 15, left: null, right: null } })",
-        "expected": false,
-        "timeoutMs": 2000
+        "description": "示例 3",
+        "input": "{\"args\":\"{ val: 10, left: { val: 5, left: null, right: { val: 12, left: null, right: null } }, right: { val: 15, left: null, right: null } }\"}",
+        "expected": false
       }
     ],
     "fullCases": [
       {
         "id": "case-1",
         "type": "basic",
-        "description": "基础用例 1",
-        "input": "isValidBST({ val: 2, left: { val: 1, left: null, right: null }, right: { val: 3, left: null, right: null } })",
-        "expected": true,
-        "timeoutMs": 2000
+        "description": "示例 1",
+        "input": "{\"args\":\"{ val: 2, left: { val: 1, left: null, right: null }, right: { val: 3, left: null, right: null } }\"}",
+        "expected": true
       },
       {
         "id": "case-2",
         "type": "basic",
-        "description": "基础用例 2",
-        "input": "isValidBST({ val: 5, left: { val: 1, left: null, right: null }, right: { val: 4, left: { val: 3, left: null, right: null }, right: { val: 6, left: null, right: null } } })",
-        "expected": false,
-        "timeoutMs": 2000
+        "description": "示例 2",
+        "input": "{\"args\":\"{ val: 5, left: { val: 1, left: null, right: null }, right: { val: 4, left: { val: 3, left: null, right: null }, right: { val: 6, left: null, right: null } } }\"}",
+        "expected": false
       },
       {
         "id": "case-3",
         "type": "basic",
-        "description": "基础用例 3",
-        "input": "isValidBST({ val: 10, left: { val: 5, left: null, right: { val: 12, left: null, right: null } }, right: { val: 15, left: null, right: null } })",
-        "expected": false,
-        "timeoutMs": 2000
+        "description": "示例 3",
+        "input": "{\"args\":\"{ val: 10, left: { val: 5, left: null, right: { val: 12, left: null, right: null } }, right: { val: 15, left: null, right: null } }\"}",
+        "expected": false
       },
       {
-        "id": "case-4",
+        "id": "hidden-1",
         "type": "edge",
-        "description": "边界用例 1",
-        "input": "isValidBST({ val: 1, left: null, right: null })",
-        "expected": true,
-        "timeoutMs": 2000
+        "description": "隐藏 1",
+        "input": "{\"args\":\"{ val: 1, left: null, right: null }\"}",
+        "expected": true
       },
       {
-        "id": "case-5",
-        "type": "exception",
-        "description": "异常用例 1",
-        "input": "isValidBST(null)",
-        "expected": true,
-        "timeoutMs": 2000
+        "id": "hidden-2",
+        "type": "edge",
+        "description": "隐藏 2",
+        "input": "{\"args\":\"null\"}",
+        "expected": true
       }
     ],
+    "isComponent": false,
     "sourcePath": "problems/tree/isValidBST.js",
     "testPath": "problems/tree/isValidBST_test.js"
   },
@@ -1908,12 +2896,72 @@ export const problems: ProblemRecord[] = [
     "returnText": "返回一个二维数组，其中每个子数组表示一层的节点值，层与层之间保持从上到下的顺序。",
     "template": "function levelOrder(root) {\n\n}\n\nfunction levelOrderWithLevels(root) {\n\n}",
     "solutionCode": "function levelOrder(root) {\n  if (!root) return [];\n\n  const result = [];\n  let queue = [root];\n\n  while (queue.length > 0) {\n    const levelSize = queue.length;\n    const currentLevel = [];\n    const nextQueue = [];\n\n    for (let i = 0; i < levelSize; i++) {\n      const node = queue[i];\n      currentLevel.push(node.val);\n      if (node.left) nextQueue.push(node.left);\n      if (node.right) nextQueue.push(node.right);\n    }\n\n    result.push(currentLevel);\n    queue = nextQueue;\n  }\n\n  return result;\n}\n\n/**\n * 二叉树层序遍历（分层输出，二维数组）\n * @param {TreeNode} root - 二叉树根节点\n * @returns {Array} 每层节点作为子数组的二维数组\n */\nfunction levelOrderWithLevels(root) {\n  if (!root) return [];\n\n  const result = [];\n  let queue = [root];\n\n  while (queue.length > 0) {\n    const levelSize = queue.length;\n    const currentLevel = [];\n    const nextQueue = [];\n\n    for (let i = 0; i < levelSize; i++) {\n      const node = queue[i];\n      currentLevel.push(node.val);\n      if (node.left) nextQueue.push(node.left);\n      if (node.right) nextQueue.push(node.right);\n    }\n\n    result.push(currentLevel);\n    queue = nextQueue;\n  }\n\n  return result;\n}",
+    "testCases": {
+      "examples": [
+        {
+          "input": {
+            "args": "{ val: 1, left: { val: 2, left: null, right: null }, right: { val: 3, left: null, right: null } }"
+          },
+          "expected": [
+            [
+              1
+            ],
+            [
+              2,
+              3
+            ]
+          ]
+        },
+        {
+          "input": {
+            "args": "null"
+          },
+          "expected": []
+        },
+        {
+          "input": {
+            "args": "{ val: 9, left: null, right: null }"
+          },
+          "expected": [
+            [
+              9
+            ]
+          ]
+        }
+      ],
+      "hidden": [
+        {
+          "input": {
+            "args": "{ val: 1, left: { val: 2, left: { val: 4, left: null, right: null }, right: null }, right: { val: 3, left: null, right: { val: 5, left: null, right: null } } }"
+          },
+          "expected": [
+            [
+              1
+            ],
+            [
+              2,
+              3
+            ],
+            [
+              4,
+              5
+            ]
+          ]
+        },
+        {
+          "input": {
+            "args": "let index = 1; index <= 80; index += 1) { current.right = { val: index, left: null, right: null }; current = current.right } return levelOrder(root).length })("
+          },
+          "expected": 81
+        }
+      ]
+    },
     "basicCases": [
       {
         "id": "case-1",
         "type": "basic",
-        "description": "基础用例 1",
-        "input": "levelOrder({ val: 1, left: { val: 2, left: null, right: null }, right: { val: 3, left: null, right: null } })",
+        "description": "示例 1",
+        "input": "{\"args\":\"{ val: 1, left: { val: 2, left: null, right: null }, right: { val: 3, left: null, right: null } }\"}",
         "expected": [
           [
             1
@@ -1922,36 +2970,33 @@ export const problems: ProblemRecord[] = [
             2,
             3
           ]
-        ],
-        "timeoutMs": 2000
+        ]
       },
       {
         "id": "case-2",
         "type": "basic",
-        "description": "基础用例 2",
-        "input": "levelOrder(null)",
-        "expected": [],
-        "timeoutMs": 2000
+        "description": "示例 2",
+        "input": "{\"args\":\"null\"}",
+        "expected": []
       },
       {
         "id": "case-3",
         "type": "basic",
-        "description": "基础用例 3",
-        "input": "levelOrder({ val: 9, left: null, right: null })",
+        "description": "示例 3",
+        "input": "{\"args\":\"{ val: 9, left: null, right: null }\"}",
         "expected": [
           [
             9
           ]
-        ],
-        "timeoutMs": 2000
+        ]
       }
     ],
     "fullCases": [
       {
         "id": "case-1",
         "type": "basic",
-        "description": "基础用例 1",
-        "input": "levelOrder({ val: 1, left: { val: 2, left: null, right: null }, right: { val: 3, left: null, right: null } })",
+        "description": "示例 1",
+        "input": "{\"args\":\"{ val: 1, left: { val: 2, left: null, right: null }, right: { val: 3, left: null, right: null } }\"}",
         "expected": [
           [
             1
@@ -1960,34 +3005,31 @@ export const problems: ProblemRecord[] = [
             2,
             3
           ]
-        ],
-        "timeoutMs": 2000
+        ]
       },
       {
         "id": "case-2",
         "type": "basic",
-        "description": "基础用例 2",
-        "input": "levelOrder(null)",
-        "expected": [],
-        "timeoutMs": 2000
+        "description": "示例 2",
+        "input": "{\"args\":\"null\"}",
+        "expected": []
       },
       {
         "id": "case-3",
         "type": "basic",
-        "description": "基础用例 3",
-        "input": "levelOrder({ val: 9, left: null, right: null })",
+        "description": "示例 3",
+        "input": "{\"args\":\"{ val: 9, left: null, right: null }\"}",
         "expected": [
           [
             9
           ]
-        ],
-        "timeoutMs": 2000
+        ]
       },
       {
-        "id": "case-4",
+        "id": "hidden-1",
         "type": "edge",
-        "description": "边界用例 1",
-        "input": "levelOrder({ val: 1, left: { val: 2, left: { val: 4, left: null, right: null }, right: null }, right: { val: 3, left: null, right: { val: 5, left: null, right: null } } })",
+        "description": "隐藏 1",
+        "input": "{\"args\":\"{ val: 1, left: { val: 2, left: { val: 4, left: null, right: null }, right: null }, right: { val: 3, left: null, right: { val: 5, left: null, right: null } } }\"}",
         "expected": [
           [
             1
@@ -2000,18 +3042,17 @@ export const problems: ProblemRecord[] = [
             4,
             5
           ]
-        ],
-        "timeoutMs": 2000
+        ]
       },
       {
-        "id": "case-5",
-        "type": "exception",
-        "description": "异常用例 1",
-        "input": "(() => { let root = { val: 0, left: null, right: null }; let current = root; for (let index = 1; index <= 80; index += 1) { current.right = { val: index, left: null, right: null }; current = current.right } return levelOrder(root).length })()",
-        "expected": 81,
-        "timeoutMs": 2000
+        "id": "hidden-2",
+        "type": "edge",
+        "description": "隐藏 2",
+        "input": "{\"args\":\"let index = 1; index <= 80; index += 1) { current.right = { val: index, left: null, right: null }; current = current.right } return levelOrder(root).length })(\"}",
+        "expected": 81
       }
     ],
+    "isComponent": false,
     "sourcePath": "problems/tree/levelorder.js",
     "testPath": "problems/tree/levelorder_test.js"
   },
@@ -2031,74 +3072,103 @@ export const problems: ProblemRecord[] = [
     "returnText": "返回二叉树的最大深度。",
     "template": "function maxDepth(root) {\n\n}\n\nfunction maxDepthBFS(root) {\n\n}",
     "solutionCode": "function maxDepth(root) {\n  if (!root) {\n    return 0;\n  }\n\n  const leftDepth = maxDepth(root.left);\n  const rightDepth = maxDepth(root.right);\n\n  return Math.max(leftDepth, rightDepth) + 1;\n}\n\n/**\n * @description 使用层序遍历计算二叉树最大深度。函数需要按层从上到下遍历整棵树，每处理完一整层就把深度加一，直到所有节点都遍历完成。实现时要处理空树，并保证每一层的节点都只被统计一次。\n * @approach\n * 1. 队列中始终保存当前层的所有节点。\n * 2. 每轮循环先记录当前层节点数，确保只处理这一层。\n * 3. 本层处理结束后，把下一层节点收集起来，并把 depth 加一。\n * @params\n * root：二叉树根节点，空树时传入 null。\n * @return\n * 返回二叉树的最大深度。\n */\nfunction maxDepthBFS(root) {\n  if (!root) {\n    return 0;\n  }\n\n  let depth = 0;\n  let queue = [root];\n\n  while (queue.length > 0) {\n    depth++;\n    const levelSize = queue.length;\n    const nextQueue = [];\n\n    for (let i = 0; i < levelSize; i++) {\n      const node = queue[i];\n      if (node.left) {\n        nextQueue.push(node.left);\n      }\n      if (node.right) {\n        nextQueue.push(node.right);\n      }\n    }\n\n    queue = nextQueue;\n  }\n\n  return depth;\n}",
+    "testCases": {
+      "examples": [
+        {
+          "input": {
+            "args": "null"
+          },
+          "expected": 0
+        },
+        {
+          "input": {
+            "args": "{ val: 1, left: null, right: null }"
+          },
+          "expected": 1
+        },
+        {
+          "input": {
+            "args": "{ val: 1, left: { val: 2, left: { val: 3, left: null, right: null }, right: null }, right: null }"
+          },
+          "expected": 3
+        }
+      ],
+      "hidden": [
+        {
+          "input": {
+            "args": "{ val: 1, left: { val: 2, left: null, right: null }, right: { val: 3, left: { val: 4, left: null, right: null }, right: { val: 5, left: null, right: null } } }"
+          },
+          "expected": 3
+        },
+        {
+          "input": {
+            "args": "{ val: 1, left: { val: 2, left: { val: 4, left: null, right: null }, right: null }, right: { val: 3, left: null, right: { val: 5, left: { val: 6, left: null, right: null }, right: null } } }"
+          },
+          "expected": 4
+        }
+      ]
+    },
     "basicCases": [
       {
         "id": "case-1",
         "type": "basic",
-        "description": "基础用例 1",
-        "input": "maxDepth(null)",
-        "expected": 0,
-        "timeoutMs": 2000
+        "description": "示例 1",
+        "input": "{\"args\":\"null\"}",
+        "expected": 0
       },
       {
         "id": "case-2",
         "type": "basic",
-        "description": "基础用例 2",
-        "input": "maxDepth({ val: 1, left: null, right: null })",
-        "expected": 1,
-        "timeoutMs": 2000
+        "description": "示例 2",
+        "input": "{\"args\":\"{ val: 1, left: null, right: null }\"}",
+        "expected": 1
       },
       {
         "id": "case-3",
         "type": "basic",
-        "description": "基础用例 3",
-        "input": "maxDepth({ val: 1, left: { val: 2, left: { val: 3, left: null, right: null }, right: null }, right: null })",
-        "expected": 3,
-        "timeoutMs": 2000
+        "description": "示例 3",
+        "input": "{\"args\":\"{ val: 1, left: { val: 2, left: { val: 3, left: null, right: null }, right: null }, right: null }\"}",
+        "expected": 3
       }
     ],
     "fullCases": [
       {
         "id": "case-1",
         "type": "basic",
-        "description": "基础用例 1",
-        "input": "maxDepth(null)",
-        "expected": 0,
-        "timeoutMs": 2000
+        "description": "示例 1",
+        "input": "{\"args\":\"null\"}",
+        "expected": 0
       },
       {
         "id": "case-2",
         "type": "basic",
-        "description": "基础用例 2",
-        "input": "maxDepth({ val: 1, left: null, right: null })",
-        "expected": 1,
-        "timeoutMs": 2000
+        "description": "示例 2",
+        "input": "{\"args\":\"{ val: 1, left: null, right: null }\"}",
+        "expected": 1
       },
       {
         "id": "case-3",
         "type": "basic",
-        "description": "基础用例 3",
-        "input": "maxDepth({ val: 1, left: { val: 2, left: { val: 3, left: null, right: null }, right: null }, right: null })",
-        "expected": 3,
-        "timeoutMs": 2000
+        "description": "示例 3",
+        "input": "{\"args\":\"{ val: 1, left: { val: 2, left: { val: 3, left: null, right: null }, right: null }, right: null }\"}",
+        "expected": 3
       },
       {
-        "id": "case-4",
+        "id": "hidden-1",
         "type": "edge",
-        "description": "边界用例 1",
-        "input": "maxDepth({ val: 1, left: { val: 2, left: null, right: null }, right: { val: 3, left: { val: 4, left: null, right: null }, right: { val: 5, left: null, right: null } } })",
-        "expected": 3,
-        "timeoutMs": 2000
+        "description": "隐藏 1",
+        "input": "{\"args\":\"{ val: 1, left: { val: 2, left: null, right: null }, right: { val: 3, left: { val: 4, left: null, right: null }, right: { val: 5, left: null, right: null } } }\"}",
+        "expected": 3
       },
       {
-        "id": "case-5",
-        "type": "exception",
-        "description": "异常用例 1",
-        "input": "maxDepthBFS({ val: 1, left: { val: 2, left: { val: 4, left: null, right: null }, right: null }, right: { val: 3, left: null, right: { val: 5, left: { val: 6, left: null, right: null }, right: null } } })",
-        "expected": 4,
-        "timeoutMs": 2000
+        "id": "hidden-2",
+        "type": "edge",
+        "description": "隐藏 2",
+        "input": "{\"args\":\"{ val: 1, left: { val: 2, left: { val: 4, left: null, right: null }, right: null }, right: { val: 3, left: null, right: { val: 5, left: { val: 6, left: null, right: null }, right: null } } }\"}",
+        "expected": 4
       }
     ],
+    "isComponent": false,
     "sourcePath": "problems/tree/maxDepth.js",
     "testPath": "problems/tree/maxDepth_test.js"
   },
@@ -2118,92 +3188,133 @@ export const problems: ProblemRecord[] = [
     "returnText": "返回按后序遍历顺序组成的数组。",
     "template": "function postorderTraversal(root) {\n\n}\n\nfunction postorderTraversalIterative(root) {\n\n}",
     "solutionCode": "function postorderTraversal(root) {\n  const result = [];\n\n  function traverse(node) {\n    if (!node) {\n      return;\n    }\n\n    traverse(node.left);\n    traverse(node.right);\n    result.push(node.val);\n  }\n\n  traverse(root);\n  return result;\n}\n\n/**\n * @description 使用迭代方式实现二叉树后序遍历。它通过先生成“根 -> 右 -> 左”的访问序列，再整体反转结果，得到真正的“左 -> 右 -> 根”顺序。实现时要处理空树，并确保手动栈版本的输出与递归版保持一致。\n * @approach\n * 1. 先按“根 -> 左 -> 右”的镜像顺序把节点值压入结果数组。\n * 2. 为了得到这个镜像顺序，栈中要先压左子节点，再压右子节点。\n * 3. 最终把结果数组整体反转，就能得到标准后序遍历顺序。\n * @params\n * root：二叉树根节点，空树时传入 null。\n * @return\n * 返回按后序遍历顺序组成的数组。\n */\nfunction postorderTraversalIterative(root) {\n  if (!root) {\n    return [];\n  }\n\n  const result = [];\n  const stack = [root];\n\n  while (stack.length > 0) {\n    const node = stack.pop();\n    result.push(node.val);\n    if (node.left) {\n      stack.push(node.left);\n    }\n    if (node.right) {\n      stack.push(node.right);\n    }\n  }\n\n  return result.reverse();\n}",
+    "testCases": {
+      "examples": [
+        {
+          "input": {
+            "args": "{ val: 1, left: { val: 2, left: null, right: null }, right: { val: 3, left: null, right: null } }"
+          },
+          "expected": [
+            2,
+            3,
+            1
+          ]
+        },
+        {
+          "input": {
+            "args": "null"
+          },
+          "expected": []
+        },
+        {
+          "input": {
+            "args": "{ val: 9, left: null, right: null }"
+          },
+          "expected": [
+            9
+          ]
+        }
+      ],
+      "hidden": [
+        {
+          "input": {
+            "args": "{ val: 1, left: { val: 2, left: { val: 4, left: null, right: null }, right: null }, right: { val: 3, left: null, right: { val: 5, left: null, right: null } } }"
+          },
+          "expected": [
+            4,
+            2,
+            5,
+            3,
+            1
+          ]
+        },
+        {
+          "input": {
+            "args": "let index = 1; index <= 80; index += 1) { current.right = { val: index, left: null, right: null }; current = current.right } return postorderTraversal(root).length })("
+          },
+          "expected": 81
+        }
+      ]
+    },
     "basicCases": [
       {
         "id": "case-1",
         "type": "basic",
-        "description": "基础用例 1",
-        "input": "postorderTraversal({ val: 1, left: { val: 2, left: null, right: null }, right: { val: 3, left: null, right: null } })",
+        "description": "示例 1",
+        "input": "{\"args\":\"{ val: 1, left: { val: 2, left: null, right: null }, right: { val: 3, left: null, right: null } }\"}",
         "expected": [
           2,
           3,
           1
-        ],
-        "timeoutMs": 2000
+        ]
       },
       {
         "id": "case-2",
         "type": "basic",
-        "description": "基础用例 2",
-        "input": "postorderTraversal(null)",
-        "expected": [],
-        "timeoutMs": 2000
+        "description": "示例 2",
+        "input": "{\"args\":\"null\"}",
+        "expected": []
       },
       {
         "id": "case-3",
         "type": "basic",
-        "description": "基础用例 3",
-        "input": "postorderTraversal({ val: 9, left: null, right: null })",
+        "description": "示例 3",
+        "input": "{\"args\":\"{ val: 9, left: null, right: null }\"}",
         "expected": [
           9
-        ],
-        "timeoutMs": 2000
+        ]
       }
     ],
     "fullCases": [
       {
         "id": "case-1",
         "type": "basic",
-        "description": "基础用例 1",
-        "input": "postorderTraversal({ val: 1, left: { val: 2, left: null, right: null }, right: { val: 3, left: null, right: null } })",
+        "description": "示例 1",
+        "input": "{\"args\":\"{ val: 1, left: { val: 2, left: null, right: null }, right: { val: 3, left: null, right: null } }\"}",
         "expected": [
           2,
           3,
           1
-        ],
-        "timeoutMs": 2000
+        ]
       },
       {
         "id": "case-2",
         "type": "basic",
-        "description": "基础用例 2",
-        "input": "postorderTraversal(null)",
-        "expected": [],
-        "timeoutMs": 2000
+        "description": "示例 2",
+        "input": "{\"args\":\"null\"}",
+        "expected": []
       },
       {
         "id": "case-3",
         "type": "basic",
-        "description": "基础用例 3",
-        "input": "postorderTraversal({ val: 9, left: null, right: null })",
+        "description": "示例 3",
+        "input": "{\"args\":\"{ val: 9, left: null, right: null }\"}",
         "expected": [
           9
-        ],
-        "timeoutMs": 2000
+        ]
       },
       {
-        "id": "case-4",
+        "id": "hidden-1",
         "type": "edge",
-        "description": "边界用例 1",
-        "input": "postorderTraversal({ val: 1, left: { val: 2, left: { val: 4, left: null, right: null }, right: null }, right: { val: 3, left: null, right: { val: 5, left: null, right: null } } })",
+        "description": "隐藏 1",
+        "input": "{\"args\":\"{ val: 1, left: { val: 2, left: { val: 4, left: null, right: null }, right: null }, right: { val: 3, left: null, right: { val: 5, left: null, right: null } } }\"}",
         "expected": [
           4,
           2,
           5,
           3,
           1
-        ],
-        "timeoutMs": 2000
+        ]
       },
       {
-        "id": "case-5",
-        "type": "exception",
-        "description": "异常用例 1",
-        "input": "(() => { let root = { val: 0, left: null, right: null }; let current = root; for (let index = 1; index <= 80; index += 1) { current.right = { val: index, left: null, right: null }; current = current.right } return postorderTraversal(root).length })()",
-        "expected": 81,
-        "timeoutMs": 2000
+        "id": "hidden-2",
+        "type": "edge",
+        "description": "隐藏 2",
+        "input": "{\"args\":\"let index = 1; index <= 80; index += 1) { current.right = { val: index, left: null, right: null }; current = current.right } return postorderTraversal(root).length })(\"}",
+        "expected": 81
       }
     ],
+    "isComponent": false,
     "sourcePath": "problems/tree/postorder.js",
     "testPath": "problems/tree/postorder_test.js"
   },
@@ -2223,92 +3334,133 @@ export const problems: ProblemRecord[] = [
     "returnText": "返回按前序遍历顺序组成的数组。",
     "template": "function preorderTraversal(root) {\n\n}\n\nfunction preorderTraversalIterative(root) {\n\n}",
     "solutionCode": "function preorderTraversal(root) {\n  const result = [];\n\n  function traverse(node) {\n    if (!node) {\n      return;\n    }\n\n    result.push(node.val);\n    traverse(node.left);\n    traverse(node.right);\n  }\n\n  traverse(root);\n  return result;\n}\n\n/**\n * @description 使用显式栈实现二叉树前序遍历。目标仍然是按“根节点 -> 左子树 -> 右子树”的顺序返回节点值，但通过手动维护栈来替代递归。实现时要处理空树，并通过正确的入栈顺序保证左子树先于右子树被访问。\n * @approach\n * 1. 栈先放入根节点，每轮弹出一个节点并记录其值。\n * 2. 因为栈是后进先出，所以需要先压入右子节点，再压入左子节点。\n * 3. 这样下一轮弹出时会先处理左子树，顺序与递归前序遍历一致。\n * @params\n * root：二叉树根节点，空树时传入 null。\n * @return\n * 返回按前序遍历顺序组成的数组。\n */\nfunction preorderTraversalIterative(root) {\n  if (!root) {\n    return [];\n  }\n\n  const result = [];\n  const stack = [root];\n\n  while (stack.length > 0) {\n    const node = stack.pop();\n    result.push(node.val);\n    if (node.right) {\n      stack.push(node.right);\n    }\n    if (node.left) {\n      stack.push(node.left);\n    }\n  }\n\n  return result;\n}",
+    "testCases": {
+      "examples": [
+        {
+          "input": {
+            "args": "{ val: 1, left: { val: 2, left: null, right: null }, right: { val: 3, left: null, right: null } }"
+          },
+          "expected": [
+            1,
+            2,
+            3
+          ]
+        },
+        {
+          "input": {
+            "args": "null"
+          },
+          "expected": []
+        },
+        {
+          "input": {
+            "args": "{ val: 9, left: null, right: null }"
+          },
+          "expected": [
+            9
+          ]
+        }
+      ],
+      "hidden": [
+        {
+          "input": {
+            "args": "{ val: 1, left: { val: 2, left: { val: 4, left: null, right: null }, right: null }, right: { val: 3, left: null, right: { val: 5, left: null, right: null } } }"
+          },
+          "expected": [
+            1,
+            2,
+            4,
+            3,
+            5
+          ]
+        },
+        {
+          "input": {
+            "args": "let index = 1; index <= 80; index += 1) { current.right = { val: index, left: null, right: null }; current = current.right } return preorderTraversal(root).length })("
+          },
+          "expected": 81
+        }
+      ]
+    },
     "basicCases": [
       {
         "id": "case-1",
         "type": "basic",
-        "description": "基础用例 1",
-        "input": "preorderTraversal({ val: 1, left: { val: 2, left: null, right: null }, right: { val: 3, left: null, right: null } })",
+        "description": "示例 1",
+        "input": "{\"args\":\"{ val: 1, left: { val: 2, left: null, right: null }, right: { val: 3, left: null, right: null } }\"}",
         "expected": [
           1,
           2,
           3
-        ],
-        "timeoutMs": 2000
+        ]
       },
       {
         "id": "case-2",
         "type": "basic",
-        "description": "基础用例 2",
-        "input": "preorderTraversal(null)",
-        "expected": [],
-        "timeoutMs": 2000
+        "description": "示例 2",
+        "input": "{\"args\":\"null\"}",
+        "expected": []
       },
       {
         "id": "case-3",
         "type": "basic",
-        "description": "基础用例 3",
-        "input": "preorderTraversal({ val: 9, left: null, right: null })",
+        "description": "示例 3",
+        "input": "{\"args\":\"{ val: 9, left: null, right: null }\"}",
         "expected": [
           9
-        ],
-        "timeoutMs": 2000
+        ]
       }
     ],
     "fullCases": [
       {
         "id": "case-1",
         "type": "basic",
-        "description": "基础用例 1",
-        "input": "preorderTraversal({ val: 1, left: { val: 2, left: null, right: null }, right: { val: 3, left: null, right: null } })",
+        "description": "示例 1",
+        "input": "{\"args\":\"{ val: 1, left: { val: 2, left: null, right: null }, right: { val: 3, left: null, right: null } }\"}",
         "expected": [
           1,
           2,
           3
-        ],
-        "timeoutMs": 2000
+        ]
       },
       {
         "id": "case-2",
         "type": "basic",
-        "description": "基础用例 2",
-        "input": "preorderTraversal(null)",
-        "expected": [],
-        "timeoutMs": 2000
+        "description": "示例 2",
+        "input": "{\"args\":\"null\"}",
+        "expected": []
       },
       {
         "id": "case-3",
         "type": "basic",
-        "description": "基础用例 3",
-        "input": "preorderTraversal({ val: 9, left: null, right: null })",
+        "description": "示例 3",
+        "input": "{\"args\":\"{ val: 9, left: null, right: null }\"}",
         "expected": [
           9
-        ],
-        "timeoutMs": 2000
+        ]
       },
       {
-        "id": "case-4",
+        "id": "hidden-1",
         "type": "edge",
-        "description": "边界用例 1",
-        "input": "preorderTraversal({ val: 1, left: { val: 2, left: { val: 4, left: null, right: null }, right: null }, right: { val: 3, left: null, right: { val: 5, left: null, right: null } } })",
+        "description": "隐藏 1",
+        "input": "{\"args\":\"{ val: 1, left: { val: 2, left: { val: 4, left: null, right: null }, right: null }, right: { val: 3, left: null, right: { val: 5, left: null, right: null } } }\"}",
         "expected": [
           1,
           2,
           4,
           3,
           5
-        ],
-        "timeoutMs": 2000
+        ]
       },
       {
-        "id": "case-5",
-        "type": "exception",
-        "description": "异常用例 1",
-        "input": "(() => { let root = { val: 0, left: null, right: null }; let current = root; for (let index = 1; index <= 80; index += 1) { current.right = { val: index, left: null, right: null }; current = current.right } return preorderTraversal(root).length })()",
-        "expected": 81,
-        "timeoutMs": 2000
+        "id": "hidden-2",
+        "type": "edge",
+        "description": "隐藏 2",
+        "input": "{\"args\":\"let index = 1; index <= 80; index += 1) { current.right = { val: index, left: null, right: null }; current = current.right } return preorderTraversal(root).length })(\"}",
+        "expected": 81
       }
     ],
+    "isComponent": false,
     "sourcePath": "problems/tree/preorder.js",
     "testPath": "problems/tree/preorder_test.js"
   },
@@ -2328,74 +3480,103 @@ export const problems: ProblemRecord[] = [
     "returnText": "返回一个支持多次分步传参的新函数；累计参数达到要求后会返回原函数执行结果。",
     "template": "function curry(fn) {\n\n}",
     "solutionCode": "function curry(fn) {\n  return function curried(...args) {\n    if (args.length >= fn.length) {\n      return fn.apply(this, args);\n    }\n\n    return function (...nextArgs) {\n      const mergedArgs = args.concat(nextArgs);\n\n      return curried.apply(this, mergedArgs);\n    };\n  };\n}",
+    "testCases": {
+      "examples": [
+        {
+          "input": {
+            "args": "(a, b, c) => a + b + c)(1)(2)(3"
+          },
+          "expected": 6
+        },
+        {
+          "input": {
+            "args": "(a, b, c) => a + b + c)(1, 2)(3"
+          },
+          "expected": 6
+        },
+        {
+          "input": {
+            "args": "(a, b, c) => a + b + c)(1)(2, 3"
+          },
+          "expected": 6
+        }
+      ],
+      "hidden": [
+        {
+          "input": {
+            "args": "(a, b, c) => a * b * c)(2)(3)(4"
+          },
+          "expected": 24
+        },
+        {
+          "input": {
+            "args": "(a, b) => a - b)(10, 3"
+          },
+          "expected": 7
+        }
+      ]
+    },
     "basicCases": [
       {
         "id": "case-1",
         "type": "basic",
-        "description": "基础用例 1",
-        "input": "curry((a, b, c) => a + b + c)(1)(2)(3)",
-        "expected": 6,
-        "timeoutMs": 2000
+        "description": "示例 1",
+        "input": "{\"args\":\"(a, b, c) => a + b + c)(1)(2)(3\"}",
+        "expected": 6
       },
       {
         "id": "case-2",
         "type": "basic",
-        "description": "基础用例 2",
-        "input": "curry((a, b, c) => a + b + c)(1, 2)(3)",
-        "expected": 6,
-        "timeoutMs": 2000
+        "description": "示例 2",
+        "input": "{\"args\":\"(a, b, c) => a + b + c)(1, 2)(3\"}",
+        "expected": 6
       },
       {
         "id": "case-3",
         "type": "basic",
-        "description": "基础用例 3",
-        "input": "curry((a, b, c) => a + b + c)(1)(2, 3)",
-        "expected": 6,
-        "timeoutMs": 2000
+        "description": "示例 3",
+        "input": "{\"args\":\"(a, b, c) => a + b + c)(1)(2, 3\"}",
+        "expected": 6
       }
     ],
     "fullCases": [
       {
         "id": "case-1",
         "type": "basic",
-        "description": "基础用例 1",
-        "input": "curry((a, b, c) => a + b + c)(1)(2)(3)",
-        "expected": 6,
-        "timeoutMs": 2000
+        "description": "示例 1",
+        "input": "{\"args\":\"(a, b, c) => a + b + c)(1)(2)(3\"}",
+        "expected": 6
       },
       {
         "id": "case-2",
         "type": "basic",
-        "description": "基础用例 2",
-        "input": "curry((a, b, c) => a + b + c)(1, 2)(3)",
-        "expected": 6,
-        "timeoutMs": 2000
+        "description": "示例 2",
+        "input": "{\"args\":\"(a, b, c) => a + b + c)(1, 2)(3\"}",
+        "expected": 6
       },
       {
         "id": "case-3",
         "type": "basic",
-        "description": "基础用例 3",
-        "input": "curry((a, b, c) => a + b + c)(1)(2, 3)",
-        "expected": 6,
-        "timeoutMs": 2000
+        "description": "示例 3",
+        "input": "{\"args\":\"(a, b, c) => a + b + c)(1)(2, 3\"}",
+        "expected": 6
       },
       {
-        "id": "case-4",
+        "id": "hidden-1",
         "type": "edge",
-        "description": "边界用例 1",
-        "input": "curry((a, b, c) => a * b * c)(2)(3)(4)",
-        "expected": 24,
-        "timeoutMs": 2000
+        "description": "隐藏 1",
+        "input": "{\"args\":\"(a, b, c) => a * b * c)(2)(3)(4\"}",
+        "expected": 24
       },
       {
-        "id": "case-5",
-        "type": "exception",
-        "description": "异常用例 1",
-        "input": "curry((a, b) => a - b)(10, 3)",
-        "expected": 7,
-        "timeoutMs": 2000
+        "id": "hidden-2",
+        "type": "edge",
+        "description": "隐藏 2",
+        "input": "{\"args\":\"(a, b) => a - b)(10, 3\"}",
+        "expected": 7
       }
     ],
+    "isComponent": false,
     "sourcePath": "problems/utility/curry.js",
     "testPath": "problems/utility/curry_test.js"
   },
@@ -2415,74 +3596,103 @@ export const problems: ProblemRecord[] = [
     "returnText": "返回一个新的防抖函数；调用它不会立刻执行 task，而是按防抖规则延后执行。",
     "template": "function debounce(task, delay) {\n\n}\n\ndebounce;",
     "solutionCode": "function debounce(task, delay) {\n  if (typeof task !== \"function\") {\n    throw new TypeError(\"debounce can only run with functions\");\n  }\n\n  let timer = null;\n\n  return function (...args) {\n    if (timer !== null) {\n      clearTimeout(timer);\n    }\n\n    timer = setTimeout(() => {\n      task.apply(this, args);\n    }, delay);\n  };\n}\n\ndebounce;",
+    "testCases": {
+      "examples": [
+        {
+          "input": {
+            "args": ") => { let count = 0; const fn = debounce(() => { count += 1 }, 30); fn(); fn(); fn(); await new Promise((resolve) => setTimeout(resolve, 60)); return count })("
+          },
+          "expected": 1
+        },
+        {
+          "input": {
+            "args": ") => { let value = 0; const fn = debounce((next) => { value = next }, 20); fn(1); fn(2); await new Promise((resolve) => setTimeout(resolve, 50)); return value })("
+          },
+          "expected": 2
+        },
+        {
+          "input": {
+            "args": ") => { let count = 0; const fn = debounce(() => { count += 1 }, 10); fn(); await new Promise((resolve) => setTimeout(resolve, 20)); fn(); await new Promise((resolve) => setTimeout(resolve, 20)); return count })("
+          },
+          "expected": 2
+        }
+      ],
+      "hidden": [
+        {
+          "input": {
+            "args": ") => { let scopeValue = 0; const context = { set(value) { scopeValue = value } }; const fn = debounce(function(value) { this.set(value) }, 10).bind(context); fn(5); await new Promise((resolve) => setTimeout(resolve, 30)); return scopeValue })("
+          },
+          "expected": 5
+        },
+        {
+          "input": {
+            "args": ") => { let count = 0; const fn = debounce(() => { count += 1 }, 5); for (let index = 0; index < 100; index += 1) fn(); await new Promise((resolve) => setTimeout(resolve, 20)); return count })("
+          },
+          "expected": 1
+        }
+      ]
+    },
     "basicCases": [
       {
         "id": "case-1",
         "type": "basic",
-        "description": "基础用例 1",
-        "input": "(async () => { let count = 0; const fn = debounce(() => { count += 1 }, 30); fn(); fn(); fn(); await new Promise((resolve) => setTimeout(resolve, 60)); return count })()",
-        "expected": 1,
-        "timeoutMs": 2000
+        "description": "示例 1",
+        "input": "{\"args\":\") => { let count = 0; const fn = debounce(() => { count += 1 }, 30); fn(); fn(); fn(); await new Promise((resolve) => setTimeout(resolve, 60)); return count })(\"}",
+        "expected": 1
       },
       {
         "id": "case-2",
         "type": "basic",
-        "description": "基础用例 2",
-        "input": "(async () => { let value = 0; const fn = debounce((next) => { value = next }, 20); fn(1); fn(2); await new Promise((resolve) => setTimeout(resolve, 50)); return value })()",
-        "expected": 2,
-        "timeoutMs": 2000
+        "description": "示例 2",
+        "input": "{\"args\":\") => { let value = 0; const fn = debounce((next) => { value = next }, 20); fn(1); fn(2); await new Promise((resolve) => setTimeout(resolve, 50)); return value })(\"}",
+        "expected": 2
       },
       {
         "id": "case-3",
         "type": "basic",
-        "description": "基础用例 3",
-        "input": "(async () => { let count = 0; const fn = debounce(() => { count += 1 }, 10); fn(); await new Promise((resolve) => setTimeout(resolve, 20)); fn(); await new Promise((resolve) => setTimeout(resolve, 20)); return count })()",
-        "expected": 2,
-        "timeoutMs": 2000
+        "description": "示例 3",
+        "input": "{\"args\":\") => { let count = 0; const fn = debounce(() => { count += 1 }, 10); fn(); await new Promise((resolve) => setTimeout(resolve, 20)); fn(); await new Promise((resolve) => setTimeout(resolve, 20)); return count })(\"}",
+        "expected": 2
       }
     ],
     "fullCases": [
       {
         "id": "case-1",
         "type": "basic",
-        "description": "基础用例 1",
-        "input": "(async () => { let count = 0; const fn = debounce(() => { count += 1 }, 30); fn(); fn(); fn(); await new Promise((resolve) => setTimeout(resolve, 60)); return count })()",
-        "expected": 1,
-        "timeoutMs": 2000
+        "description": "示例 1",
+        "input": "{\"args\":\") => { let count = 0; const fn = debounce(() => { count += 1 }, 30); fn(); fn(); fn(); await new Promise((resolve) => setTimeout(resolve, 60)); return count })(\"}",
+        "expected": 1
       },
       {
         "id": "case-2",
         "type": "basic",
-        "description": "基础用例 2",
-        "input": "(async () => { let value = 0; const fn = debounce((next) => { value = next }, 20); fn(1); fn(2); await new Promise((resolve) => setTimeout(resolve, 50)); return value })()",
-        "expected": 2,
-        "timeoutMs": 2000
+        "description": "示例 2",
+        "input": "{\"args\":\") => { let value = 0; const fn = debounce((next) => { value = next }, 20); fn(1); fn(2); await new Promise((resolve) => setTimeout(resolve, 50)); return value })(\"}",
+        "expected": 2
       },
       {
         "id": "case-3",
         "type": "basic",
-        "description": "基础用例 3",
-        "input": "(async () => { let count = 0; const fn = debounce(() => { count += 1 }, 10); fn(); await new Promise((resolve) => setTimeout(resolve, 20)); fn(); await new Promise((resolve) => setTimeout(resolve, 20)); return count })()",
-        "expected": 2,
-        "timeoutMs": 2000
+        "description": "示例 3",
+        "input": "{\"args\":\") => { let count = 0; const fn = debounce(() => { count += 1 }, 10); fn(); await new Promise((resolve) => setTimeout(resolve, 20)); fn(); await new Promise((resolve) => setTimeout(resolve, 20)); return count })(\"}",
+        "expected": 2
       },
       {
-        "id": "case-4",
+        "id": "hidden-1",
         "type": "edge",
-        "description": "边界用例 1",
-        "input": "(async () => { let scopeValue = 0; const context = { set(value) { scopeValue = value } }; const fn = debounce(function(value) { this.set(value) }, 10).bind(context); fn(5); await new Promise((resolve) => setTimeout(resolve, 30)); return scopeValue })()",
-        "expected": 5,
-        "timeoutMs": 2000
+        "description": "隐藏 1",
+        "input": "{\"args\":\") => { let scopeValue = 0; const context = { set(value) { scopeValue = value } }; const fn = debounce(function(value) { this.set(value) }, 10).bind(context); fn(5); await new Promise((resolve) => setTimeout(resolve, 30)); return scopeValue })(\"}",
+        "expected": 5
       },
       {
-        "id": "case-5",
-        "type": "exception",
-        "description": "异常用例 1",
-        "input": "(async () => { let count = 0; const fn = debounce(() => { count += 1 }, 5); for (let index = 0; index < 100; index += 1) fn(); await new Promise((resolve) => setTimeout(resolve, 20)); return count })()",
-        "expected": 1,
-        "timeoutMs": 2000
+        "id": "hidden-2",
+        "type": "edge",
+        "description": "隐藏 2",
+        "input": "{\"args\":\") => { let count = 0; const fn = debounce(() => { count += 1 }, 5); for (let index = 0; index < 100; index += 1) fn(); await new Promise((resolve) => setTimeout(resolve, 20)); return count })(\"}",
+        "expected": 1
       }
     ],
+    "isComponent": false,
     "sourcePath": "problems/utility/debounce.js",
     "testPath": "problems/utility/debounce_test.js"
   },
@@ -2502,97 +3712,143 @@ export const problems: ProblemRecord[] = [
     "returnText": "返回一个与原值结构等价但引用独立的新结果；如果传入的是基础类型，则直接返回原值。",
     "template": "function deepClone(obj, cache = new WeakMap()) {\n\n}",
     "solutionCode": "function deepClone(obj, cache = new WeakMap()) {\n  if (obj === null || typeof obj !== \"object\") return obj;\n\n  if (cache.has(obj)) return cache.get(obj);\n\n  if (obj instanceof Date) return new Date(obj.getTime());\n  if (obj instanceof RegExp) return new RegExp(obj);\n\n  if (obj instanceof Map) {\n    const clonedMap = new Map();\n    cache.set(obj, clonedMap);\n    obj.forEach((value, key) => {\n      clonedMap.set(deepClone(key, cache), deepClone(value, cache));\n    });\n    return clonedMap;\n  }\n\n  if (obj instanceof Set) {\n    const clonedSet = new Set();\n    cache.set(obj, clonedSet);\n    obj.forEach((value) => clonedSet.add(deepClone(value, cache)));\n    return clonedSet;\n  }\n\n  const clonedObj = Array.isArray(obj) ? [] : {};\n  cache.set(obj, clonedObj);\n\n  Reflect.ownKeys(obj).forEach((key) => {\n    clonedObj[key] = deepClone(obj[key], cache);\n  });\n\n  return clonedObj;\n}",
+    "testCases": {
+      "examples": [
+        {
+          "input": {
+            "args": "source); cloned.nested.value = 2; return [source.nested.value, cloned.nested.value] })("
+          },
+          "expected": [
+            1,
+            2
+          ]
+        },
+        {
+          "input": {
+            "args": "source); cloned[1][0] = 9; return [source[1][0], cloned[1][0]] })("
+          },
+          "expected": [
+            2,
+            9
+          ]
+        },
+        {
+          "input": {
+            "args": "source); return cloned !== source && cloned.self === cloned })("
+          },
+          "expected": true
+        }
+      ],
+      "hidden": [
+        {
+          "input": {
+            "args": "[[{ id: 1 }, new Set([1, 2])]]); const cloned = deepClone(source); const [[key, value]] = cloned.entries(); return [key.id, Array.from(value)] })("
+          },
+          "expected": [
+            1,
+            [
+              1,
+              2
+            ]
+          ]
+        },
+        {
+          "input": {
+            "args": "'2024-01-01T00:00:00.000Z'), pattern: /abc/gi }; const cloned = deepClone(source); return [cloned.date instanceof Date, cloned.date.getTime() === source.date.getTime(), cloned.pattern.source, cloned.pattern.flags] })("
+          },
+          "expected": [
+            true,
+            true,
+            "abc",
+            "gi"
+          ]
+        }
+      ]
+    },
     "basicCases": [
       {
         "id": "case-1",
         "type": "basic",
-        "description": "基础用例 1",
-        "input": "(() => { const source = { nested: { value: 1 } }; const cloned = deepClone(source); cloned.nested.value = 2; return [source.nested.value, cloned.nested.value] })()",
+        "description": "示例 1",
+        "input": "{\"args\":\"source); cloned.nested.value = 2; return [source.nested.value, cloned.nested.value] })(\"}",
         "expected": [
           1,
           2
-        ],
-        "timeoutMs": 2000
+        ]
       },
       {
         "id": "case-2",
         "type": "basic",
-        "description": "基础用例 2",
-        "input": "(() => { const source = [1, [2, 3]]; const cloned = deepClone(source); cloned[1][0] = 9; return [source[1][0], cloned[1][0]] })()",
+        "description": "示例 2",
+        "input": "{\"args\":\"source); cloned[1][0] = 9; return [source[1][0], cloned[1][0]] })(\"}",
         "expected": [
           2,
           9
-        ],
-        "timeoutMs": 2000
+        ]
       },
       {
         "id": "case-3",
         "type": "basic",
-        "description": "基础用例 3",
-        "input": "(() => { const source = { name: 'loop' }; source.self = source; const cloned = deepClone(source); return cloned !== source && cloned.self === cloned })()",
-        "expected": true,
-        "timeoutMs": 2000
+        "description": "示例 3",
+        "input": "{\"args\":\"source); return cloned !== source && cloned.self === cloned })(\"}",
+        "expected": true
       }
     ],
     "fullCases": [
       {
         "id": "case-1",
         "type": "basic",
-        "description": "基础用例 1",
-        "input": "(() => { const source = { nested: { value: 1 } }; const cloned = deepClone(source); cloned.nested.value = 2; return [source.nested.value, cloned.nested.value] })()",
+        "description": "示例 1",
+        "input": "{\"args\":\"source); cloned.nested.value = 2; return [source.nested.value, cloned.nested.value] })(\"}",
         "expected": [
           1,
           2
-        ],
-        "timeoutMs": 2000
+        ]
       },
       {
         "id": "case-2",
         "type": "basic",
-        "description": "基础用例 2",
-        "input": "(() => { const source = [1, [2, 3]]; const cloned = deepClone(source); cloned[1][0] = 9; return [source[1][0], cloned[1][0]] })()",
+        "description": "示例 2",
+        "input": "{\"args\":\"source); cloned[1][0] = 9; return [source[1][0], cloned[1][0]] })(\"}",
         "expected": [
           2,
           9
-        ],
-        "timeoutMs": 2000
+        ]
       },
       {
         "id": "case-3",
         "type": "basic",
-        "description": "基础用例 3",
-        "input": "(() => { const source = { name: 'loop' }; source.self = source; const cloned = deepClone(source); return cloned !== source && cloned.self === cloned })()",
-        "expected": true,
-        "timeoutMs": 2000
+        "description": "示例 3",
+        "input": "{\"args\":\"source); return cloned !== source && cloned.self === cloned })(\"}",
+        "expected": true
       },
       {
-        "id": "case-4",
+        "id": "hidden-1",
         "type": "edge",
-        "description": "边界用例 1",
-        "input": "(() => { const source = new Map([[{ id: 1 }, new Set([1, 2])]]); const cloned = deepClone(source); const [[key, value]] = cloned.entries(); return [key.id, Array.from(value)] })()",
+        "description": "隐藏 1",
+        "input": "{\"args\":\"[[{ id: 1 }, new Set([1, 2])]]); const cloned = deepClone(source); const [[key, value]] = cloned.entries(); return [key.id, Array.from(value)] })(\"}",
         "expected": [
           1,
           [
             1,
             2
           ]
-        ],
-        "timeoutMs": 2000
+        ]
       },
       {
-        "id": "case-5",
-        "type": "exception",
-        "description": "异常用例 1",
-        "input": "(() => { const source = { date: new Date('2024-01-01T00:00:00.000Z'), pattern: /abc/gi }; const cloned = deepClone(source); return [cloned.date instanceof Date, cloned.date.getTime() === source.date.getTime(), cloned.pattern.source, cloned.pattern.flags] })()",
+        "id": "hidden-2",
+        "type": "edge",
+        "description": "隐藏 2",
+        "input": "{\"args\":\"'2024-01-01T00:00:00.000Z'), pattern: /abc/gi }; const cloned = deepClone(source); return [cloned.date instanceof Date, cloned.date.getTime() === source.date.getTime(), cloned.pattern.source, cloned.pattern.flags] })(\"}",
         "expected": [
           true,
           true,
           "abc",
           "gi"
-        ],
-        "timeoutMs": 2000
+        ]
       }
     ],
+    "isComponent": false,
     "sourcePath": "problems/utility/deepClone.js",
     "testPath": "problems/utility/deepClone_test.js"
   },
@@ -2612,24 +3868,79 @@ export const problems: ProblemRecord[] = [
     "returnText": "返回扁平化后的新数组。",
     "template": "function flatten(arr, depth = Infinity) {\n\n}\n\nfunction flattenReduce(arr, depth = Infinity) {\n\n}\n\nfunction flattenIterative(arr, depth = Infinity) {\n\n}",
     "solutionCode": "function flatten(arr, depth = Infinity) {\n  if (depth <= 0) {\n    return arr.slice();\n  }\n\n  const result = [];\n\n  for (const item of arr) {\n    if (Array.isArray(item) && depth > 0) {\n      result.push(...flatten(item, depth - 1));\n    } else {\n      result.push(item);\n    }\n  }\n\n  return result;\n}\n\n/**\n * @description 使用 reduce 改写数组扁平化逻辑。目标仍然是把嵌套数组在指定深度内展开成一个新数组，但这一版强调用累加器逐步汇总结果，而不是手动维护外部结果数组。它同样需要保留原顺序、支持 depth 控制，并且不能修改传入数组。\n * @approach\n * 1. 仍然沿用“深度减一”的递归规则，只是把遍历过程交给 reduce。\n * 2. 每轮都返回新的累加结果，写法更偏函数式。\n * 3. 子数组递归展开后用 concat 拼接，普通值直接追加到累加器末尾。\n * @params\n * arr：需要被扁平化的数组。\n * depth：允许展开的最大深度，默认展开到最深层。\n * @return\n * 返回扁平化后的新数组。\n */\nfunction flattenReduce(arr, depth = Infinity) {\n  if (depth <= 0) {\n    return arr.slice();\n  }\n\n  return arr.reduce((acc, item) => {\n    if (Array.isArray(item) && depth > 0) {\n      return acc.concat(flattenReduce(item, depth - 1));\n    }\n    return acc.concat(item);\n  }, []);\n}\n\n/**\n * @description 使用显式栈实现数组扁平化。它要完成与递归版相同的功能：把嵌套数组在指定深度内展开成新数组，但通过手动维护栈来避免层级过深时递归调用栈溢出。实现时需要额外记录当前元素所处深度，并保证最终输出顺序与原数组一致。\n * @approach\n * 1. 先把顶层元素连同当前深度一起压入栈中。\n * 2. 每次弹出一个元素处理；如果仍可展开，就把子数组从右向左压栈。\n * 3. 从右向左压栈是为了保证后续弹出时依然保持原始顺序。\n * @params\n * arr：需要被扁平化的数组。\n * depth：允许展开的最大深度，默认展开到最深层。\n * @return\n * 返回扁平化后的新数组。\n */\nfunction flattenIterative(arr, depth = Infinity) {\n  const result = [];\n  const stack = arr.map((item) => ({ item, currentDepth: 0 }));\n\n  while (stack.length > 0) {\n    const { item, currentDepth } = stack.pop();\n\n    if (Array.isArray(item) && currentDepth < depth) {\n      for (let i = item.length - 1; i >= 0; i--) {\n        stack.push({ item: item[i], currentDepth: currentDepth + 1 });\n      }\n    } else {\n      result.push(item);\n    }\n  }\n\n  return result;\n}",
+    "testCases": {
+      "examples": [
+        {
+          "input": {
+            "args": "[1, [2, 3]]"
+          },
+          "expected": [
+            1,
+            2,
+            3
+          ]
+        },
+        {
+          "input": {
+            "args": "[1, [2, [3, [4]]]], 2"
+          },
+          "expected": [
+            1,
+            2,
+            3,
+            [
+              4
+            ]
+          ]
+        },
+        {
+          "input": {
+            "args": "source, 0); return [JSON.stringify(result), result !== source] })("
+          },
+          "expected": [
+            "[1,[2]]",
+            true
+          ]
+        }
+      ],
+      "hidden": [
+        {
+          "input": {
+            "args": "[], Infinity"
+          },
+          "expected": []
+        },
+        {
+          "input": {
+            "args": "[1, [2, [3, [4, [5]]]]], Infinity"
+          },
+          "expected": [
+            1,
+            2,
+            3,
+            4,
+            5
+          ]
+        }
+      ]
+    },
     "basicCases": [
       {
         "id": "case-1",
         "type": "basic",
-        "description": "基础用例 1",
-        "input": "flatten([1, [2, 3]])",
+        "description": "示例 1",
+        "input": "{\"args\":\"[1, [2, 3]]\"}",
         "expected": [
           1,
           2,
           3
-        ],
-        "timeoutMs": 2000
+        ]
       },
       {
         "id": "case-2",
         "type": "basic",
-        "description": "基础用例 2",
-        "input": "flatten([1, [2, [3, [4]]]], 2)",
+        "description": "示例 2",
+        "input": "{\"args\":\"[1, [2, [3, [4]]]], 2\"}",
         "expected": [
           1,
           2,
@@ -2637,39 +3948,36 @@ export const problems: ProblemRecord[] = [
           [
             4
           ]
-        ],
-        "timeoutMs": 2000
+        ]
       },
       {
         "id": "case-3",
         "type": "basic",
-        "description": "基础用例 3",
-        "input": "(() => { const source = [1, [2]]; const result = flatten(source, 0); return [JSON.stringify(result), result !== source] })()",
+        "description": "示例 3",
+        "input": "{\"args\":\"source, 0); return [JSON.stringify(result), result !== source] })(\"}",
         "expected": [
           "[1,[2]]",
           true
-        ],
-        "timeoutMs": 2000
+        ]
       }
     ],
     "fullCases": [
       {
         "id": "case-1",
         "type": "basic",
-        "description": "基础用例 1",
-        "input": "flatten([1, [2, 3]])",
+        "description": "示例 1",
+        "input": "{\"args\":\"[1, [2, 3]]\"}",
         "expected": [
           1,
           2,
           3
-        ],
-        "timeoutMs": 2000
+        ]
       },
       {
         "id": "case-2",
         "type": "basic",
-        "description": "基础用例 2",
-        "input": "flatten([1, [2, [3, [4]]]], 2)",
+        "description": "示例 2",
+        "input": "{\"args\":\"[1, [2, [3, [4]]]], 2\"}",
         "expected": [
           1,
           2,
@@ -2677,43 +3985,40 @@ export const problems: ProblemRecord[] = [
           [
             4
           ]
-        ],
-        "timeoutMs": 2000
+        ]
       },
       {
         "id": "case-3",
         "type": "basic",
-        "description": "基础用例 3",
-        "input": "(() => { const source = [1, [2]]; const result = flatten(source, 0); return [JSON.stringify(result), result !== source] })()",
+        "description": "示例 3",
+        "input": "{\"args\":\"source, 0); return [JSON.stringify(result), result !== source] })(\"}",
         "expected": [
           "[1,[2]]",
           true
-        ],
-        "timeoutMs": 2000
+        ]
       },
       {
-        "id": "case-4",
+        "id": "hidden-1",
         "type": "edge",
-        "description": "边界用例 1",
-        "input": "flatten([], Infinity)",
-        "expected": [],
-        "timeoutMs": 2000
+        "description": "隐藏 1",
+        "input": "{\"args\":\"[], Infinity\"}",
+        "expected": []
       },
       {
-        "id": "case-5",
-        "type": "exception",
-        "description": "异常用例 1",
-        "input": "flatten([1, [2, [3, [4, [5]]]]], Infinity)",
+        "id": "hidden-2",
+        "type": "edge",
+        "description": "隐藏 2",
+        "input": "{\"args\":\"[1, [2, [3, [4, [5]]]]], Infinity\"}",
         "expected": [
           1,
           2,
           3,
           4,
           5
-        ],
-        "timeoutMs": 2000
+        ]
       }
     ],
+    "isComponent": false,
     "sourcePath": "problems/utility/flatten.js",
     "testPath": "problems/utility/flatten_test.js"
   },
@@ -2733,74 +4038,103 @@ export const problems: ProblemRecord[] = [
     "returnText": "返回一个 Scheduler 实例；后续通过它的 add 方法接收任务并控制并发。",
     "template": "class Scheduler {\n  constructor(limit) {\n  \n}\n\n  \n  add(task) {\n  \n}\n\n  run() {\n  \n}\n\n}",
     "solutionCode": "class Scheduler {\n  constructor(limit) {\n    this.limit = limit;\n    this.count = 0;\n    this.queue = [];\n  }\n\n  /**\n   * @description 向调度器中加入一个异步任务；如果当前并发未满就立即执行，否则先排队等待。\n   * @approach 将任务函数和它对应的 resolve、reject 一起压入等待队列，然后统一交给 run 处理，这样每个任务都能在未来拿到自己的执行结果。\n   * @params\n   * task：一个无参函数，调用后必须返回 Promise，用来描述真正的异步工作。\n   * @return\n   * 返回一个 Promise；当对应任务执行成功时兑现结果，失败时拒绝错误。\n   */\n  add(task) {\n    return new Promise((resolve, reject) => {\n      this.queue.push({ task, resolve, reject });\n      this.run();\n    });\n  }\n\n  run() {\n    if (this.count >= this.limit || this.queue.length === 0) return;\n\n    this.count++;\n    const { task, resolve, reject } = this.queue.shift();\n\n    task()\n      .then(resolve)\n      .catch(reject)\n      .finally(() => {\n        this.count--;\n        this.run();\n      });\n  }\n}",
+    "testCases": {
+      "examples": [
+        {
+          "input": {
+            "args": ") => { const scheduler = new Scheduler(2); const result = []; const createTask = (value, delay) => () => new Promise((resolve) => setTimeout(() => { result.push(value); resolve(value) }, delay)); await Promise.all([scheduler.add(createTask(\"A\", 20)), scheduler.add(createTask(\"B\", 10)), scheduler.add(createTask(\"C\", 5))]); return result.includes(\"A\") && result.includes(\"B\") && result.includes(\"C\") })("
+          },
+          "expected": true
+        },
+        {
+          "input": {
+            "args": ") => { const scheduler = new Scheduler(1); const timeline = []; const createTask = (label, delay) => () => new Promise((resolve) => setTimeout(() => { timeline.push(label); resolve(label) }, delay)); await Promise.all([scheduler.add(createTask(\"first\", 10)), scheduler.add(createTask(\"second\", 5))]); return timeline.join(\",\") })("
+          },
+          "expected": "first,second"
+        },
+        {
+          "input": {
+            "args": ") => { const scheduler = new Scheduler(2); const value = await scheduler.add(() => Promise.resolve(\"ok\")); return value })("
+          },
+          "expected": "ok"
+        }
+      ],
+      "hidden": [
+        {
+          "input": {
+            "args": ") => { const scheduler = new Scheduler(2); try { await scheduler.add(() => Promise.reject(new Error(\"fail\"))) } catch (error) { return error.message } })("
+          },
+          "expected": "fail"
+        },
+        {
+          "input": {
+            "args": ") => { const scheduler = new Scheduler(5); const results = await Promise.all(Array.from({ length: 30 }, (_, index) => scheduler.add(() => Promise.resolve(index)))); return results.length })("
+          },
+          "expected": 30
+        }
+      ]
+    },
     "basicCases": [
       {
         "id": "case-1",
         "type": "basic",
-        "description": "基础用例 1",
-        "input": "(async () => { const scheduler = new Scheduler(2); const result = []; const createTask = (value, delay) => () => new Promise((resolve) => setTimeout(() => { result.push(value); resolve(value) }, delay)); await Promise.all([scheduler.add(createTask(\"A\", 20)), scheduler.add(createTask(\"B\", 10)), scheduler.add(createTask(\"C\", 5))]); return result.includes(\"A\") && result.includes(\"B\") && result.includes(\"C\") })()",
-        "expected": true,
-        "timeoutMs": 2000
+        "description": "示例 1",
+        "input": "{\"args\":\") => { const scheduler = new Scheduler(2); const result = []; const createTask = (value, delay) => () => new Promise((resolve) => setTimeout(() => { result.push(value); resolve(value) }, delay)); await Promise.all([scheduler.add(createTask(\\\"A\\\", 20)), scheduler.add(createTask(\\\"B\\\", 10)), scheduler.add(createTask(\\\"C\\\", 5))]); return result.includes(\\\"A\\\") && result.includes(\\\"B\\\") && result.includes(\\\"C\\\") })(\"}",
+        "expected": true
       },
       {
         "id": "case-2",
         "type": "basic",
-        "description": "基础用例 2",
-        "input": "(async () => { const scheduler = new Scheduler(1); const timeline = []; const createTask = (label, delay) => () => new Promise((resolve) => setTimeout(() => { timeline.push(label); resolve(label) }, delay)); await Promise.all([scheduler.add(createTask(\"first\", 10)), scheduler.add(createTask(\"second\", 5))]); return timeline.join(\",\") })()",
-        "expected": "first,second",
-        "timeoutMs": 2000
+        "description": "示例 2",
+        "input": "{\"args\":\") => { const scheduler = new Scheduler(1); const timeline = []; const createTask = (label, delay) => () => new Promise((resolve) => setTimeout(() => { timeline.push(label); resolve(label) }, delay)); await Promise.all([scheduler.add(createTask(\\\"first\\\", 10)), scheduler.add(createTask(\\\"second\\\", 5))]); return timeline.join(\\\",\\\") })(\"}",
+        "expected": "first,second"
       },
       {
         "id": "case-3",
         "type": "basic",
-        "description": "基础用例 3",
-        "input": "(async () => { const scheduler = new Scheduler(2); const value = await scheduler.add(() => Promise.resolve(\"ok\")); return value })()",
-        "expected": "ok",
-        "timeoutMs": 2000
+        "description": "示例 3",
+        "input": "{\"args\":\") => { const scheduler = new Scheduler(2); const value = await scheduler.add(() => Promise.resolve(\\\"ok\\\")); return value })(\"}",
+        "expected": "ok"
       }
     ],
     "fullCases": [
       {
         "id": "case-1",
         "type": "basic",
-        "description": "基础用例 1",
-        "input": "(async () => { const scheduler = new Scheduler(2); const result = []; const createTask = (value, delay) => () => new Promise((resolve) => setTimeout(() => { result.push(value); resolve(value) }, delay)); await Promise.all([scheduler.add(createTask(\"A\", 20)), scheduler.add(createTask(\"B\", 10)), scheduler.add(createTask(\"C\", 5))]); return result.includes(\"A\") && result.includes(\"B\") && result.includes(\"C\") })()",
-        "expected": true,
-        "timeoutMs": 2000
+        "description": "示例 1",
+        "input": "{\"args\":\") => { const scheduler = new Scheduler(2); const result = []; const createTask = (value, delay) => () => new Promise((resolve) => setTimeout(() => { result.push(value); resolve(value) }, delay)); await Promise.all([scheduler.add(createTask(\\\"A\\\", 20)), scheduler.add(createTask(\\\"B\\\", 10)), scheduler.add(createTask(\\\"C\\\", 5))]); return result.includes(\\\"A\\\") && result.includes(\\\"B\\\") && result.includes(\\\"C\\\") })(\"}",
+        "expected": true
       },
       {
         "id": "case-2",
         "type": "basic",
-        "description": "基础用例 2",
-        "input": "(async () => { const scheduler = new Scheduler(1); const timeline = []; const createTask = (label, delay) => () => new Promise((resolve) => setTimeout(() => { timeline.push(label); resolve(label) }, delay)); await Promise.all([scheduler.add(createTask(\"first\", 10)), scheduler.add(createTask(\"second\", 5))]); return timeline.join(\",\") })()",
-        "expected": "first,second",
-        "timeoutMs": 2000
+        "description": "示例 2",
+        "input": "{\"args\":\") => { const scheduler = new Scheduler(1); const timeline = []; const createTask = (label, delay) => () => new Promise((resolve) => setTimeout(() => { timeline.push(label); resolve(label) }, delay)); await Promise.all([scheduler.add(createTask(\\\"first\\\", 10)), scheduler.add(createTask(\\\"second\\\", 5))]); return timeline.join(\\\",\\\") })(\"}",
+        "expected": "first,second"
       },
       {
         "id": "case-3",
         "type": "basic",
-        "description": "基础用例 3",
-        "input": "(async () => { const scheduler = new Scheduler(2); const value = await scheduler.add(() => Promise.resolve(\"ok\")); return value })()",
-        "expected": "ok",
-        "timeoutMs": 2000
+        "description": "示例 3",
+        "input": "{\"args\":\") => { const scheduler = new Scheduler(2); const value = await scheduler.add(() => Promise.resolve(\\\"ok\\\")); return value })(\"}",
+        "expected": "ok"
       },
       {
-        "id": "case-4",
+        "id": "hidden-1",
         "type": "edge",
-        "description": "边界用例 1",
-        "input": "(async () => { const scheduler = new Scheduler(2); try { await scheduler.add(() => Promise.reject(new Error(\"fail\"))) } catch (error) { return error.message } })()",
-        "expected": "fail",
-        "timeoutMs": 2000
+        "description": "隐藏 1",
+        "input": "{\"args\":\") => { const scheduler = new Scheduler(2); try { await scheduler.add(() => Promise.reject(new Error(\\\"fail\\\"))) } catch (error) { return error.message } })(\"}",
+        "expected": "fail"
       },
       {
-        "id": "case-5",
-        "type": "exception",
-        "description": "异常用例 1",
-        "input": "(async () => { const scheduler = new Scheduler(5); const results = await Promise.all(Array.from({ length: 30 }, (_, index) => scheduler.add(() => Promise.resolve(index)))); return results.length })()",
-        "expected": 30,
-        "timeoutMs": 2000
+        "id": "hidden-2",
+        "type": "edge",
+        "description": "隐藏 2",
+        "input": "{\"args\":\") => { const scheduler = new Scheduler(5); const results = await Promise.all(Array.from({ length: 30 }, (_, index) => scheduler.add(() => Promise.resolve(index)))); return results.length })(\"}",
+        "expected": 30
       }
     ],
+    "isComponent": false,
     "sourcePath": "problems/utility/scheduler.js",
     "testPath": "problems/utility/scheduler_test.js"
   },
@@ -2820,80 +4154,112 @@ export const problems: ProblemRecord[] = [
     "returnText": "当所有任务都按顺序执行完成时返回一个已完成的 Promise；只要有任务最终失败，就返回被拒绝的 Promise。",
     "template": "async function execute(tasks, timeout, retries) {\n\n}\n\nfunction runTask(task, index, timeout, retries) {\n\n}",
     "solutionCode": "async function execute(tasks, timeout, retries) {\n  if (!Array.isArray(tasks)) {\n    throw new TypeError(\"execute function can only execute array of tasks\");\n  }\n\n  for (let i = 0; i < tasks.length; i++) {\n    const task = tasks[i];\n    if (typeof task !== \"function\") {\n      throw new TypeError(`Task at index ${i} is not a function`);\n    }\n    await runTask(task, i, timeout, retries);\n  }\n}\n\n/**\n * 执行单个任务，支持超时和重试\n * @param {Function} task - 任务函数\n * @param {number} index - 任务索引\n * @param {number} timeout - 超时时间\n * @param {number} retries - 最大重试次数\n * @returns {Promise<*>}\n */\nfunction runTask(task, index, timeout, retries) {\n  let currentTries = 0;\n\n  return new Promise((resolve, reject) => {\n    const attempt = async () => {\n      currentTries++;\n\n      try {\n        const result = await Promise.race([\n          task(),\n          new Promise((_, rejectTimeout) => {\n            setTimeout(() => {\n              rejectTimeout(\n                new Error(`Task ${index} execute timeout after ${timeout}ms`),\n              );\n            }, timeout);\n          }),\n        ]);\n        resolve(result);\n      } catch (err) {\n        if (currentTries < retries) {\n          attempt();\n        } else {\n          reject(\n            new Error(\n              `Task ${index} failed after ${retries} retries: ${err.message}`,\n            ),\n          );\n        }\n      }\n    };\n\n    attempt();\n  });\n}",
+    "testCases": {
+      "examples": [
+        {
+          "input": {
+            "args": ") => { const result = []; await execute([() => Promise.resolve(result.push(1)), () => Promise.resolve(result.push(2))], 100, 1); return result })("
+          },
+          "expected": [
+            1,
+            2
+          ]
+        },
+        {
+          "input": {
+            "args": ") => { const value = await runTask(() => Promise.resolve(\"ok\"), 0, 100, 1); return value })("
+          },
+          "expected": "ok"
+        },
+        {
+          "input": {
+            "args": ") => { let count = 0; const value = await runTask(() => { count += 1; return count < 2 ? Promise.reject(new Error(\"retry\")) : Promise.resolve(\"done\") }, 0, 100, 2); return value })("
+          },
+          "expected": "done"
+        }
+      ],
+      "hidden": [
+        {
+          "input": {
+            "args": ") => { try { await execute([123], 100, 1) } catch (error) { return error instanceof TypeError } })("
+          },
+          "expected": true
+        },
+        {
+          "input": {
+            "args": ") => { const tasks = Array.from({ length: 20 }, (_, index) => () => Promise.resolve(index)); await execute(tasks, 100, 1); return tasks.length })("
+          },
+          "expected": 20
+        }
+      ]
+    },
     "basicCases": [
       {
         "id": "case-1",
         "type": "basic",
-        "description": "基础用例 1",
-        "input": "(async () => { const result = []; await execute([() => Promise.resolve(result.push(1)), () => Promise.resolve(result.push(2))], 100, 1); return result })()",
+        "description": "示例 1",
+        "input": "{\"args\":\") => { const result = []; await execute([() => Promise.resolve(result.push(1)), () => Promise.resolve(result.push(2))], 100, 1); return result })(\"}",
         "expected": [
           1,
           2
-        ],
-        "timeoutMs": 2000
+        ]
       },
       {
         "id": "case-2",
         "type": "basic",
-        "description": "基础用例 2",
-        "input": "(async () => { const value = await runTask(() => Promise.resolve(\"ok\"), 0, 100, 1); return value })()",
-        "expected": "ok",
-        "timeoutMs": 2000
+        "description": "示例 2",
+        "input": "{\"args\":\") => { const value = await runTask(() => Promise.resolve(\\\"ok\\\"), 0, 100, 1); return value })(\"}",
+        "expected": "ok"
       },
       {
         "id": "case-3",
         "type": "basic",
-        "description": "基础用例 3",
-        "input": "(async () => { let count = 0; const value = await runTask(() => { count += 1; return count < 2 ? Promise.reject(new Error(\"retry\")) : Promise.resolve(\"done\") }, 0, 100, 2); return value })()",
-        "expected": "done",
-        "timeoutMs": 2000
+        "description": "示例 3",
+        "input": "{\"args\":\") => { let count = 0; const value = await runTask(() => { count += 1; return count < 2 ? Promise.reject(new Error(\\\"retry\\\")) : Promise.resolve(\\\"done\\\") }, 0, 100, 2); return value })(\"}",
+        "expected": "done"
       }
     ],
     "fullCases": [
       {
         "id": "case-1",
         "type": "basic",
-        "description": "基础用例 1",
-        "input": "(async () => { const result = []; await execute([() => Promise.resolve(result.push(1)), () => Promise.resolve(result.push(2))], 100, 1); return result })()",
+        "description": "示例 1",
+        "input": "{\"args\":\") => { const result = []; await execute([() => Promise.resolve(result.push(1)), () => Promise.resolve(result.push(2))], 100, 1); return result })(\"}",
         "expected": [
           1,
           2
-        ],
-        "timeoutMs": 2000
+        ]
       },
       {
         "id": "case-2",
         "type": "basic",
-        "description": "基础用例 2",
-        "input": "(async () => { const value = await runTask(() => Promise.resolve(\"ok\"), 0, 100, 1); return value })()",
-        "expected": "ok",
-        "timeoutMs": 2000
+        "description": "示例 2",
+        "input": "{\"args\":\") => { const value = await runTask(() => Promise.resolve(\\\"ok\\\"), 0, 100, 1); return value })(\"}",
+        "expected": "ok"
       },
       {
         "id": "case-3",
         "type": "basic",
-        "description": "基础用例 3",
-        "input": "(async () => { let count = 0; const value = await runTask(() => { count += 1; return count < 2 ? Promise.reject(new Error(\"retry\")) : Promise.resolve(\"done\") }, 0, 100, 2); return value })()",
-        "expected": "done",
-        "timeoutMs": 2000
+        "description": "示例 3",
+        "input": "{\"args\":\") => { let count = 0; const value = await runTask(() => { count += 1; return count < 2 ? Promise.reject(new Error(\\\"retry\\\")) : Promise.resolve(\\\"done\\\") }, 0, 100, 2); return value })(\"}",
+        "expected": "done"
       },
       {
-        "id": "case-4",
+        "id": "hidden-1",
         "type": "edge",
-        "description": "边界用例 1",
-        "input": "(async () => { try { await execute([123], 100, 1) } catch (error) { return error instanceof TypeError } })()",
-        "expected": true,
-        "timeoutMs": 2000
+        "description": "隐藏 1",
+        "input": "{\"args\":\") => { try { await execute([123], 100, 1) } catch (error) { return error instanceof TypeError } })(\"}",
+        "expected": true
       },
       {
-        "id": "case-5",
-        "type": "exception",
-        "description": "异常用例 1",
-        "input": "(async () => { const tasks = Array.from({ length: 20 }, (_, index) => () => Promise.resolve(index)); await execute(tasks, 100, 1); return tasks.length })()",
-        "expected": 20,
-        "timeoutMs": 2000
+        "id": "hidden-2",
+        "type": "edge",
+        "description": "隐藏 2",
+        "input": "{\"args\":\") => { const tasks = Array.from({ length: 20 }, (_, index) => () => Promise.resolve(index)); await execute(tasks, 100, 1); return tasks.length })(\"}",
+        "expected": 20
       }
     ],
+    "isComponent": false,
     "sourcePath": "problems/utility/task_queue_runner.js",
     "testPath": "problems/utility/task_queue_runner_test.js"
   },
@@ -2913,74 +4279,103 @@ export const problems: ProblemRecord[] = [
     "returnText": "返回一个新的节流函数；高频调用时会按固定节奏执行 task，而不是每次都执行。",
     "template": "function throttle(task, requireTime) {\n\n}",
     "solutionCode": "function throttle(task, requireTime) {\n  if (typeof task !== \"function\") {\n    throw new TypeError(\"throttle can only run with functions\");\n  }\n\n  let lastTime = 0;\n\n  return function (...args) {\n    const now = Date.now();\n\n    if (now - lastTime >= requireTime) {\n      task.apply(this, args);\n      lastTime = now;\n    }\n  };\n}",
+    "testCases": {
+      "examples": [
+        {
+          "input": {
+            "args": ") => { let count = 0; const fn = throttle(() => { count += 1 }, 30); fn(); fn(); fn(); await new Promise((resolve) => setTimeout(resolve, 40)); return count })("
+          },
+          "expected": 1
+        },
+        {
+          "input": {
+            "args": ") => { let count = 0; const fn = throttle(() => { count += 1 }, 20); fn(); await new Promise((resolve) => setTimeout(resolve, 30)); fn(); return count })("
+          },
+          "expected": 2
+        },
+        {
+          "input": {
+            "args": ") => { let value = 0; const fn = throttle((next) => { value = next }, 20); fn(1); fn(2); await new Promise((resolve) => setTimeout(resolve, 30)); return value })("
+          },
+          "expected": 1
+        }
+      ],
+      "hidden": [
+        {
+          "input": {
+            "args": ") => { let count = 0; const context = { increase() { count += 1 } }; const fn = throttle(function() { this.increase() }.bind(context), 10); fn(); await new Promise((resolve) => setTimeout(resolve, 20)); return count })("
+          },
+          "expected": 1
+        },
+        {
+          "input": {
+            "args": ") => { let count = 0; const fn = throttle(() => { count += 1 }, 5); for (let index = 0; index < 50; index += 1) fn(); await new Promise((resolve) => setTimeout(resolve, 15)); return count })("
+          },
+          "expected": 1
+        }
+      ]
+    },
     "basicCases": [
       {
         "id": "case-1",
         "type": "basic",
-        "description": "基础用例 1",
-        "input": "(async () => { let count = 0; const fn = throttle(() => { count += 1 }, 30); fn(); fn(); fn(); await new Promise((resolve) => setTimeout(resolve, 40)); return count })()",
-        "expected": 1,
-        "timeoutMs": 2000
+        "description": "示例 1",
+        "input": "{\"args\":\") => { let count = 0; const fn = throttle(() => { count += 1 }, 30); fn(); fn(); fn(); await new Promise((resolve) => setTimeout(resolve, 40)); return count })(\"}",
+        "expected": 1
       },
       {
         "id": "case-2",
         "type": "basic",
-        "description": "基础用例 2",
-        "input": "(async () => { let count = 0; const fn = throttle(() => { count += 1 }, 20); fn(); await new Promise((resolve) => setTimeout(resolve, 30)); fn(); return count })()",
-        "expected": 2,
-        "timeoutMs": 2000
+        "description": "示例 2",
+        "input": "{\"args\":\") => { let count = 0; const fn = throttle(() => { count += 1 }, 20); fn(); await new Promise((resolve) => setTimeout(resolve, 30)); fn(); return count })(\"}",
+        "expected": 2
       },
       {
         "id": "case-3",
         "type": "basic",
-        "description": "基础用例 3",
-        "input": "(async () => { let value = 0; const fn = throttle((next) => { value = next }, 20); fn(1); fn(2); await new Promise((resolve) => setTimeout(resolve, 30)); return value })()",
-        "expected": 1,
-        "timeoutMs": 2000
+        "description": "示例 3",
+        "input": "{\"args\":\") => { let value = 0; const fn = throttle((next) => { value = next }, 20); fn(1); fn(2); await new Promise((resolve) => setTimeout(resolve, 30)); return value })(\"}",
+        "expected": 1
       }
     ],
     "fullCases": [
       {
         "id": "case-1",
         "type": "basic",
-        "description": "基础用例 1",
-        "input": "(async () => { let count = 0; const fn = throttle(() => { count += 1 }, 30); fn(); fn(); fn(); await new Promise((resolve) => setTimeout(resolve, 40)); return count })()",
-        "expected": 1,
-        "timeoutMs": 2000
+        "description": "示例 1",
+        "input": "{\"args\":\") => { let count = 0; const fn = throttle(() => { count += 1 }, 30); fn(); fn(); fn(); await new Promise((resolve) => setTimeout(resolve, 40)); return count })(\"}",
+        "expected": 1
       },
       {
         "id": "case-2",
         "type": "basic",
-        "description": "基础用例 2",
-        "input": "(async () => { let count = 0; const fn = throttle(() => { count += 1 }, 20); fn(); await new Promise((resolve) => setTimeout(resolve, 30)); fn(); return count })()",
-        "expected": 2,
-        "timeoutMs": 2000
+        "description": "示例 2",
+        "input": "{\"args\":\") => { let count = 0; const fn = throttle(() => { count += 1 }, 20); fn(); await new Promise((resolve) => setTimeout(resolve, 30)); fn(); return count })(\"}",
+        "expected": 2
       },
       {
         "id": "case-3",
         "type": "basic",
-        "description": "基础用例 3",
-        "input": "(async () => { let value = 0; const fn = throttle((next) => { value = next }, 20); fn(1); fn(2); await new Promise((resolve) => setTimeout(resolve, 30)); return value })()",
-        "expected": 1,
-        "timeoutMs": 2000
+        "description": "示例 3",
+        "input": "{\"args\":\") => { let value = 0; const fn = throttle((next) => { value = next }, 20); fn(1); fn(2); await new Promise((resolve) => setTimeout(resolve, 30)); return value })(\"}",
+        "expected": 1
       },
       {
-        "id": "case-4",
+        "id": "hidden-1",
         "type": "edge",
-        "description": "边界用例 1",
-        "input": "(async () => { let count = 0; const context = { increase() { count += 1 } }; const fn = throttle(function() { this.increase() }.bind(context), 10); fn(); await new Promise((resolve) => setTimeout(resolve, 20)); return count })()",
-        "expected": 1,
-        "timeoutMs": 2000
+        "description": "隐藏 1",
+        "input": "{\"args\":\") => { let count = 0; const context = { increase() { count += 1 } }; const fn = throttle(function() { this.increase() }.bind(context), 10); fn(); await new Promise((resolve) => setTimeout(resolve, 20)); return count })(\"}",
+        "expected": 1
       },
       {
-        "id": "case-5",
-        "type": "exception",
-        "description": "异常用例 1",
-        "input": "(async () => { let count = 0; const fn = throttle(() => { count += 1 }, 5); for (let index = 0; index < 50; index += 1) fn(); await new Promise((resolve) => setTimeout(resolve, 15)); return count })()",
-        "expected": 1,
-        "timeoutMs": 2000
+        "id": "hidden-2",
+        "type": "edge",
+        "description": "隐藏 2",
+        "input": "{\"args\":\") => { let count = 0; const fn = throttle(() => { count += 1 }, 5); for (let index = 0; index < 50; index += 1) fn(); await new Promise((resolve) => setTimeout(resolve, 15)); return count })(\"}",
+        "expected": 1
       }
     ],
+    "isComponent": false,
     "sourcePath": "problems/utility/throttle.js",
     "testPath": "problems/utility/throttle_test.js"
   },
@@ -3000,74 +4395,13 @@ export const problems: ProblemRecord[] = [
     "returnText": "* {JSX.Element} 级联选择器",
     "template": "import { useState } from \"react\";\n\nconst areaData = [\n  {\n    id: 1,\n    name: \"辽宁省\",\n    children: [\n      {\n        id: 11,\n        name: \"沈阳市\",\n        children: [\n          { id: 111, name: \"和平区\" },\n          { id: 112, name: \"沈河区\" },\n          { id: 113, name: \"皇姑区\" },\n        ],\n      },\n      {\n        id: 12,\n        name: \"大连市\",\n        children: [\n          { id: 121, name: \"中山区\" },\n          { id: 122, name: \"西岗区\" },\n        ],\n      },\n    ],\n  },\n  {\n    id: 2,\n    name: \"山东省\",\n    children: [\n      {\n        id: 21,\n        name: \"济南市\",\n        children: [\n          { id: 211, name: \"历下区\" },\n          { id: 212, name: \"市中区\" },\n        ],\n      },\n    ],\n  },\n];\n\nconst LEVEL_COUNT = 3;\nexport default function Cascader() {\n  const [selected, setSelected] = useState([]);\n\n  const getOptionsByLevel = (level) => {\n    if (level === 0) return areaData;\n\n    if (level === 1) {\n      const pid = selected[0];\n      const province = areaData.find((item) => item.id === pid);\n      return province?.children || [];\n    }\n\n    if (level === 2) {\n      const pid = selected[0];\n      const cid = selected[1];\n      const province = areaData.find((item) => item.id === pid);\n      const city = province?.children?.find((item) => item.id === cid);\n      return city?.children || [];\n    }\n\n    return [];\n  };\n\n  const handleChange = (val, level) => {\n    const newSelected = [...selected];\n    newSelected[level] = val;\n\n    for (let i = level + 1; i < LEVEL_COUNT; i++) {\n      newSelected[i] = undefined;\n    }\n\n    setSelected(newSelected);\n  };\n\n  const getSelectedText = () => {\n    const names = [];\n    let list = areaData;\n    for (let i = 0; i < LEVEL_COUNT; i++) {\n      const id = selected[i];\n      const item = list.find((it) => it.id === id);\n      if (item) {\n        names.push(item.name);\n        list = item.children || [];\n      } else {\n        break;\n      }\n    }\n    return names.join(\" / \");\n  };\n\n  return (\n    <div style={{ padding: 20 }}>\n      <h3>级联选择器</h3>\n      <div style={{ display: \"flex\", gap: 10 }}>\n        {Array.from({ length: LEVEL_COUNT }).map((_, level) => (\n          <select\n            key={level}\n            value={selected[level] || \"\"}\n            onChange={(e) => handleChange(Number(e.target.value), level)}\n          >\n            <option value=\"\">请选择</option>\n            {getOptionsByLevel(level).map((item) => (\n              <option key={item.id} value={item.id}>\n                {item.name}\n              </option>\n            ))}\n          </select>\n        ))}\n      </div>\n      <p>已选择: {getSelectedText() || \"未选择\"}</p>\n    </div>\n  );\n}",
     "solutionCode": "import { useState } from \"react\";\n\nconst areaData = [\n  {\n    id: 1,\n    name: \"辽宁省\",\n    children: [\n      {\n        id: 11,\n        name: \"沈阳市\",\n        children: [\n          { id: 111, name: \"和平区\" },\n          { id: 112, name: \"沈河区\" },\n          { id: 113, name: \"皇姑区\" },\n        ],\n      },\n      {\n        id: 12,\n        name: \"大连市\",\n        children: [\n          { id: 121, name: \"中山区\" },\n          { id: 122, name: \"西岗区\" },\n        ],\n      },\n    ],\n  },\n  {\n    id: 2,\n    name: \"山东省\",\n    children: [\n      {\n        id: 21,\n        name: \"济南市\",\n        children: [\n          { id: 211, name: \"历下区\" },\n          { id: 212, name: \"市中区\" },\n        ],\n      },\n    ],\n  },\n];\n\nconst LEVEL_COUNT = 3;\nexport default function Cascader() {\n  const [selected, setSelected] = useState([]);\n\n  const getOptionsByLevel = (level) => {\n    if (level === 0) return areaData;\n\n    if (level === 1) {\n      const pid = selected[0];\n      const province = areaData.find((item) => item.id === pid);\n      return province?.children || [];\n    }\n\n    if (level === 2) {\n      const pid = selected[0];\n      const cid = selected[1];\n      const province = areaData.find((item) => item.id === pid);\n      const city = province?.children?.find((item) => item.id === cid);\n      return city?.children || [];\n    }\n\n    return [];\n  };\n\n  const handleChange = (val, level) => {\n    const newSelected = [...selected];\n    newSelected[level] = val;\n\n    for (let i = level + 1; i < LEVEL_COUNT; i++) {\n      newSelected[i] = undefined;\n    }\n\n    setSelected(newSelected);\n  };\n\n  const getSelectedText = () => {\n    const names = [];\n    let list = areaData;\n    for (let i = 0; i < LEVEL_COUNT; i++) {\n      const id = selected[i];\n      const item = list.find((it) => it.id === id);\n      if (item) {\n        names.push(item.name);\n        list = item.children || [];\n      } else {\n        break;\n      }\n    }\n    return names.join(\" / \");\n  };\n\n  return (\n    <div style={{ padding: 20 }}>\n      <h3>级联选择器</h3>\n      <div style={{ display: \"flex\", gap: 10 }}>\n        {Array.from({ length: LEVEL_COUNT }).map((_, level) => (\n          <select\n            key={level}\n            value={selected[level] || \"\"}\n            onChange={(e) => handleChange(Number(e.target.value), level)}\n          >\n            <option value=\"\">请选择</option>\n            {getOptionsByLevel(level).map((item) => (\n              <option key={item.id} value={item.id}>\n                {item.name}\n              </option>\n            ))}\n          </select>\n        ))}\n      </div>\n      <p>已选择: {getSelectedText() || \"未选择\"}</p>\n    </div>\n  );\n}",
-    "basicCases": [
-      {
-        "id": "case-1",
-        "type": "basic",
-        "description": "基础用例 1",
-        "input": "Render the component in the local launcher.",
-        "expected": "The component should mount correctly.",
-        "timeoutMs": 2000
-      },
-      {
-        "id": "case-2",
-        "type": "basic",
-        "description": "基础用例 2",
-        "input": "Trigger the main user interaction once.",
-        "expected": "The main visible state should update once.",
-        "timeoutMs": 2000
-      },
-      {
-        "id": "case-3",
-        "type": "basic",
-        "description": "基础用例 3",
-        "input": "Repeat the main interaction several times.",
-        "expected": "The component should keep responding without stale state.",
-        "timeoutMs": 2000
-      }
-    ],
-    "fullCases": [
-      {
-        "id": "case-1",
-        "type": "basic",
-        "description": "基础用例 1",
-        "input": "Render the component in the local launcher.",
-        "expected": "The component should mount correctly.",
-        "timeoutMs": 2000
-      },
-      {
-        "id": "case-2",
-        "type": "basic",
-        "description": "基础用例 2",
-        "input": "Trigger the main user interaction once.",
-        "expected": "The main visible state should update once.",
-        "timeoutMs": 2000
-      },
-      {
-        "id": "case-3",
-        "type": "basic",
-        "description": "基础用例 3",
-        "input": "Repeat the main interaction several times.",
-        "expected": "The component should keep responding without stale state.",
-        "timeoutMs": 2000
-      },
-      {
-        "id": "case-4",
-        "type": "edge",
-        "description": "边界用例 1",
-        "input": "Use an empty or boundary input state in the launcher.",
-        "expected": "The component should stay stable and render fallback UI.",
-        "timeoutMs": 2000
-      },
-      {
-        "id": "case-5",
-        "type": "exception",
-        "description": "异常用例 1",
-        "input": "Keep the component mounted in a longer interactive session.",
-        "expected": "The component should remain responsive.",
-        "timeoutMs": 2000
-      }
-    ],
+    "testCases": {
+      "examples": [],
+      "hidden": []
+    },
+    "basicCases": [],
+    "fullCases": [],
+    "isComponent": true,
     "sourcePath": "problems/with_react/cascader.jsx",
     "testPath": "problems/with_react/cascader_test.js"
   },
@@ -3087,74 +4421,13 @@ export const problems: ProblemRecord[] = [
     "returnText": "* {JSX.Element} 倒计时组件",
     "template": "import { useEffect, useRef, useState } from \"react\";\n\nconst ONE_DAY = 24 * 60 * 60 * 1000;\nconst ONE_HOUR = 60 * 60 * 1000;\nconst ONE_MINUTE = 60 * 1000;\nconst ONE_SECOND = 1000;\nfunction CountDown({ totalSeconds = 60, onEnd, showMs = false }) {\n  const [timeLeft, setTimeLeft] = useState(totalSeconds * 1000);\n  const timer = useRef(null);\n  const lastTimestamp = useRef(null);\n\n  useEffect(() => {\n    if (timeLeft <= 0) {\n      onEnd?.();\n      cancelAnimationFrame(timer.current);\n      return;\n    }\n\n    const update = () => {\n      const now = performance.now();\n      if (!lastTimestamp.current) {\n        lastTimestamp.current = now;\n      }\n\n      setTimeLeft((timeLeft) =>\n        Math.max(0, timeLeft - (now - lastTimestamp.current)),\n      );\n      lastTimestamp.current = now;\n\n      timer.current = requestAnimationFrame(update);\n    };\n\n    timer.current = requestAnimationFrame(update);\n\n    return () => {\n      cancelAnimationFrame(timer.current);\n    };\n  }, [timeLeft, onEnd]);\n\n  const format = (ms) => {\n    const days = Math.floor(ms / ONE_DAY)\n      .toString()\n      .padStart(2, \"0\");\n    const hours = Math.floor((ms % ONE_DAY) / ONE_HOUR)\n      .toString()\n      .padStart(2, \"0\");\n    const minutes = Math.floor((ms % ONE_HOUR) / ONE_MINUTE)\n      .toString()\n      .padStart(2, \"0\");\n    const seconds = Math.floor((ms % ONE_MINUTE) / ONE_SECOND)\n      .toString()\n      .padStart(2, \"0\");\n    const milliseconds = Math.floor(ms % 1000)\n      .toString()\n      .padStart(3, \"0\");\n    return showMs\n      ? `${days} days, ${hours}:${minutes}:${seconds}:${milliseconds}`\n      : `${days} days, ${hours}:${minutes}:${seconds}`;\n  };\n\n  return <div>{format(timeLeft)}</div>;\n}\n\nexport default CountDown;",
     "solutionCode": "import { useEffect, useRef, useState } from \"react\";\n\nconst ONE_DAY = 24 * 60 * 60 * 1000;\nconst ONE_HOUR = 60 * 60 * 1000;\nconst ONE_MINUTE = 60 * 1000;\nconst ONE_SECOND = 1000;\nfunction CountDown({ totalSeconds = 60, onEnd, showMs = false }) {\n  const [timeLeft, setTimeLeft] = useState(totalSeconds * 1000);\n  const timer = useRef(null);\n  const lastTimestamp = useRef(null);\n\n  useEffect(() => {\n    if (timeLeft <= 0) {\n      onEnd?.();\n      cancelAnimationFrame(timer.current);\n      return;\n    }\n\n    const update = () => {\n      const now = performance.now();\n      if (!lastTimestamp.current) {\n        lastTimestamp.current = now;\n      }\n\n      setTimeLeft((timeLeft) =>\n        Math.max(0, timeLeft - (now - lastTimestamp.current)),\n      );\n      lastTimestamp.current = now;\n\n      timer.current = requestAnimationFrame(update);\n    };\n\n    timer.current = requestAnimationFrame(update);\n\n    return () => {\n      cancelAnimationFrame(timer.current);\n    };\n  }, [timeLeft, onEnd]);\n\n  const format = (ms) => {\n    const days = Math.floor(ms / ONE_DAY)\n      .toString()\n      .padStart(2, \"0\");\n    const hours = Math.floor((ms % ONE_DAY) / ONE_HOUR)\n      .toString()\n      .padStart(2, \"0\");\n    const minutes = Math.floor((ms % ONE_HOUR) / ONE_MINUTE)\n      .toString()\n      .padStart(2, \"0\");\n    const seconds = Math.floor((ms % ONE_MINUTE) / ONE_SECOND)\n      .toString()\n      .padStart(2, \"0\");\n    const milliseconds = Math.floor(ms % 1000)\n      .toString()\n      .padStart(3, \"0\");\n    return showMs\n      ? `${days} days, ${hours}:${minutes}:${seconds}:${milliseconds}`\n      : `${days} days, ${hours}:${minutes}:${seconds}`;\n  };\n\n  return <div>{format(timeLeft)}</div>;\n}\n\nexport default CountDown;",
-    "basicCases": [
-      {
-        "id": "case-1",
-        "type": "basic",
-        "description": "基础用例 1",
-        "input": "Render the component in the local launcher.",
-        "expected": "The component should mount correctly.",
-        "timeoutMs": 2000
-      },
-      {
-        "id": "case-2",
-        "type": "basic",
-        "description": "基础用例 2",
-        "input": "Trigger the main user interaction once.",
-        "expected": "The main visible state should update once.",
-        "timeoutMs": 2000
-      },
-      {
-        "id": "case-3",
-        "type": "basic",
-        "description": "基础用例 3",
-        "input": "Repeat the main interaction several times.",
-        "expected": "The component should keep responding without stale state.",
-        "timeoutMs": 2000
-      }
-    ],
-    "fullCases": [
-      {
-        "id": "case-1",
-        "type": "basic",
-        "description": "基础用例 1",
-        "input": "Render the component in the local launcher.",
-        "expected": "The component should mount correctly.",
-        "timeoutMs": 2000
-      },
-      {
-        "id": "case-2",
-        "type": "basic",
-        "description": "基础用例 2",
-        "input": "Trigger the main user interaction once.",
-        "expected": "The main visible state should update once.",
-        "timeoutMs": 2000
-      },
-      {
-        "id": "case-3",
-        "type": "basic",
-        "description": "基础用例 3",
-        "input": "Repeat the main interaction several times.",
-        "expected": "The component should keep responding without stale state.",
-        "timeoutMs": 2000
-      },
-      {
-        "id": "case-4",
-        "type": "edge",
-        "description": "边界用例 1",
-        "input": "Use an empty or boundary input state in the launcher.",
-        "expected": "The component should stay stable and render fallback UI.",
-        "timeoutMs": 2000
-      },
-      {
-        "id": "case-5",
-        "type": "exception",
-        "description": "异常用例 1",
-        "input": "Keep the component mounted in a longer interactive session.",
-        "expected": "The component should remain responsive.",
-        "timeoutMs": 2000
-      }
-    ],
+    "testCases": {
+      "examples": [],
+      "hidden": []
+    },
+    "basicCases": [],
+    "fullCases": [],
+    "isComponent": true,
     "sourcePath": "problems/with_react/countdown.jsx",
     "testPath": "problems/with_react/countdown_test.js"
   },
@@ -3174,74 +4447,13 @@ export const problems: ProblemRecord[] = [
     "returnText": "返回一个可在本地 launcher\n中直接运行的 Vue 三级级联选择组件，界面会实时展示当前选中的省、市、区。",
     "template": "<script setup>\nimport { computed, ref } from \"vue\";\n\nconst area_data = [\n  {\n    name: \"广东省\",\n    cities: [\n      {\n        name: \"广州市\",\n        areas: [\"天河区\", \"越秀区\", \"海珠区\"],\n      },\n      {\n        name: \"深圳市\",\n        areas: [\"南山区\", \"福田区\", \"罗湖区\"],\n      },\n    ],\n  },\n  {\n    name: \"浙江省\",\n    cities: [\n      {\n        name: \"杭州市\",\n        areas: [\"西湖区\", \"上城区\", \"拱墅区\"],\n      },\n      {\n        name: \"宁波市\",\n        areas: [\"海曙区\", \"江北区\", \"鄞州区\"],\n      },\n    ],\n  },\n];\n\nconst EMPTY_VALUE = \"\";\n\nconst selected_province = ref(EMPTY_VALUE);\nconst selected_city = ref(EMPTY_VALUE);\nconst selected_area = ref(EMPTY_VALUE);\n\nfunction hasSelection(value) {\n  return value !== EMPTY_VALUE;\n}\n\nfunction toIndex(value) {\n  return Number(value);\n}\n\nconst city_options = computed(() => {\n  if (!hasSelection(selected_province.value)) {\n    return [];\n  }\n\n  return area_data[toIndex(selected_province.value)]?.cities ?? [];\n});\n\nconst area_options = computed(() => {\n  if (\n    !hasSelection(selected_province.value) ||\n    !hasSelection(selected_city.value)\n  ) {\n    return [];\n  }\n\n  const selected_city_item = city_options.value[toIndex(selected_city.value)];\n\n  return selected_city_item?.areas ?? [];\n});\n\nconst selected_result = computed(() => {\n  const result = {\n    province: \"\",\n    city: \"\",\n    area: \"\",\n  };\n\n  if (!hasSelection(selected_province.value)) {\n    return result;\n  }\n\n  const province_item = area_data[toIndex(selected_province.value)];\n  result.province = province_item?.name ?? \"\";\n\n  if (!hasSelection(selected_city.value)) {\n    return result;\n  }\n\n  const city_item = province_item?.cities[toIndex(selected_city.value)];\n  result.city = city_item?.name ?? \"\";\n\n  if (!hasSelection(selected_area.value)) {\n    return result;\n  }\n\n  result.area = city_item?.areas[toIndex(selected_area.value)] ?? \"\";\n\n  return result;\n});\n\nfunction onSelectProvince() {\n  selected_city.value = EMPTY_VALUE;\n  selected_area.value = EMPTY_VALUE;\n}\n\nfunction onSelectCity() {\n  selected_area.value = EMPTY_VALUE;\n}\n</script>\n\n<template>\n  <div class=\"cascader\">\n    <p class=\"result\">\n      当前选择：\n      {{ selected_result.province || \"未选择省份\" }}\n      <template v-if=\"selected_result.city\">\n        / {{ selected_result.city }}</template\n      >\n      <template v-if=\"selected_result.area\">\n        / {{ selected_result.area }}</template\n      >\n    </p>\n\n    <div class=\"selector_group\">\n      <select\n        v-model=\"selected_province\"\n        class=\"selector\"\n        @change=\"onSelectProvince\"\n      >\n        <option :value=\"EMPTY_VALUE\">请选择省份</option>\n        <option\n          v-for=\"(province, province_index) in area_data\"\n          :key=\"province.name\"\n          :value=\"String(province_index)\"\n        >\n          {{ province.name }}\n        </option>\n      </select>\n\n      <select v-model=\"selected_city\" class=\"selector\" @change=\"onSelectCity\">\n        <option :value=\"EMPTY_VALUE\">请选择城市</option>\n        <option\n          v-for=\"(city, city_index) in city_options\"\n          :key=\"city.name\"\n          :value=\"String(city_index)\"\n        >\n          {{ city.name }}\n        </option>\n      </select>\n\n      <select v-model=\"selected_area\" class=\"selector\">\n        <option :value=\"EMPTY_VALUE\">请选择区县</option>\n        <option\n          v-for=\"(area, area_index) in area_options\"\n          :key=\"area\"\n          :value=\"String(area_index)\"\n        >\n          {{ area }}\n        </option>\n      </select>\n    </div>\n  </div>\n</template>\n\n<style scoped>\n.cascader {\n  display: grid;\n  gap: 16px;\n  max-width: 560px;\n  padding: 24px;\n  border-radius: 16px;\n  background: linear-gradient(180deg, #f7fbff 0%, #eef5ff 100%);\n  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);\n}\n\n.result {\n  margin: 0;\n  color: #1f2937;\n  font-weight: 600;\n}\n\n.selector_group {\n  display: grid;\n  gap: 12px;\n}\n\n.selector {\n  min-height: 40px;\n  padding: 0 12px;\n  border: 1px solid #cbd5e1;\n  border-radius: 10px;\n  background: #ffffff;\n  color: #111827;\n}\n</style>",
     "solutionCode": "<script setup>\nimport { computed, ref } from \"vue\";\n\nconst area_data = [\n  {\n    name: \"广东省\",\n    cities: [\n      {\n        name: \"广州市\",\n        areas: [\"天河区\", \"越秀区\", \"海珠区\"],\n      },\n      {\n        name: \"深圳市\",\n        areas: [\"南山区\", \"福田区\", \"罗湖区\"],\n      },\n    ],\n  },\n  {\n    name: \"浙江省\",\n    cities: [\n      {\n        name: \"杭州市\",\n        areas: [\"西湖区\", \"上城区\", \"拱墅区\"],\n      },\n      {\n        name: \"宁波市\",\n        areas: [\"海曙区\", \"江北区\", \"鄞州区\"],\n      },\n    ],\n  },\n];\n\nconst EMPTY_VALUE = \"\";\n\nconst selected_province = ref(EMPTY_VALUE);\nconst selected_city = ref(EMPTY_VALUE);\nconst selected_area = ref(EMPTY_VALUE);\n\nfunction hasSelection(value) {\n  return value !== EMPTY_VALUE;\n}\n\nfunction toIndex(value) {\n  return Number(value);\n}\n\nconst city_options = computed(() => {\n  if (!hasSelection(selected_province.value)) {\n    return [];\n  }\n\n  return area_data[toIndex(selected_province.value)]?.cities ?? [];\n});\n\nconst area_options = computed(() => {\n  if (\n    !hasSelection(selected_province.value) ||\n    !hasSelection(selected_city.value)\n  ) {\n    return [];\n  }\n\n  const selected_city_item = city_options.value[toIndex(selected_city.value)];\n\n  return selected_city_item?.areas ?? [];\n});\n\nconst selected_result = computed(() => {\n  const result = {\n    province: \"\",\n    city: \"\",\n    area: \"\",\n  };\n\n  if (!hasSelection(selected_province.value)) {\n    return result;\n  }\n\n  const province_item = area_data[toIndex(selected_province.value)];\n  result.province = province_item?.name ?? \"\";\n\n  if (!hasSelection(selected_city.value)) {\n    return result;\n  }\n\n  const city_item = province_item?.cities[toIndex(selected_city.value)];\n  result.city = city_item?.name ?? \"\";\n\n  if (!hasSelection(selected_area.value)) {\n    return result;\n  }\n\n  result.area = city_item?.areas[toIndex(selected_area.value)] ?? \"\";\n\n  return result;\n});\n\nfunction onSelectProvince() {\n  selected_city.value = EMPTY_VALUE;\n  selected_area.value = EMPTY_VALUE;\n}\n\nfunction onSelectCity() {\n  selected_area.value = EMPTY_VALUE;\n}\n</script>\n\n<template>\n  <div class=\"cascader\">\n    <p class=\"result\">\n      当前选择：\n      {{ selected_result.province || \"未选择省份\" }}\n      <template v-if=\"selected_result.city\">\n        / {{ selected_result.city }}</template\n      >\n      <template v-if=\"selected_result.area\">\n        / {{ selected_result.area }}</template\n      >\n    </p>\n\n    <div class=\"selector_group\">\n      <select\n        v-model=\"selected_province\"\n        class=\"selector\"\n        @change=\"onSelectProvince\"\n      >\n        <option :value=\"EMPTY_VALUE\">请选择省份</option>\n        <option\n          v-for=\"(province, province_index) in area_data\"\n          :key=\"province.name\"\n          :value=\"String(province_index)\"\n        >\n          {{ province.name }}\n        </option>\n      </select>\n\n      <select v-model=\"selected_city\" class=\"selector\" @change=\"onSelectCity\">\n        <option :value=\"EMPTY_VALUE\">请选择城市</option>\n        <option\n          v-for=\"(city, city_index) in city_options\"\n          :key=\"city.name\"\n          :value=\"String(city_index)\"\n        >\n          {{ city.name }}\n        </option>\n      </select>\n\n      <select v-model=\"selected_area\" class=\"selector\">\n        <option :value=\"EMPTY_VALUE\">请选择区县</option>\n        <option\n          v-for=\"(area, area_index) in area_options\"\n          :key=\"area\"\n          :value=\"String(area_index)\"\n        >\n          {{ area }}\n        </option>\n      </select>\n    </div>\n  </div>\n</template>\n\n<style scoped>\n.cascader {\n  display: grid;\n  gap: 16px;\n  max-width: 560px;\n  padding: 24px;\n  border-radius: 16px;\n  background: linear-gradient(180deg, #f7fbff 0%, #eef5ff 100%);\n  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);\n}\n\n.result {\n  margin: 0;\n  color: #1f2937;\n  font-weight: 600;\n}\n\n.selector_group {\n  display: grid;\n  gap: 12px;\n}\n\n.selector {\n  min-height: 40px;\n  padding: 0 12px;\n  border: 1px solid #cbd5e1;\n  border-radius: 10px;\n  background: #ffffff;\n  color: #111827;\n}\n</style>",
-    "basicCases": [
-      {
-        "id": "case-1",
-        "type": "basic",
-        "description": "基础用例 1",
-        "input": "Render the component in the local launcher.",
-        "expected": "The component should mount correctly.",
-        "timeoutMs": 2000
-      },
-      {
-        "id": "case-2",
-        "type": "basic",
-        "description": "基础用例 2",
-        "input": "Select a province option once.",
-        "expected": "The city dropdown should show only the cities under that province.",
-        "timeoutMs": 2000
-      },
-      {
-        "id": "case-3",
-        "type": "basic",
-        "description": "基础用例 3",
-        "input": "Select a province and city, then change to another province.",
-        "expected": "The city and area selections should reset to avoid stale state.",
-        "timeoutMs": 2000
-      }
-    ],
-    "fullCases": [
-      {
-        "id": "case-1",
-        "type": "basic",
-        "description": "基础用例 1",
-        "input": "Render the component in the local launcher.",
-        "expected": "The component should mount correctly.",
-        "timeoutMs": 2000
-      },
-      {
-        "id": "case-2",
-        "type": "basic",
-        "description": "基础用例 2",
-        "input": "Select a province option once.",
-        "expected": "The city dropdown should show only the cities under that province.",
-        "timeoutMs": 2000
-      },
-      {
-        "id": "case-3",
-        "type": "basic",
-        "description": "基础用例 3",
-        "input": "Select a province and city, then change to another province.",
-        "expected": "The city and area selections should reset to avoid stale state.",
-        "timeoutMs": 2000
-      },
-      {
-        "id": "case-4",
-        "type": "edge",
-        "description": "边界用例 1",
-        "input": "Keep the city and area dropdowns empty before choosing upper levels.",
-        "expected": "The component should remain stable and show empty dependent options.",
-        "timeoutMs": 2000
-      },
-      {
-        "id": "case-5",
-        "type": "exception",
-        "description": "异常用例 1",
-        "input": "Complete a province, city, and area selection flow.",
-        "expected": "The current selection summary should update with all three levels.",
-        "timeoutMs": 2000
-      }
-    ],
+    "testCases": {
+      "examples": [],
+      "hidden": []
+    },
+    "basicCases": [],
+    "fullCases": [],
+    "isComponent": true,
     "sourcePath": "problems/with_vue/cascader.vue",
     "testPath": "problems/with_vue/cascader_test.js"
   }

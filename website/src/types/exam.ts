@@ -18,7 +18,10 @@ export interface SubmittedProblemResult {
     description: string
     expected: unknown
     actual: unknown
-    logs: string[]
+    logs: Array<{
+      level: 'log' | 'info' | 'warn' | 'error'
+      args: string[]
+    }>
     error?: string
   }>
   successfulCaseIds: string[]
@@ -46,7 +49,10 @@ export interface ExecutionCaseResult {
   passed: boolean
   expected: unknown
   actual: unknown
-  logs: string[]
+  logs: Array<{
+    level: 'log' | 'info' | 'warn' | 'error'
+    args: string[]
+  }>
   error?: string
   durationMs: number
 }

@@ -15,6 +15,7 @@ import { SplitPane } from '../components/SplitPane'
 import type { CodeEditorHandle } from '../components/CodeWorkspace'
 import { useAppState } from '../context/AppStateContext'
 import type { JudgeCase } from '../types/content'
+import type { CustomCase } from '../components/CasePanel'
 import type { ExecutionResponse, SubmittedProblemResult } from '../types/exam'
 import { runCode } from '../utils/codeRunner'
 import { computeProblemScore, formatDuration } from '../utils/exam'
@@ -23,16 +24,16 @@ const CodeWorkspace = lazy(() =>
   import('../components/CodeWorkspace').then((module) => ({ default: module.CodeWorkspace })),
 )
 
-function parseCustomCase(input: string): JudgeCase | null {
-  if (!input.trim()) return null
-
-  return {
-    id: 'custom-run-case',
-    type: 'basic',
-    description: '自定义运行用例',
-    input,
-    expected: undefined,
-  }
+function parseCustomCases(cases: CustomCase[]): JudgeCase[] {
+  return cases
+    .filter((c) => c.input.trim())
+    .map((c, index) => ({
+      id: c.id,
+      type: 'basic' as const,
+      description: `自定义用例 ${index + 1}`,
+      input: c.input,
+      expected: undefined,
+    }))
 }
 
 export function ExamSessionPage() {
@@ -49,7 +50,7 @@ export function ExamSessionPage() {
   const editorRef = useRef<CodeEditorHandle>(null)
   const [sampleExecution, setSampleExecution] = useState<ExecutionResponse | null>(null)
   const [consoleExecution, setConsoleExecution] = useState<ExecutionResponse | null>(null)
-  const [customCaseInput, setCustomCaseInput] = useState('')
+  const [customCases, setCustomCases] = useState<CustomCase[]>([])
   const [running, setRunning] = useState<'run' | 'submit' | null>(null)
   const latestCodeRef = useRef('')
 
@@ -139,8 +140,8 @@ export function ExamSessionPage() {
   }
 
   async function handleRunCode() {
-    const customCase = parseCustomCase(customCaseInput)
-    const cases = customCase ? [...activeProblem.basicCases, customCase] : activeProblem.basicCases
+    const customCasesParsed = parseCustomCases(customCases)
+    const cases = [...activeProblem.basicCases, ...customCasesParsed]
 
     await executeCases('run', cases)
   }
@@ -309,10 +310,9 @@ export function ExamSessionPage() {
                       }
                       cases={activeProblem.basicCases}
                       consoleExecution={consoleExecution}
-                      customCaseInput={customCaseInput}
+                      customCases={customCases}
                       execution={sampleExecution}
-                      hideConsoleDetails
-                      onCustomInputChange={setCustomCaseInput}
+                      onCustomCasesChange={setCustomCases}
                       title="样例与判题"
                     />
                   </div>
