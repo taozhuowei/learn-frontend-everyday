@@ -14,6 +14,14 @@
     "noEmit": true,
     "jsx": "react-jsx",
 
+    /* Path aliases */
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"],
+      "@judge": ["../judge/src/index.ts"],
+      "@judge/*": ["../judge/src/*"]
+    },
+
     /* Linting */
     "strict": true,
     "noUnusedLocals": true,

@@ -5,7 +5,7 @@
  */
 
 import type { ProblemRecord, TestCase, JudgeCase } from '../types/content'
-import { isNewTestCase, getTestCaseTarget, getTestCaseArgs } from '../types/content'
+import { getTestCaseTarget, getTestCaseArgs } from '../types/content'
 import { MarkdownContent } from './MarkdownContent'
 
 /**
