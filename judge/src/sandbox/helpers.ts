@@ -92,7 +92,7 @@ export function treeToArray(root: TreeNode | null): (number | null)[] {
     const node = queue.shift()
     if (node === null) {
       result.push(null)
-    } else {
+    } else if (node !== undefined) {
       result.push(node.val)
       queue.push(node.left)
       queue.push(node.right)
