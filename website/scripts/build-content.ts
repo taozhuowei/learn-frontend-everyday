@@ -15,6 +15,35 @@ import {
   validateTestCases,
 } from './content_rules.mjs'
 
+// New format test case (from judge)
+interface NewTestCase {
+  id: string
+  hidden: boolean
+  input: {
+    target?: string
+    args?: string[]
+    steps?: unknown[]
+    props?: Record<string, unknown>
+  }
+  expected: unknown
+}
+
+// Old format test case (legacy)
+interface OldTestCase {
+  target: string
+  args: string[]
+  expected: unknown
+  noCustomCase?: boolean
+}
+
+type AnyTestCase = NewTestCase | OldTestCase
+
+interface TestCases {
+  examples: AnyTestCase[]
+  hidden: AnyTestCase[]
+  noCustomCase?: boolean
+}
+
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = path.dirname(__filename)
 const websiteRoot = path.resolve(__dirname, '..')
@@ -297,10 +326,46 @@ function buildKnowledge() {
   })
 }
 
-function loadTestCases(
-  filePath: string,
-  categoryId: string,
-): { examples: unknown[]; hidden: unknown[] } {
+function buildDisplayInput(tc: AnyTestCase): string {
+  // new format
+  if ('input' in tc && typeof tc.input === 'object') {
+    const newTc = tc as NewTestCase
+    if (newTc.input.steps && newTc.input.steps.length > 0) {
+      return `[${newTc.input.steps.length} steps]`
+    }
+    const target = newTc.input.target ?? ''
+    const args = (newTc.input.args ?? []).join(', ')
+    return args ? `${target}(${args})` : target
+  }
+  // old format
+  const oldTc = tc as OldTestCase
+  const args = oldTc.args.join(', ')
+  return args ? `${oldTc.target}(${args})` : oldTc.target
+}
+
+function buildDisplayParts(tc: AnyTestCase): { displayTarget?: string; displayArgs?: string[] } {
+  if ('input' in tc && typeof tc.input === 'object') {
+    const newTc = tc as NewTestCase
+    if (newTc.input.steps && newTc.input.steps.length > 0) return {}
+    return {
+      displayTarget: newTc.input.target,
+      // Copy the array to avoid circular reference in safeStringify (WeakSet detects same ref twice)
+      displayArgs: newTc.input.args ? [...newTc.input.args] : undefined,
+    }
+  }
+  const oldTc = tc as OldTestCase
+  return {
+    displayTarget: oldTc.target,
+    displayArgs: oldTc.args ? [...oldTc.args] : undefined,
+  }
+}
+
+function getCaseId(tc: AnyTestCase, index: number, prefix: string): string {
+  if ('id' in tc && typeof tc.id === 'string') return tc.id
+  return `${prefix}-${index + 1}`
+}
+
+function loadTestCases(filePath: string, categoryId: string): TestCases {
   // 组件题（Vue/React）不需要测试文件，人工确认即可
   if (categoryId === 'with_vue' || categoryId === 'with_react') {
     return { examples: [], hidden: [] }
@@ -311,8 +376,14 @@ function loadTestCases(
   }
 
   const sandbox = {
-    module: { exports: {} as { examples: unknown[]; hidden: unknown[] } },
+    module: { exports: {} as TestCases },
     exports: {},
+    console,
+    setTimeout,
+    clearTimeout,
+    setInterval,
+    clearInterval,
+    Promise,
   }
 
   const source = fs.readFileSync(filePath, 'utf8')
@@ -321,7 +392,7 @@ function loadTestCases(
   const testCases = sandbox.module.exports
   validateTestCases(testCases, toPosix(path.relative(repoRoot, filePath)))
 
-  return testCases
+  return testCases as TestCases
 }
 
 function buildProblems() {
@@ -377,27 +448,30 @@ function buildProblems() {
           : extractSkeleton(source),
       solutionCode: stripHeaderComment(source),
       testCases,
-      // 兼容性字段
+      // 兼容性字段（支持新旧两种格式）
       basicCases: testCases.examples.map((c, i) => ({
-        id: `case-${i + 1}`,
-        type: 'basic',
+        id: getCaseId(c, i, 'example'),
+        type: 'basic' as const,
         description: `示例 ${i + 1}`,
-        input: JSON.stringify(c.input),
+        input: buildDisplayInput(c),
+        ...buildDisplayParts(c),
         expected: c.expected,
       })),
       fullCases: [
         ...testCases.examples.map((c, i) => ({
-          id: `case-${i + 1}`,
-          type: 'basic',
+          id: getCaseId(c, i, 'example'),
+          type: 'basic' as const,
           description: `示例 ${i + 1}`,
-          input: JSON.stringify(c.input),
+          input: buildDisplayInput(c),
+          ...buildDisplayParts(c),
           expected: c.expected,
         })),
         ...testCases.hidden.map((c, i) => ({
-          id: `hidden-${i + 1}`,
-          type: 'edge',
+          id: getCaseId(c, i, 'hidden'),
+          type: 'edge' as const,
           description: `隐藏 ${i + 1}`,
-          input: JSON.stringify(c.input),
+          input: buildDisplayInput(c),
+          ...buildDisplayParts(c),
           expected: c.expected,
         })),
       ],
@@ -416,6 +490,30 @@ function writeGeneratedFile(fileName: string, body: string) {
   fs.writeFileSync(path.join(generatedRoot, fileName), body, 'utf8')
 }
 
+/**
+ * 安全的 JSON 序列化，处理循环引用和 undefined 值
+ */
+function safeStringify(obj: unknown): string {
+  const seen = new WeakSet()
+  return JSON.stringify(
+    obj,
+    (key, value) => {
+      // 处理 undefined 值，转换为特殊标记保留
+      if (value === undefined) {
+        return '__UNDEFINED__'
+      }
+      if (typeof value === 'object' && value !== null) {
+        if (seen.has(value)) {
+          return '[Circular]'
+        }
+        seen.add(value)
+      }
+      return value
+    },
+    2,
+  ).replace(/"__UNDEFINED__"/g, 'undefined')
+}
+
 function main() {
   const problems = buildProblems()
   const knowledgeArticles = buildKnowledge()
@@ -427,7 +525,7 @@ function main() {
     'problems.ts',
     `import type { ProblemRecord } from '../types/content'
 
-export const problems: ProblemRecord[] = ${JSON.stringify(problems, null, 2)}
+export const problems: ProblemRecord[] = ${safeStringify(problems)}
 `,
   )
 
@@ -435,7 +533,7 @@ export const problems: ProblemRecord[] = ${JSON.stringify(problems, null, 2)}
     'knowledge.ts',
     `import type { KnowledgeArticle } from '../types/content'
 
-export const knowledgeArticles: KnowledgeArticle[] = ${JSON.stringify(knowledgeArticles, null, 2)}
+export const knowledgeArticles: KnowledgeArticle[] = ${safeStringify(knowledgeArticles)}
 `,
   )
 

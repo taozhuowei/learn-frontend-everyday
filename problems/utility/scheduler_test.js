@@ -1,41 +1,118 @@
-/**
- * scheduler 测试用例
- */
-
 module.exports = {
   examples: [
     {
+      id: 'example-1',
+      hidden: false,
       input: {
-        args: ') => { const scheduler = new Scheduler(2); const result = []; const createTask = (value, delay) => () => new Promise((resolve) => setTimeout(() => { result.push(value); resolve(value) }, delay)); await Promise.all([scheduler.add(createTask("A", 20)), scheduler.add(createTask("B", 10)), scheduler.add(createTask("C", 5))]); return result.includes("A") && result.includes("B") && result.includes("C") })(',
+        target: '2',
+        steps: [
+          { type: 'call', args: ['() => Promise.resolve()'] },
+          { type: 'call', args: ['() => Promise.resolve()'] },
+          { type: 'call', args: ['() => Promise.resolve()'] },
+          { type: 'await' }
+        ]
       },
-      expected: true,
+      expected: { callCount: 3 }
     },
     {
+      id: 'example-2',
+      hidden: false,
       input: {
-        args: ') => { const scheduler = new Scheduler(1); const timeline = []; const createTask = (label, delay) => () => new Promise((resolve) => setTimeout(() => { timeline.push(label); resolve(label) }, delay)); await Promise.all([scheduler.add(createTask("first", 10)), scheduler.add(createTask("second", 5))]); return timeline.join(",") })(',
+        target: '1',
+        steps: [
+          { type: 'call', args: ['() => Promise.resolve()'] },
+          { type: 'call', args: ['() => Promise.resolve()'] },
+          { type: 'await' }
+        ]
       },
-      expected: "first,second",
+      expected: { callCount: 2, maxConcurrent: 1 }
     },
     {
+      id: 'example-3',
+      hidden: false,
       input: {
-        args: ') => { const scheduler = new Scheduler(2); const value = await scheduler.add(() => Promise.resolve("ok")); return value })(',
+        target: '3',
+        steps: [
+          { type: 'call', args: ['() => Promise.resolve()'] },
+          { type: 'call', args: ['() => Promise.resolve()'] },
+          { type: 'await' }
+        ]
       },
-      expected: "ok",
-    },
+      expected: { callCount: 2, maxConcurrent: 2 }
+    }
   ],
-
   hidden: [
     {
+      id: 'hidden-1',
+      hidden: true,
       input: {
-        args: ') => { const scheduler = new Scheduler(2); try { await scheduler.add(() => Promise.reject(new Error("fail"))) } catch (error) { return error.message } })(',
+        target: '2',
+        steps: [
+          { type: 'call', args: ['() => Promise.resolve(1)'] },
+          { type: 'call', args: ['() => Promise.resolve(2)'] },
+          { type: 'call', args: ['() => Promise.resolve(3)'] },
+          { type: 'call', args: ['() => Promise.resolve(4)'] },
+          { type: 'await' }
+        ]
       },
-      expected: "fail",
+      expected: { callCount: 4, maxConcurrent: 2 }
     },
     {
+      id: 'hidden-2',
+      hidden: true,
       input: {
-        args: ") => { const scheduler = new Scheduler(5); const results = await Promise.all(Array.from({ length: 30 }, (_, index) => scheduler.add(() => Promise.resolve(index)))); return results.length })(",
+        target: '1',
+        steps: [
+          { type: 'call', args: ['() => Promise.resolve()'] },
+          { type: 'call', args: ['() => Promise.resolve()'] },
+          { type: 'call', args: ['() => Promise.resolve()'] },
+          { type: 'call', args: ['() => Promise.resolve()'] },
+          { type: 'await' }
+        ]
       },
-      expected: 30,
+      expected: { callCount: 4, maxConcurrent: 1 }
     },
-  ],
-};
+    {
+      id: 'hidden-3',
+      hidden: true,
+      input: {
+        target: '5',
+        steps: [
+          { type: 'call', args: ['() => Promise.resolve()'] },
+          { type: 'call', args: ['() => Promise.resolve()'] },
+          { type: 'call', args: ['() => Promise.resolve()'] },
+          { type: 'await' }
+        ]
+      },
+      expected: { callCount: 3, maxConcurrent: 3 }
+    },
+    {
+      id: 'hidden-4',
+      hidden: true,
+      input: {
+        target: '2',
+        steps: [
+          { type: 'call', args: ['() => Promise.reject(new Error("err"))'] },
+          { type: 'call', args: ['() => Promise.resolve()'] },
+          { type: 'await' }
+        ]
+      },
+      expected: { callCount: 2, hasError: true }
+    },
+    {
+      id: 'hidden-5',
+      hidden: true,
+      input: {
+        target: '2',
+        steps: [
+          { type: 'call', args: ['() => new Promise(r => setTimeout(r, 100))'] },
+          { type: 'tick', ms: 50 },
+          { type: 'call', args: ['() => Promise.resolve()'] },
+          { type: 'tick', ms: 100 },
+          { type: 'await' }
+        ]
+      },
+      expected: { callCount: 2, maxConcurrent: 2 }
+    }
+  ]
+}

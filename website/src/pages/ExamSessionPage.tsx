@@ -24,14 +24,43 @@ const CodeWorkspace = lazy(() =>
   import('../components/CodeWorkspace').then((module) => ({ default: module.CodeWorkspace })),
 )
 
-function parseCustomCases(cases: CustomCase[]): JudgeCase[] {
+function buildCustomEvalInput(
+  problemId: string,
+  categoryId: string,
+  target: string,
+  args: string[],
+): string {
+  const argsStr = args.filter((a) => a.trim()).join(', ')
+  const arrayMethodMap: Record<string, string> = {
+    filter: 'myFilter',
+    map: 'myMap',
+    forEach: 'myForEach',
+    reduce: 'myReduce',
+    flat: 'myFlat',
+  }
+  const fnMethodMap: Record<string, string> = {
+    apply: 'myApply',
+    call: 'myCall',
+    bind: 'myBind',
+  }
+  if (categoryId === 'array' && problemId in arrayMethodMap) {
+    return `(${target}).${arrayMethodMap[problemId]}(${argsStr})`
+  }
+  if (categoryId === 'function' && problemId in fnMethodMap) {
+    return `(${target}).${fnMethodMap[problemId]}(${argsStr})`
+  }
+  const allArgs = [target, ...args].filter((a) => a.trim()).join(', ')
+  return `${problemId}(${allArgs})`
+}
+
+function parseCustomCases(cases: CustomCase[], problemId: string, categoryId: string): JudgeCase[] {
   return cases
-    .filter((c) => c.input.trim())
+    .filter((c) => c.target.trim())
     .map((c, index) => ({
       id: c.id,
       type: 'basic' as const,
       description: `自定义用例 ${index + 1}`,
-      input: c.input,
+      input: buildCustomEvalInput(problemId, categoryId, c.target, c.args),
       expected: undefined,
     }))
 }
@@ -103,11 +132,19 @@ export function ExamSessionPage() {
     const sourceCode = editorRef.current?.getValue() ?? latestCodeRef.current
     setRunning(kind)
 
+    // Build testFile for JudgeCore - only for submit (full judging)
+    const testFile =
+      kind === 'submit' && activeProblem.testCases
+        ? activeProblem.testCases
+        : undefined
+
     try {
       const response = await runCode({
         source: sourceCode,
         cases,
         solutionCode: activeProblem.solutionCode,
+        problemId: activeProblem.id,
+        testFile: testFile as unknown as { examples: unknown[]; hidden: unknown[] },
       })
       if (kind === 'run') {
         setSampleExecution(response)
@@ -140,10 +177,69 @@ export function ExamSessionPage() {
   }
 
   async function handleRunCode() {
-    const customCasesParsed = parseCustomCases(customCases)
-    const cases = [...activeProblem.basicCases, ...customCasesParsed]
+    const customCasesParsed = parseCustomCases(
+      customCases,
+      activeProblem.id,
+      activeProblem.categoryId,
+    )
 
-    await executeCases('run', cases)
+    // Run JudgeCore for sample cases, eval runner for custom cases (separate calls, merge results)
+    const testFile = activeProblem.testCases
+      ? { examples: activeProblem.testCases.examples, hidden: [] as unknown[] }
+      : undefined
+
+    const sourceCode = editorRef.current?.getValue() ?? latestCodeRef.current
+    setRunning('run')
+    try {
+      const judgeResponse = await runCode({
+        source: sourceCode,
+        cases: [],
+        solutionCode: activeProblem.solutionCode,
+        problemId: activeProblem.id,
+        testFile: testFile as unknown as { examples: unknown[]; hidden: unknown[] },
+      })
+
+      let finalResponse = judgeResponse
+      if (customCasesParsed.length > 0) {
+        const customResponse = await runCode({
+          source: sourceCode,
+          cases: customCasesParsed,
+          solutionCode: activeProblem.solutionCode,
+          problemId: undefined,
+          testFile: undefined,
+        })
+        finalResponse = {
+          summary: {
+            passedCount: judgeResponse.summary.passedCount + customResponse.summary.passedCount,
+            totalCount: judgeResponse.summary.totalCount + customResponse.summary.totalCount,
+          },
+          results: [...judgeResponse.results, ...customResponse.results],
+        }
+      }
+
+      setSampleExecution(finalResponse)
+      setConsoleExecution(finalResponse)
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error)
+      const allCases = [...activeProblem.basicCases, ...customCasesParsed]
+      const errResponse: ExecutionResponse = {
+        summary: { passedCount: 0, totalCount: allCases.length },
+        results: allCases.map((c) => ({
+          caseId: c.id,
+          description: c.description,
+          passed: false,
+          expected: c.expected,
+          actual: null,
+          logs: [],
+          error: message,
+          durationMs: 0,
+        })),
+      }
+      setSampleExecution(errResponse)
+      setConsoleExecution(errResponse)
+    } finally {
+      setRunning(null)
+    }
   }
 
   async function handleSubmitCode() {
@@ -260,6 +356,7 @@ export function ExamSessionPage() {
                           <div className="flex gap-2">
                             <button
                               className="flex items-center gap-1 px-3 py-1.5 rounded-md text-xs font-semibold bg-[var(--color-surface-secondary)] border border-[var(--color-border)] text-[var(--color-ink-secondary)] hover:border-[var(--color-primary)] disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                              data-testid="run-button"
                               disabled={running !== null}
                               onClick={handleRunCode}
                               type="button"
@@ -269,6 +366,7 @@ export function ExamSessionPage() {
                             </button>
                             <button
                               className="flex items-center gap-1 px-3 py-1.5 rounded-md text-xs font-semibold bg-[var(--color-primary)] text-white hover:bg-[var(--color-primary-strong)] disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                              data-testid="submit-button"
                               disabled={running !== null}
                               onClick={handleSubmitCode}
                               type="button"

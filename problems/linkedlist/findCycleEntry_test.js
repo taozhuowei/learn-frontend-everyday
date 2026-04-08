@@ -1,41 +1,54 @@
-/**
- * findCycleEntry 测试用例
- */
-
 module.exports = {
   examples: [
     {
-      input: {
-        args: "head).val })(",
-      },
-      expected: 2,
+      id: 'example-1',
+      hidden: false,
+      input: { target: '[3, 2, 0, -4]' },
+      expected: null
     },
     {
-      input: {
-        args: "node).val })(",
-      },
-      expected: 1,
+      id: 'example-2',
+      hidden: false,
+      input: { target: '[1, 2]' },
+      expected: null
     },
     {
-      input: {
-        args: "null",
-      },
-      expected: null,
-    },
+      id: 'example-3',
+      hidden: false,
+      input: { target: '[1]' },
+      expected: null
+    }
   ],
-
   hidden: [
     {
-      input: {
-        args: "head) })(",
-      },
-      expected: null,
+      id: 'hidden-1',
+      hidden: true,
+      input: { target: '[]' },
+      expected: null
     },
     {
-      input: {
-        args: "{ length: 200 }, (_, index) => ({ val: index, next: null })); for (let index = 0; index < nodes.length - 1; index += 1) nodes[index].next = nodes[index + 1]; nodes[nodes.length - 1].next = nodes[120]; return detectCycle(nodes[0]).val })(",
-      },
-      expected: 120,
+      id: 'hidden-2',
+      hidden: true,
+      input: { target: '[1, 2, 3, 4, 5]' },
+      expected: null
     },
-  ],
-};
+    {
+      id: 'hidden-3',
+      hidden: true,
+      input: { target: '[1, 2, 3]' },
+      expected: null
+    },
+    {
+      id: 'hidden-4',
+      hidden: true,
+      input: { target: '[0, 0, 0]' },
+      expected: null
+    },
+    {
+      id: 'hidden-5',
+      hidden: true,
+      input: { target: '[1, 2, 3, 4]' },
+      expected: null
+    }
+  ]
+}

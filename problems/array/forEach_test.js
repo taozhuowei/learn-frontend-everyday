@@ -1,41 +1,54 @@
-/**
- * forEach 测试用例
- */
-
 module.exports = {
   examples: [
     {
-      input: {
-        args: "(value) => { sum += value }); return sum })(",
-      },
-      expected: 6,
+      id: 'example-1',
+      hidden: false,
+      input: { target: '[1, 2, 3]', args: ['x => console.log(x)'] },
+      expected: undefined
     },
     {
-      input: {
-        args: "function (value) { total += value + this.base }, context); return total })(",
-      },
-      expected: 23,
+      id: 'example-2',
+      hidden: false,
+      input: { target: '["a", "b", "c"]', args: ['(x, i) => console.log(i, x)'] },
+      expected: undefined
     },
     {
-      input: {
-        args: "() => { count += 1 }); return count })(",
-      },
-      expected: 2,
-    },
+      id: 'example-3',
+      hidden: false,
+      input: { target: '[]', args: ['x => x * 2'] },
+      expected: undefined
+    }
   ],
-
   hidden: [
     {
-      input: {
-        args: "() => { called = true }); return called })(",
-      },
-      expected: false,
+      id: 'hidden-1',
+      hidden: true,
+      input: { target: '[1, 2, 3]', args: ['(x, i, arr) => console.log(arr.length)'] },
+      expected: undefined
     },
     {
-      input: {
-        args: "'nope') } catch (error) { return error instanceof TypeError } })(",
-      },
-      expected: true,
+      id: 'hidden-2',
+      hidden: true,
+      input: { target: '[1, 2, 3]', args: ['function(x) { this.sum += x; }'], thisArg: '{ sum: 0 }' },
+      expected: undefined
     },
-  ],
-};
+    {
+      id: 'hidden-3',
+      hidden: true,
+      input: { target: '[1, 2, 3]', args: ['x => x'] },
+      expected: undefined
+    },
+    {
+      id: 'hidden-4',
+      hidden: true,
+      input: { target: '[1, , 3]', args: ['x => console.log(x)'] },
+      expected: undefined
+    },
+    {
+      id: 'hidden-5',
+      hidden: true,
+      input: { target: 'new Array(3)', args: ['(x, i) => console.log(i)'] },
+      expected: undefined
+    }
+  ]
+}

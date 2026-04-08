@@ -93,13 +93,38 @@ export function validateTestCases(testCases, relativePath) {
     throw new Error(`${relativePath} 至少需要 1 个示例用例。`)
   }
 
-  // 验证每个用例格式
+  // 验证每个用例格式（支持新格式 input 对象和旧格式 target+args 直接）
   const validateCase = (c, i, type) => {
     if (!c || typeof c !== 'object') {
       throw new Error(`${relativePath} ${type}[${i}] 必须是对象。`)
     }
-    if (!c.input || typeof c.input !== 'object') {
-      throw new Error(`${relativePath} ${type}[${i}] 必须有 input 对象。`)
+    // 新格式: 有 input 对象（包含 target, args, steps 等）
+    if ('input' in c && typeof c.input === 'object') {
+      // New format with input object - already valid
+      // optional: validate c.id and c.hidden if needed
+    }
+    // 旧格式: target + args + expected 直接在 case 上
+    else if ('target' in c && 'args' in c) {
+      if (typeof c.target !== 'string') {
+        throw new Error(`${relativePath} ${type}[${i}] target 必须是字符串。`)
+      }
+      if (!Array.isArray(c.args)) {
+        throw new Error(`${relativePath} ${type}[${i}] args 必须是数组。`)
+      }
+    }
+    // 旧格式: display + execute + expected
+    else if (c.display && c.execute) {
+      if (!c.display || typeof c.display !== 'object') {
+        throw new Error(`${relativePath} ${type}[${i}] 必须有 display 对象。`)
+      }
+      if (!c.execute || typeof c.execute !== 'object') {
+        throw new Error(`${relativePath} ${type}[${i}] 必须有 execute 对象。`)
+      }
+    }
+    else {
+      throw new Error(
+        `${relativePath} ${type}[${i}] 必须有 input 对象或 target+args 或 display+execute。`,
+      )
     }
     if (!('expected' in c)) {
       throw new Error(`${relativePath} ${type}[${i}] 必须有 expected 字段。`)

@@ -1,41 +1,116 @@
-/**
- * debounce 测试用例
- */
-
 module.exports = {
   examples: [
     {
+      id: 'example-1',
+      hidden: false,
       input: {
-        args: ") => { let count = 0; const fn = debounce(() => { count += 1 }, 30); fn(); fn(); fn(); await new Promise((resolve) => setTimeout(resolve, 60)); return count })(",
+        target: '200',
+        steps: [
+          { type: 'call', args: [] },
+          { type: 'call', args: [] },
+          { type: 'tick', ms: 200 }
+        ]
       },
-      expected: 1,
+      expected: { callCount: 1 }
     },
     {
+      id: 'example-2',
+      hidden: false,
       input: {
-        args: ") => { let value = 0; const fn = debounce((next) => { value = next }, 20); fn(1); fn(2); await new Promise((resolve) => setTimeout(resolve, 50)); return value })(",
+        target: '100',
+        steps: [
+          { type: 'call', args: ['"a"'] },
+          { type: 'tick', ms: 50 },
+          { type: 'call', args: ['"b"'] },
+          { type: 'tick', ms: 100 }
+        ]
       },
-      expected: 2,
+      expected: { callCount: 1 }
     },
     {
+      id: 'example-3',
+      hidden: false,
       input: {
-        args: ") => { let count = 0; const fn = debounce(() => { count += 1 }, 10); fn(); await new Promise((resolve) => setTimeout(resolve, 20)); fn(); await new Promise((resolve) => setTimeout(resolve, 20)); return count })(",
+        target: '100',
+        steps: [
+          { type: 'call', args: [] },
+          { type: 'tick', ms: 150 },
+          { type: 'call', args: [] },
+          { type: 'tick', ms: 150 }
+        ]
       },
-      expected: 2,
-    },
+      expected: { callCount: 2 }
+    }
   ],
-
   hidden: [
     {
+      id: 'hidden-1',
+      hidden: true,
       input: {
-        args: ") => { let scopeValue = 0; const context = { set(value) { scopeValue = value } }; const fn = debounce(function(value) { this.set(value) }, 10).bind(context); fn(5); await new Promise((resolve) => setTimeout(resolve, 30)); return scopeValue })(",
+        target: '100',
+        steps: [
+          { type: 'call', args: ['1'] },
+          { type: 'tick', ms: 100 }
+        ]
       },
-      expected: 5,
+      expected: { callCount: 1 }
     },
     {
+      id: 'hidden-2',
+      hidden: true,
       input: {
-        args: ") => { let count = 0; const fn = debounce(() => { count += 1 }, 5); for (let index = 0; index < 100; index += 1) fn(); await new Promise((resolve) => setTimeout(resolve, 20)); return count })(",
+        target: '50',
+        steps: [
+          { type: 'call', args: [] },
+          { type: 'tick', ms: 25 },
+          { type: 'call', args: [] },
+          { type: 'tick', ms: 25 },
+          { type: 'call', args: [] },
+          { type: 'tick', ms: 50 }
+        ]
       },
-      expected: 1,
+      expected: { callCount: 1 }
     },
-  ],
-};
+    {
+      id: 'hidden-3',
+      hidden: true,
+      input: {
+        target: '100',
+        steps: [
+          { type: 'call', args: ['"first"'] },
+          { type: 'tick', ms: 50 },
+          { type: 'call', args: ['"second"'] },
+          { type: 'tick', ms: 50 },
+          { type: 'call', args: ['"third"'] },
+          { type: 'tick', ms: 100 }
+        ]
+      },
+      expected: { callCount: 1 }
+    },
+    {
+      id: 'hidden-4',
+      hidden: true,
+      input: {
+        target: '0',
+        steps: [
+          { type: 'call', args: [] },
+          { type: 'call', args: [] },
+          { type: 'tick', ms: 0 }
+        ]
+      },
+      expected: { callCount: 1 }
+    },
+    {
+      id: 'hidden-5',
+      hidden: true,
+      input: {
+        target: '100',
+        steps: [
+          { type: 'call', args: ['1', '2', '3'] },
+          { type: 'tick', ms: 100 }
+        ]
+      },
+      expected: { callCount: 1 }
+    }
+  ]
+}

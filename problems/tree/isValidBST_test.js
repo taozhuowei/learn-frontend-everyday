@@ -1,41 +1,54 @@
-/**
- * isValidBST 测试用例
- */
-
 module.exports = {
   examples: [
     {
-      input: {
-        args: "{ val: 2, left: { val: 1, left: null, right: null }, right: { val: 3, left: null, right: null } }",
-      },
-      expected: true,
+      id: 'example-1',
+      hidden: false,
+      input: { target: '[2, 1, 3]' },
+      expected: true
     },
     {
-      input: {
-        args: "{ val: 5, left: { val: 1, left: null, right: null }, right: { val: 4, left: { val: 3, left: null, right: null }, right: { val: 6, left: null, right: null } } }",
-      },
-      expected: false,
+      id: 'example-2',
+      hidden: false,
+      input: { target: '[5, 1, 4, null, null, 3, 6]' },
+      expected: false
     },
     {
-      input: {
-        args: "{ val: 10, left: { val: 5, left: null, right: { val: 12, left: null, right: null } }, right: { val: 15, left: null, right: null } }",
-      },
-      expected: false,
-    },
+      id: 'example-3',
+      hidden: false,
+      input: { target: '[]' },
+      expected: true
+    }
   ],
-
   hidden: [
     {
-      input: {
-        args: "{ val: 1, left: null, right: null }",
-      },
-      expected: true,
+      id: 'hidden-1',
+      hidden: true,
+      input: { target: '[1]' },
+      expected: true
     },
     {
-      input: {
-        args: "null",
-      },
-      expected: true,
+      id: 'hidden-2',
+      hidden: true,
+      input: { target: '[1, 1]' },
+      expected: false
     },
-  ],
-};
+    {
+      id: 'hidden-3',
+      hidden: true,
+      input: { target: '[10, 5, 15, null, null, 6, 20]' },
+      expected: false
+    },
+    {
+      id: 'hidden-4',
+      hidden: true,
+      input: { target: '[3, null, 30, 10, null, null, 15, null, 45]' },
+      expected: false
+    },
+    {
+      id: 'hidden-5',
+      hidden: true,
+      input: { target: '[0, -1]' },
+      expected: true
+    }
+  ]
+}

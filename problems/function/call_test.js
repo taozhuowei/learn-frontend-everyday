@@ -1,41 +1,54 @@
-/**
- * call 测试用例
- */
-
 module.exports = {
   examples: [
     {
-      input: {
-        args: "a, b) { return this.base + a + b } return add.myCall({ base: 1 }, 2, 3) })(",
-      },
-      expected: 6,
+      id: 'example-1',
+      hidden: false,
+      input: { target: 'function(a, b) { return this.x + a + b; }', args: ['{ x: 10 }', '1', '2'] },
+      expected: 13
     },
     {
-      input: {
-        args: "extra) { return this.base + extra } const result = read.myCall(null, 2); delete globalThis.base; return result })(",
-      },
-      expected: 7,
+      id: 'example-2',
+      hidden: false,
+      input: { target: 'function() { return this.name; }', args: ['{ name: "test" }'] },
+      expected: 'test'
     },
     {
-      input: {
-        args: ") { return Object.prototype.toString.call(this) } return tag.myCall('hi') })(",
-      },
-      expected: "[object String]",
-    },
+      id: 'example-3',
+      hidden: false,
+      input: { target: 'String.prototype.slice', args: ['"hello world"', '0', '5'] },
+      expected: 'hello'
+    }
   ],
-
   hidden: [
     {
-      input: {
-        args: ") { return this.value } return getValue.myCall({ value: 'ok' }) })(",
-      },
-      expected: "ok",
+      id: 'hidden-1',
+      hidden: true,
+      input: { target: 'function() { return this; }', args: ['null'] },
+      expected: null
     },
     {
-      input: {
-        args: "{}, null) } catch (error) { return error instanceof TypeError } })(",
-      },
-      expected: true,
+      id: 'hidden-2',
+      hidden: true,
+      input: { target: 'function() { return this; }', args: ['undefined'] },
+      expected: undefined
     },
-  ],
-};
+    {
+      id: 'hidden-3',
+      hidden: true,
+      input: { target: 'function(a, b, c) { return a + b + c; }', args: ['{}', '1', '2', '3'] },
+      expected: 6
+    },
+    {
+      id: 'hidden-4',
+      hidden: true,
+      input: { target: 'Math.max', args: ['null', '1', '5', '3'] },
+      expected: 5
+    },
+    {
+      id: 'hidden-5',
+      hidden: true,
+      input: { target: 'Array.prototype.join', args: ['["a", "b", "c"]', '"-"'] },
+      expected: 'a-b-c'
+    }
+  ]
+}

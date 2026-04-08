@@ -1,41 +1,54 @@
-/**
- * instanceof 测试用例
- */
-
 module.exports = {
   examples: [
     {
-      input: {
-        args: ") {} const person = new Person(); return myInstanceof(person, Person) })(",
-      },
-      expected: true,
+      id: 'example-1',
+      hidden: false,
+      input: { target: '[]', args: ['Array'] },
+      expected: true
     },
     {
-      input: {
-        args: ") {} function Animal() {} const person = new Person(); return myInstanceof(person, Animal) })(",
-      },
-      expected: false,
+      id: 'example-2',
+      hidden: false,
+      input: { target: '{}', args: ['Array'] },
+      expected: false
     },
     {
-      input: {
-        args: "'text', String",
-      },
-      expected: false,
-    },
+      id: 'example-3',
+      hidden: false,
+      input: { target: 'new Date()', args: ['Date'] },
+      expected: true
+    }
   ],
-
   hidden: [
     {
-      input: {
-        args: "function demo() {}, Function",
-      },
-      expected: true,
+      id: 'hidden-1',
+      hidden: true,
+      input: { target: 'function() {}', args: ['Function'] },
+      expected: true
     },
     {
-      input: {
-        args: "{}, {}",
-      },
-      expected: false,
+      id: 'hidden-2',
+      hidden: true,
+      input: { target: '/abc/', args: ['RegExp'] },
+      expected: true
     },
-  ],
-};
+    {
+      id: 'hidden-3',
+      hidden: true,
+      input: { target: 'new String("hello")', args: ['String'] },
+      expected: true
+    },
+    {
+      id: 'hidden-4',
+      hidden: true,
+      input: { target: 'null', args: ['Object'] },
+      expected: false
+    },
+    {
+      id: 'hidden-5',
+      hidden: true,
+      input: { target: 'Object.create(null)', args: ['Object'] },
+      expected: false
+    }
+  ]
+}

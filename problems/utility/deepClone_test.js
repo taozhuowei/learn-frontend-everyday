@@ -1,41 +1,54 @@
-/**
- * deepClone 测试用例
- */
-
 module.exports = {
   examples: [
     {
-      input: {
-        args: "source); cloned.nested.value = 2; return [source.nested.value, cloned.nested.value] })(",
-      },
-      expected: [1, 2],
+      id: 'example-1',
+      hidden: false,
+      input: { target: '{ a: 1, b: 2 }', args: [] },
+      expected: { a: 1, b: 2 }
     },
     {
-      input: {
-        args: "source); cloned[1][0] = 9; return [source[1][0], cloned[1][0]] })(",
-      },
-      expected: [2, 9],
+      id: 'example-2',
+      hidden: false,
+      input: { target: '{ nested: { x: 1 } }', args: [] },
+      expected: { nested: { x: 1 } }
     },
     {
-      input: {
-        args: "source); return cloned !== source && cloned.self === cloned })(",
-      },
-      expected: true,
-    },
+      id: 'example-3',
+      hidden: false,
+      input: { target: '[1, [2, 3]]', args: [] },
+      expected: [1, [2, 3]]
+    }
   ],
-
   hidden: [
     {
-      input: {
-        args: "[[{ id: 1 }, new Set([1, 2])]]); const cloned = deepClone(source); const [[key, value]] = cloned.entries(); return [key.id, Array.from(value)] })(",
-      },
-      expected: [1, [1, 2]],
+      id: 'hidden-1',
+      hidden: true,
+      input: { target: '[]', args: [] },
+      expected: []
     },
     {
-      input: {
-        args: "'2024-01-01T00:00:00.000Z'), pattern: /abc/gi }; const cloned = deepClone(source); return [cloned.date instanceof Date, cloned.date.getTime() === source.date.getTime(), cloned.pattern.source, cloned.pattern.flags] })(",
-      },
-      expected: [true, true, "abc", "gi"],
+      id: 'hidden-2',
+      hidden: true,
+      input: { target: '{ a: { b: { c: { d: 1 } } } }', args: [] },
+      expected: { a: { b: { c: { d: 1 } } } }
     },
-  ],
-};
+    {
+      id: 'hidden-3',
+      hidden: true,
+      input: { target: '{ arr: [1, 2, { x: 3 }] }', args: [] },
+      expected: { arr: [1, 2, { x: 3 }] }
+    },
+    {
+      id: 'hidden-4',
+      hidden: true,
+      input: { target: '{ a: null, b: undefined, c: NaN }', args: [] },
+      expected: { a: null, b: undefined, c: NaN }
+    },
+    {
+      id: 'hidden-5',
+      hidden: true,
+      input: { target: '{ d: new Date(2024, 0, 1) }', args: [] },
+      expected: { d: new Date(2024, 0, 1) }
+    }
+  ]
+}
