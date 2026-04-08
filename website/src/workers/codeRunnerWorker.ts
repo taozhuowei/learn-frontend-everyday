@@ -1,5 +1,7 @@
 import type { JudgeCase } from '../types/content'
 import type { ExecutionCaseResult, ExecutionRequest, ExecutionResponse } from '../types/exam'
+import { JudgeCore } from '@judge'
+import type { TestFile } from '@judge'
 
 function sanitizeSource(source: string) {
   return source
@@ -148,7 +150,62 @@ function createEvaluator(source: string) {
   return { buffer, execute }
 }
 
-async function executeRequest(request: ExecutionRequest): Promise<ExecutionResponse> {
+function getCaseDescription(caseId: string, testFile: TestFile): string {
+  const allCases = [...testFile.examples, ...testFile.hidden] as Array<{ id: string }>
+  const index = allCases.findIndex((c) => c.id === caseId)
+  if (index === -1) return caseId
+  const isHidden = index >= testFile.examples.length
+  const pos = isHidden ? index - testFile.examples.length + 1 : index + 1
+  return isHidden ? `隐藏 ${pos}` : `示例 ${pos}`
+}
+
+async function executeWithJudgeCore(request: ExecutionRequest): Promise<ExecutionResponse> {
+  const judge = new JudgeCore()
+  const testFile = request.testFile as TestFile
+
+  try {
+    const judgeResult = await judge.run(request.problemId!, request.source, testFile)
+
+    const results: ExecutionCaseResult[] = judgeResult.cases.map((caseResult) => ({
+      caseId: caseResult.id,
+      description: getCaseDescription(caseResult.id, testFile),
+      passed: caseResult.passed,
+      expected: caseResult.expected,
+      actual: caseResult.actual,
+      logs: [],
+      error: caseResult.error,
+      durationMs: judgeResult.duration,
+    }))
+
+    return {
+      summary: {
+        passedCount: results.filter((r) => r.passed).length,
+        totalCount: results.length,
+      },
+      results,
+    }
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error)
+    // Return all cases as failed
+    const allCases = [...testFile.examples, ...testFile.hidden] as Array<{ id: string }>
+    const results: ExecutionCaseResult[] = allCases.map((c) => ({
+      caseId: c.id,
+      description: c.id,
+      passed: false,
+      expected: null,
+      actual: null,
+      logs: [],
+      error: message,
+      durationMs: 0,
+    }))
+    return {
+      summary: { passedCount: 0, totalCount: results.length },
+      results,
+    }
+  }
+}
+
+async function executeWithEval(request: ExecutionRequest): Promise<ExecutionResponse> {
   const user = createEvaluator(request.source)
   const solution = request.solutionCode ? createEvaluator(request.solutionCode) : null
   const results: ExecutionCaseResult[] = []
@@ -195,6 +252,15 @@ async function executeRequest(request: ExecutionRequest): Promise<ExecutionRespo
     },
     results,
   }
+}
+
+async function executeRequest(request: ExecutionRequest): Promise<ExecutionResponse> {
+  // Use JudgeCore for problems with judge contracts
+  if (request.problemId && request.testFile) {
+    return executeWithJudgeCore(request)
+  }
+  // Fall back to old eval-based runner (kept for backward compatibility)
+  return executeWithEval(request)
 }
 
 self.onmessage = async (event: MessageEvent<{ id: number; payload: ExecutionRequest }>) => {

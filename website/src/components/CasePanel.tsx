@@ -13,7 +13,10 @@ type PanelTab = 'cases' | 'console'
 
 export interface CustomCase {
   id: string
-  input: string
+  /** Target expression, e.g. "[1,2,3]" or "function foo(){}" */
+  target: string
+  /** Argument expressions, one entry per arg */
+  args: string[]
 }
 
 interface LogEntry {
@@ -116,6 +119,9 @@ export function CasePanel({
   const activeConsoleExecution = consoleExecution ?? execution
   const [activeTab, setActiveTab] = useState<PanelTab>('cases')
 
+  // Infer arg count from the first sample case's displayArgs
+  const argCount = cases[0]?.displayArgs?.length ?? 1
+
   // 合并所有用例的 console 日志
   const mergedLogs = useMemo(
     () => mergeConsoleLogs(activeConsoleExecution),
@@ -130,14 +136,27 @@ export function CasePanel({
     if (!onCustomCasesChange) return
     const newCase: CustomCase = {
       id: `custom-${Date.now()}`,
-      input: '',
+      target: '',
+      args: Array.from({ length: argCount }, () => ''),
     }
     onCustomCasesChange([...(customCases || []), newCase])
   }
 
-  const handleUpdateCustomCase = (id: string, input: string) => {
+  const handleUpdateCustomCaseTarget = (id: string, target: string) => {
     if (!onCustomCasesChange) return
-    onCustomCasesChange((customCases || []).map((c) => (c.id === id ? { ...c, input } : c)))
+    onCustomCasesChange((customCases || []).map((c) => (c.id === id ? { ...c, target } : c)))
+  }
+
+  const handleUpdateCustomCaseArg = (id: string, argIndex: number, value: string) => {
+    if (!onCustomCasesChange) return
+    onCustomCasesChange(
+      (customCases || []).map((c) => {
+        if (c.id !== id) return c
+        const nextArgs = [...c.args]
+        nextArgs[argIndex] = value
+        return { ...c, args: nextArgs }
+      }),
+    )
   }
 
   const handleDeleteCustomCase = (id: string) => {
@@ -146,7 +165,7 @@ export function CasePanel({
   }
 
   return (
-    <aside className="flex flex-col h-full bg-white border border-[var(--color-border)] rounded-[var(--radius-lg)] overflow-hidden">
+    <aside className="flex flex-col h-full bg-white border border-[var(--color-border)] rounded-[var(--radius-lg)] overflow-hidden" data-testid="case-panel">
       {/* Panel header */}
       <div className="flex items-center justify-between px-4 h-11 border-b border-[var(--color-border)] shrink-0">
         <span className="text-sm font-bold text-[var(--color-ink)]">{title}</span>
@@ -223,10 +242,24 @@ export function CasePanel({
                       </span>
                     )}
                   </div>
-                  {/* 只显示入参 */}
-                  <div className="break-all text-[var(--color-ink)]">
-                    {extractParams(testCase.input)}
-                  </div>
+                  {testCase.displayTarget !== undefined ? (
+                    <div className="flex flex-col gap-1">
+                      <div>
+                        <span className="text-[var(--color-ink-muted)] mr-1">调用对象</span>
+                        <span className="break-all text-[var(--color-ink)]">{testCase.displayTarget}</span>
+                      </div>
+                      {testCase.displayArgs && testCase.displayArgs.length > 0 && (
+                        <div>
+                          <span className="text-[var(--color-ink-muted)] mr-1">入参</span>
+                          <span className="break-all text-[var(--color-ink)]">{testCase.displayArgs.join(', ')}</span>
+                        </div>
+                      )}
+                    </div>
+                  ) : (
+                    <div className="break-all text-[var(--color-ink)]">
+                      {extractParams(testCase.input)}
+                    </div>
+                  )}
                 </div>
               )
             })}
@@ -278,13 +311,34 @@ export function CasePanel({
                       </button>
                     </div>
                   </div>
-                  <textarea
-                    className="w-full px-2.5 py-2 rounded-md border border-[var(--color-border)] text-xs font-mono bg-white resize-none focus:border-[var(--color-primary)] transition-colors"
-                    onChange={(e) => handleUpdateCustomCase(customCase.id, e.target.value)}
-                    rows={2}
-                    value={customCase.input}
-                    placeholder="输入测试表达式..."
-                  />
+                  <div className="flex flex-col gap-1.5">
+                    <div>
+                      <span className="text-[var(--color-ink-muted)] block mb-1">调用对象</span>
+                      <input
+                        className="w-full px-2.5 py-1.5 rounded-md border border-[var(--color-border)] text-xs font-mono bg-white focus:border-[var(--color-primary)] outline-none transition-colors"
+                        onChange={(e) => handleUpdateCustomCaseTarget(customCase.id, e.target.value)}
+                        placeholder="例：[1, 2, 3, 4]"
+                        type="text"
+                        value={customCase.target}
+                      />
+                    </div>
+                    {customCase.args.map((argVal, argIdx) => (
+                      <div key={argIdx}>
+                        <span className="text-[var(--color-ink-muted)] block mb-1">
+                          {customCase.args.length === 1 ? '入参' : `入参 ${argIdx + 1}`}
+                        </span>
+                        <input
+                          className="w-full px-2.5 py-1.5 rounded-md border border-[var(--color-border)] text-xs font-mono bg-white focus:border-[var(--color-primary)] outline-none transition-colors"
+                          onChange={(e) =>
+                            handleUpdateCustomCaseArg(customCase.id, argIdx, e.target.value)
+                          }
+                          placeholder="例：x => x > 2"
+                          type="text"
+                          value={argVal}
+                        />
+                      </div>
+                    ))}
+                  </div>
                 </div>
               )
             })}

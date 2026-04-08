@@ -184,14 +184,45 @@ function LearnProblemView({ problem }: { problem: ProblemRecord }) {
     setSource(nextSource)
   }
 
+  /**
+   * Build a valid JS eval expression from a custom case's target + args.
+   * Array prototype methods: target.myMethod(args)
+   * Function prototype methods: target.myMethod(args)
+   * Other (utility/object etc.): problemId(target, ...args)
+   */
+  function buildCustomEvalInput(target: string, args: string[]): string {
+    const argsStr = args.filter((a) => a.trim()).join(', ')
+    const arrayMethodMap: Record<string, string> = {
+      filter: 'myFilter',
+      map: 'myMap',
+      forEach: 'myForEach',
+      reduce: 'myReduce',
+      flat: 'myFlat',
+    }
+    const fnMethodMap: Record<string, string> = {
+      apply: 'myApply',
+      call: 'myCall',
+      bind: 'myBind',
+    }
+    if (problem.categoryId === 'array' && problem.id in arrayMethodMap) {
+      return `(${target}).${arrayMethodMap[problem.id]}(${argsStr})`
+    }
+    if (problem.categoryId === 'function' && problem.id in fnMethodMap) {
+      return `(${target}).${fnMethodMap[problem.id]}(${argsStr})`
+    }
+    // Generic: treat as a direct function call
+    const allArgs = [target, ...args].filter((a) => a.trim()).join(', ')
+    return `${problem.id}(${allArgs})`
+  }
+
   function parseCustomCases(): JudgeCase[] {
     return customCases
-      .filter((c) => c.input.trim())
+      .filter((c) => c.target.trim())
       .map((c, index) => ({
         id: c.id,
         type: 'basic' as const,
         description: `自定义用例 ${index + 1}`,
-        input: c.input,
+        input: buildCustomEvalInput(c.target, c.args),
         expected: undefined,
       }))
   }
@@ -200,26 +231,57 @@ function LearnProblemView({ problem }: { problem: ProblemRecord }) {
     if (problem.executionMode !== 'browser') return
 
     const sourceCode = editorRef.current?.getValue() ?? sourceRef.current
-    const baseCases = kind === 'run' ? problem.basicCases : problem.fullCases
     const customCasesParsed = kind === 'run' ? parseCustomCases() : []
-    const cases = [...baseCases, ...customCasesParsed]
     setBusyAction(kind)
 
+    // Build testFile for JudgeCore - run only uses examples, submit uses all
+    const testFile = problem.testCases
+      ? kind === 'run'
+        ? { examples: problem.testCases.examples, hidden: [] }
+        : problem.testCases
+      : undefined
+
     try {
-      const response = await runCode({
+      // Run JudgeCore for the standard cases
+      const judgeResponse = await runCode({
         source: sourceCode,
-        cases,
+        cases: [],
         solutionCode: problem.solutionCode,
+        problemId: problem.id,
+        testFile: testFile as unknown as { examples: unknown[]; hidden: unknown[] },
       })
-      if (kind === 'run') {
-        setSampleExecution(response)
+
+      // Run eval-based runner for custom cases (separate call, no testFile)
+      let finalResponse = judgeResponse
+      if (customCasesParsed.length > 0) {
+        const customResponse = await runCode({
+          source: sourceCode,
+          cases: customCasesParsed,
+          solutionCode: problem.solutionCode,
+          problemId: undefined,
+          testFile: undefined,
+        })
+        finalResponse = {
+          summary: {
+            passedCount:
+              judgeResponse.summary.passedCount + customResponse.summary.passedCount,
+            totalCount: judgeResponse.summary.totalCount + customResponse.summary.totalCount,
+          },
+          results: [...judgeResponse.results, ...customResponse.results],
+        }
       }
-      setConsoleExecution(response)
+
+      if (kind === 'run') {
+        setSampleExecution(finalResponse)
+      }
+      setConsoleExecution(finalResponse)
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error)
+      const baseCases = kind === 'run' ? problem.basicCases : problem.fullCases
+      const allCases = [...baseCases, ...customCasesParsed]
       const response: ExecutionResponse = {
-        summary: { passedCount: 0, totalCount: cases.length },
-        results: cases.map((singleCase) => ({
+        summary: { passedCount: 0, totalCount: allCases.length },
+        results: allCases.map((singleCase) => ({
           caseId: singleCase.id,
           description: singleCase.description,
           passed: false,
@@ -248,7 +310,7 @@ function LearnProblemView({ problem }: { problem: ProblemRecord }) {
         : undefined
 
   return (
-    <AppShell eyebrow="学习模式" title={problem.title} showPageHeader={false}>
+    <AppShell eyebrow="学习模式" title={problem.title} showPageHeader={false} backTo="/learn" backLabel="题目列表">
       <div className="h-full p-2">
         <SplitPane
           className="h-full"
@@ -298,6 +360,7 @@ function LearnProblemView({ problem }: { problem: ProblemRecord }) {
                         <div className="flex gap-2">
                           <button
                             className="flex items-center gap-1 px-3 py-1.5 rounded-md text-xs font-semibold bg-[var(--color-surface-secondary)] border border-[var(--color-border)] text-[var(--color-ink-secondary)] hover:border-[var(--color-primary)] disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                            data-testid="run-button"
                             disabled={!isAutoJudge || busyAction !== null}
                             onClick={() => executeCases('run')}
                             title={actionTitle}
@@ -308,6 +371,7 @@ function LearnProblemView({ problem }: { problem: ProblemRecord }) {
                           </button>
                           <button
                             className="flex items-center gap-1 px-3 py-1.5 rounded-md text-xs font-semibold bg-[var(--color-primary)] text-white hover:bg-[var(--color-primary-strong)] disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                            data-testid="submit-button"
                             disabled={!isAutoJudge || busyAction !== null}
                             onClick={() => executeCases('submit')}
                             title={actionTitle}

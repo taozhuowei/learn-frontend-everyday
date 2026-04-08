@@ -4,8 +4,8 @@
  */
 
 import type { ReactNode } from 'react'
-import { NavLink } from 'react-router-dom'
-import { Settings2 } from 'lucide-react'
+import { NavLink, useNavigate } from 'react-router-dom'
+import { ChevronLeft, Settings2 } from 'lucide-react'
 import { useAppState } from '../context/AppStateContext'
 import { SettingsDrawer } from './SettingsDrawer'
 
@@ -17,6 +17,8 @@ export function AppShell({
   children,
   showTopbar = true,
   showPageHeader = true,
+  backTo,
+  backLabel,
 }: {
   eyebrow?: string
   title: string
@@ -25,7 +27,12 @@ export function AppShell({
   children: ReactNode
   showTopbar?: boolean
   showPageHeader?: boolean
+  /** Route to navigate back to when back button is clicked */
+  backTo?: string
+  /** Label shown next to the back arrow (default: "返回") */
+  backLabel?: string
 }) {
+  const navigate = useNavigate()
   const {
     state: { settingsDrawerOpen },
     toggleSettingsPanel,
@@ -48,6 +55,17 @@ export function AppShell({
               </span>
               <span className="text-[var(--color-ink)]">CodeForge</span>
             </NavLink>
+
+            {backTo && !showPageHeader ? (
+              <button
+                className="flex items-center gap-0.5 px-2 h-7 rounded-md text-xs font-semibold text-[var(--color-ink-tertiary)] hover:text-[var(--color-ink)] hover:bg-[var(--color-surface-secondary)] transition-colors"
+                onClick={() => navigate(backTo)}
+                type="button"
+              >
+                <ChevronLeft size={14} />
+                {backLabel ?? '返回'}
+              </button>
+            ) : null}
 
             <nav aria-label="主导航" className="flex items-center gap-1">
               {[
@@ -99,9 +117,21 @@ export function AppShell({
               </span>
             ) : null}
             <div className="flex items-center justify-between gap-4">
-              <h1 className="text-base font-bold tracking-tight text-[var(--color-ink)] truncate">
-                {title}
-              </h1>
+              <div className="flex items-center gap-2 min-w-0">
+                {backTo ? (
+                  <button
+                    className="flex items-center gap-0.5 shrink-0 text-[var(--color-ink-tertiary)] hover:text-[var(--color-ink)] transition-colors"
+                    onClick={() => navigate(backTo)}
+                    type="button"
+                    aria-label="返回上一页"
+                  >
+                    <ChevronLeft size={16} />
+                  </button>
+                ) : null}
+                <h1 className="text-base font-bold tracking-tight text-[var(--color-ink)] truncate">
+                  {title}
+                </h1>
+              </div>
               {actions ? <div className="flex items-center gap-2 shrink-0">{actions}</div> : null}
             </div>
           </div>

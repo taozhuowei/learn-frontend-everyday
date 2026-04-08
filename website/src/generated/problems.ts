@@ -20,78 +20,69 @@ export const problems: ProblemRecord[] = [
     "testCases": {
       "examples": [
         {
+          "id": "example-1",
+          "hidden": false,
           "input": {
-            "arr": [
-              1,
-              2,
-              3,
-              4
-            ],
-            "fn": "x => x % 2 === 0"
+            "target": "[1, 2, 3, 4, 5, 6]",
+            "args": [
+              "x => x % 2 === 0"
+            ]
           },
           "expected": [
             2,
+            4,
+            6
+          ]
+        },
+        {
+          "id": "example-2",
+          "hidden": false,
+          "input": {
+            "target": "[1, 2, 3, 4]",
+            "args": [
+              "x => x > 2"
+            ]
+          },
+          "expected": [
+            3,
             4
           ]
         },
         {
+          "id": "example-3",
+          "hidden": false,
           "input": {
-            "arr": [
-              5,
-              6,
-              7,
-              8
-            ],
-            "fn": "x => x > 6"
+            "target": "[\"a\", \"bb\", \"ccc\", \"d\"]",
+            "args": [
+              "s => s.length > 1"
+            ]
           },
           "expected": [
-            7,
-            8
-          ]
-        },
-        {
-          "input": {
-            "arr": [
-              1,
-              null,
-              3,
-              0
-            ],
-            "fn": "Boolean"
-          },
-          "expected": [
-            1,
-            3
+            "bb",
+            "ccc"
           ]
         }
       ],
       "hidden": [
         {
+          "id": "hidden-1",
+          "hidden": true,
           "input": {
-            "arr": [],
-            "fn": "() => true"
+            "target": "[]",
+            "args": [
+              "x => true"
+            ]
           },
           "expected": []
         },
         {
+          "id": "hidden-2",
+          "hidden": true,
           "input": {
-            "arr": [
-              1,
-              2,
-              3
-            ],
-            "fn": "() => false"
-          },
-          "expected": []
-        },
-        {
-          "input": {
-            "arr": [
-              1,
-              2,
-              3
-            ],
-            "fn": "() => true"
+            "target": "[1, 2, 3]",
+            "args": [
+              "x => true"
+            ]
           },
           "expected": [
             1,
@@ -100,257 +91,173 @@ export const problems: ProblemRecord[] = [
           ]
         },
         {
+          "id": "hidden-3",
+          "hidden": true,
           "input": {
-            "arr": [
-              null,
-              null,
-              3
-            ],
-            "fn": "x => x > 0"
-          },
-          "expected": [
-            3
-          ]
-        },
-        {
-          "input": {
-            "arr": [
-              1,
-              2,
-              3
-            ],
-            "fn": null
-          },
-          "expected": {
-            "error": "TypeError"
-          }
-        },
-        {
-          "input": {
-            "arr": [
-              1,
-              2,
-              3
+            "target": "[1, 2, 3]",
+            "args": [
+              "x => false"
             ]
           },
-          "expected": {
-            "error": "TypeError"
-          }
+          "expected": []
         },
         {
+          "id": "hidden-4",
+          "hidden": true,
           "input": {
-            "arr": [
-              1,
-              2,
-              3
-            ],
-            "fn": 123
-          },
-          "expected": {
-            "error": "TypeError"
-          }
-        },
-        {
-          "input": {
-            "arr": null,
-            "fn": "() => true"
-          },
-          "expected": {
-            "error": "TypeError"
-          }
-        },
-        {
-          "input": {
-            "fn": "() => true"
-          },
-          "expected": {
-            "error": "TypeError"
-          }
-        },
-        {
-          "input": {
-            "arr": [
-              3,
-              4,
-              5
-            ],
-            "fn": "function(x) { return x > this.min }",
-            "thisArg": {
-              "min": 3
-            }
+            "target": "[1, 2, 3, 4]",
+            "args": [
+              "(x, i) => i > 1"
+            ]
           },
           "expected": [
-            4,
-            5
+            3,
+            4
           ]
         },
         {
+          "id": "hidden-5",
+          "hidden": true,
           "input": {
-            "arr": "Array(10000).fill(0).map((_,i)=>i)",
-            "fn": "x => x % 2 === 0"
+            "target": "[{a: 1}, {a: 2}, {a: 3}]",
+            "args": [
+              "x => x.a > 1"
+            ]
           },
-          "expected": "Array(5000).fill(0).map((_,i)=>i*2)"
+          "expected": [
+            {
+              "a": 2
+            },
+            {
+              "a": 3
+            }
+          ]
         }
       ]
     },
     "basicCases": [
       {
-        "id": "case-1",
+        "id": "example-1",
         "type": "basic",
         "description": "示例 1",
-        "input": "{\"arr\":[1,2,3,4],\"fn\":\"x => x % 2 === 0\"}",
-        "expected": [
-          2,
-          4
-        ]
+        "input": "[1, 2, 3, 4, 5, 6](x => x % 2 === 0)",
+        "displayTarget": "[1, 2, 3, 4, 5, 6]",
+        "displayArgs": [
+          "x => x % 2 === 0"
+        ],
+        "expected": "[Circular]"
       },
       {
-        "id": "case-2",
+        "id": "example-2",
         "type": "basic",
         "description": "示例 2",
-        "input": "{\"arr\":[5,6,7,8],\"fn\":\"x => x > 6\"}",
-        "expected": [
-          7,
-          8
-        ]
+        "input": "[1, 2, 3, 4](x => x > 2)",
+        "displayTarget": "[1, 2, 3, 4]",
+        "displayArgs": [
+          "x => x > 2"
+        ],
+        "expected": "[Circular]"
       },
       {
-        "id": "case-3",
+        "id": "example-3",
         "type": "basic",
         "description": "示例 3",
-        "input": "{\"arr\":[1,null,3,0],\"fn\":\"Boolean\"}",
-        "expected": [
-          1,
-          3
-        ]
+        "input": "[\"a\", \"bb\", \"ccc\", \"d\"](s => s.length > 1)",
+        "displayTarget": "[\"a\", \"bb\", \"ccc\", \"d\"]",
+        "displayArgs": [
+          "s => s.length > 1"
+        ],
+        "expected": "[Circular]"
       }
     ],
     "fullCases": [
       {
-        "id": "case-1",
+        "id": "example-1",
         "type": "basic",
         "description": "示例 1",
-        "input": "{\"arr\":[1,2,3,4],\"fn\":\"x => x % 2 === 0\"}",
-        "expected": [
-          2,
-          4
-        ]
+        "input": "[1, 2, 3, 4, 5, 6](x => x % 2 === 0)",
+        "displayTarget": "[1, 2, 3, 4, 5, 6]",
+        "displayArgs": [
+          "x => x % 2 === 0"
+        ],
+        "expected": "[Circular]"
       },
       {
-        "id": "case-2",
+        "id": "example-2",
         "type": "basic",
         "description": "示例 2",
-        "input": "{\"arr\":[5,6,7,8],\"fn\":\"x => x > 6\"}",
-        "expected": [
-          7,
-          8
-        ]
+        "input": "[1, 2, 3, 4](x => x > 2)",
+        "displayTarget": "[1, 2, 3, 4]",
+        "displayArgs": [
+          "x => x > 2"
+        ],
+        "expected": "[Circular]"
       },
       {
-        "id": "case-3",
+        "id": "example-3",
         "type": "basic",
         "description": "示例 3",
-        "input": "{\"arr\":[1,null,3,0],\"fn\":\"Boolean\"}",
-        "expected": [
-          1,
-          3
-        ]
+        "input": "[\"a\", \"bb\", \"ccc\", \"d\"](s => s.length > 1)",
+        "displayTarget": "[\"a\", \"bb\", \"ccc\", \"d\"]",
+        "displayArgs": [
+          "s => s.length > 1"
+        ],
+        "expected": "[Circular]"
       },
       {
         "id": "hidden-1",
         "type": "edge",
         "description": "隐藏 1",
-        "input": "{\"arr\":[],\"fn\":\"() => true\"}",
-        "expected": []
+        "input": "[](x => true)",
+        "displayTarget": "[]",
+        "displayArgs": [
+          "x => true"
+        ],
+        "expected": "[Circular]"
       },
       {
         "id": "hidden-2",
         "type": "edge",
         "description": "隐藏 2",
-        "input": "{\"arr\":[1,2,3],\"fn\":\"() => false\"}",
-        "expected": []
+        "input": "[1, 2, 3](x => true)",
+        "displayTarget": "[1, 2, 3]",
+        "displayArgs": [
+          "x => true"
+        ],
+        "expected": "[Circular]"
       },
       {
         "id": "hidden-3",
         "type": "edge",
         "description": "隐藏 3",
-        "input": "{\"arr\":[1,2,3],\"fn\":\"() => true\"}",
-        "expected": [
-          1,
-          2,
-          3
-        ]
+        "input": "[1, 2, 3](x => false)",
+        "displayTarget": "[1, 2, 3]",
+        "displayArgs": [
+          "x => false"
+        ],
+        "expected": "[Circular]"
       },
       {
         "id": "hidden-4",
         "type": "edge",
         "description": "隐藏 4",
-        "input": "{\"arr\":[null,null,3],\"fn\":\"x => x > 0\"}",
-        "expected": [
-          3
-        ]
+        "input": "[1, 2, 3, 4]((x, i) => i > 1)",
+        "displayTarget": "[1, 2, 3, 4]",
+        "displayArgs": [
+          "(x, i) => i > 1"
+        ],
+        "expected": "[Circular]"
       },
       {
         "id": "hidden-5",
         "type": "edge",
         "description": "隐藏 5",
-        "input": "{\"arr\":[1,2,3],\"fn\":null}",
-        "expected": {
-          "error": "TypeError"
-        }
-      },
-      {
-        "id": "hidden-6",
-        "type": "edge",
-        "description": "隐藏 6",
-        "input": "{\"arr\":[1,2,3]}",
-        "expected": {
-          "error": "TypeError"
-        }
-      },
-      {
-        "id": "hidden-7",
-        "type": "edge",
-        "description": "隐藏 7",
-        "input": "{\"arr\":[1,2,3],\"fn\":123}",
-        "expected": {
-          "error": "TypeError"
-        }
-      },
-      {
-        "id": "hidden-8",
-        "type": "edge",
-        "description": "隐藏 8",
-        "input": "{\"arr\":null,\"fn\":\"() => true\"}",
-        "expected": {
-          "error": "TypeError"
-        }
-      },
-      {
-        "id": "hidden-9",
-        "type": "edge",
-        "description": "隐藏 9",
-        "input": "{\"fn\":\"() => true\"}",
-        "expected": {
-          "error": "TypeError"
-        }
-      },
-      {
-        "id": "hidden-10",
-        "type": "edge",
-        "description": "隐藏 10",
-        "input": "{\"arr\":[3,4,5],\"fn\":\"function(x) { return x > this.min }\",\"thisArg\":{\"min\":3}}",
-        "expected": [
-          4,
-          5
-        ]
-      },
-      {
-        "id": "hidden-11",
-        "type": "edge",
-        "description": "隐藏 11",
-        "input": "{\"arr\":\"Array(10000).fill(0).map((_,i)=>i)\",\"fn\":\"x => x % 2 === 0\"}",
-        "expected": "Array(5000).fill(0).map((_,i)=>i*2)"
+        "input": "[{a: 1}, {a: 2}, {a: 3}](x => x.a > 1)",
+        "displayTarget": "[{a: 1}, {a: 2}, {a: 3}]",
+        "displayArgs": [
+          "x => x.a > 1"
+        ],
+        "expected": "[Circular]"
       }
     ],
     "isComponent": false,
@@ -376,20 +283,66 @@ export const problems: ProblemRecord[] = [
     "testCases": {
       "examples": [
         {
+          "id": "example-1",
+          "hidden": false,
           "input": {
-            "arr": "1, [2, 3]",
-            "fn": "() => {}"
+            "target": "[1, [2, 3], 4]",
+            "args": [
+              "1"
+            ]
+          },
+          "expected": [
+            1,
+            2,
+            3,
+            4
+          ]
+        },
+        {
+          "id": "example-2",
+          "hidden": false,
+          "input": {
+            "target": "[1, [2, [3, [4]]]]",
+            "args": [
+              "1"
+            ]
+          },
+          "expected": [
+            1,
+            2,
+            [
+              3,
+              [
+                4
+              ]
+            ]
+          ]
+        },
+        {
+          "id": "example-3",
+          "hidden": false,
+          "input": {
+            "target": "[1, 2, 3]",
+            "args": [
+              "1"
+            ]
           },
           "expected": [
             1,
             2,
             3
           ]
-        },
+        }
+      ],
+      "hidden": [
         {
+          "id": "hidden-1",
+          "hidden": true,
           "input": {
-            "arr": "1, [2, [3, [4]]]",
-            "fn": "2"
+            "target": "[1, [2, [3, [4]]]]",
+            "args": [
+              "2"
+            ]
           },
           "expected": [
             1,
@@ -401,150 +354,187 @@ export const problems: ProblemRecord[] = [
           ]
         },
         {
+          "id": "hidden-2",
+          "hidden": true,
           "input": {
-            "arr": "1, [2, [3]]",
-            "fn": "1"
-          },
-          "expected": [
-            1,
-            2,
-            [
-              3
+            "target": "[1, [2, [3, [4]]]]",
+            "args": [
+              "Infinity"
             ]
-          ]
-        }
-      ],
-      "hidden": [
-        {
-          "input": {
-            "arr": "1, [2]",
-            "fn": "0"
-          },
-          "expected": [
-            1,
-            [
-              2
-            ]
-          ]
-        },
-        {
-          "input": {
-            "arr": "1, [2, [3, [4, [5]]]]",
-            "fn": "Infinity"
           },
           "expected": [
             1,
             2,
             3,
-            4,
-            5
+            4
+          ]
+        },
+        {
+          "id": "hidden-3",
+          "hidden": true,
+          "input": {
+            "target": "[]",
+            "args": [
+              "1"
+            ]
+          },
+          "expected": []
+        },
+        {
+          "id": "hidden-4",
+          "hidden": true,
+          "input": {
+            "target": "[[[[1]]]]",
+            "args": [
+              "3"
+            ]
+          },
+          "expected": [
+            [
+              1
+            ]
+          ]
+        },
+        {
+          "id": "hidden-5",
+          "hidden": true,
+          "input": {
+            "target": "[1, [], 2, [], 3]",
+            "args": [
+              "1"
+            ]
+          },
+          "expected": [
+            1,
+            2,
+            3
           ]
         }
       ]
     },
     "basicCases": [
       {
-        "id": "case-1",
+        "id": "example-1",
         "type": "basic",
         "description": "示例 1",
-        "input": "{\"arr\":\"1, [2, 3]\",\"fn\":\"() => {}\"}",
-        "expected": [
-          1,
-          2,
-          3
-        ]
+        "input": "[1, [2, 3], 4](1)",
+        "displayTarget": "[1, [2, 3], 4]",
+        "displayArgs": [
+          "1"
+        ],
+        "expected": "[Circular]"
       },
       {
-        "id": "case-2",
+        "id": "example-2",
         "type": "basic",
         "description": "示例 2",
-        "input": "{\"arr\":\"1, [2, [3, [4]]]\",\"fn\":\"2\"}",
-        "expected": [
-          1,
-          2,
-          3,
-          [
-            4
-          ]
-        ]
+        "input": "[1, [2, [3, [4]]]](1)",
+        "displayTarget": "[1, [2, [3, [4]]]]",
+        "displayArgs": [
+          "1"
+        ],
+        "expected": "[Circular]"
       },
       {
-        "id": "case-3",
+        "id": "example-3",
         "type": "basic",
         "description": "示例 3",
-        "input": "{\"arr\":\"1, [2, [3]]\",\"fn\":\"1\"}",
-        "expected": [
-          1,
-          2,
-          [
-            3
-          ]
-        ]
+        "input": "[1, 2, 3](1)",
+        "displayTarget": "[1, 2, 3]",
+        "displayArgs": [
+          "1"
+        ],
+        "expected": "[Circular]"
       }
     ],
     "fullCases": [
       {
-        "id": "case-1",
+        "id": "example-1",
         "type": "basic",
         "description": "示例 1",
-        "input": "{\"arr\":\"1, [2, 3]\",\"fn\":\"() => {}\"}",
-        "expected": [
-          1,
-          2,
-          3
-        ]
+        "input": "[1, [2, 3], 4](1)",
+        "displayTarget": "[1, [2, 3], 4]",
+        "displayArgs": [
+          "1"
+        ],
+        "expected": "[Circular]"
       },
       {
-        "id": "case-2",
+        "id": "example-2",
         "type": "basic",
         "description": "示例 2",
-        "input": "{\"arr\":\"1, [2, [3, [4]]]\",\"fn\":\"2\"}",
-        "expected": [
-          1,
-          2,
-          3,
-          [
-            4
-          ]
-        ]
+        "input": "[1, [2, [3, [4]]]](1)",
+        "displayTarget": "[1, [2, [3, [4]]]]",
+        "displayArgs": [
+          "1"
+        ],
+        "expected": "[Circular]"
       },
       {
-        "id": "case-3",
+        "id": "example-3",
         "type": "basic",
         "description": "示例 3",
-        "input": "{\"arr\":\"1, [2, [3]]\",\"fn\":\"1\"}",
-        "expected": [
-          1,
-          2,
-          [
-            3
-          ]
-        ]
+        "input": "[1, 2, 3](1)",
+        "displayTarget": "[1, 2, 3]",
+        "displayArgs": [
+          "1"
+        ],
+        "expected": "[Circular]"
       },
       {
         "id": "hidden-1",
         "type": "edge",
         "description": "隐藏 1",
-        "input": "{\"arr\":\"1, [2]\",\"fn\":\"0\"}",
-        "expected": [
-          1,
-          [
-            2
-          ]
-        ]
+        "input": "[1, [2, [3, [4]]]](2)",
+        "displayTarget": "[1, [2, [3, [4]]]]",
+        "displayArgs": [
+          "2"
+        ],
+        "expected": "[Circular]"
       },
       {
         "id": "hidden-2",
         "type": "edge",
         "description": "隐藏 2",
-        "input": "{\"arr\":\"1, [2, [3, [4, [5]]]]\",\"fn\":\"Infinity\"}",
-        "expected": [
-          1,
-          2,
-          3,
-          4,
-          5
-        ]
+        "input": "[1, [2, [3, [4]]]](Infinity)",
+        "displayTarget": "[1, [2, [3, [4]]]]",
+        "displayArgs": [
+          "Infinity"
+        ],
+        "expected": "[Circular]"
+      },
+      {
+        "id": "hidden-3",
+        "type": "edge",
+        "description": "隐藏 3",
+        "input": "[](1)",
+        "displayTarget": "[]",
+        "displayArgs": [
+          "1"
+        ],
+        "expected": "[Circular]"
+      },
+      {
+        "id": "hidden-4",
+        "type": "edge",
+        "description": "隐藏 4",
+        "input": "[[[[1]]]](3)",
+        "displayTarget": "[[[[1]]]]",
+        "displayArgs": [
+          "3"
+        ],
+        "expected": "[Circular]"
+      },
+      {
+        "id": "hidden-5",
+        "type": "edge",
+        "description": "隐藏 5",
+        "input": "[1, [], 2, [], 3](1)",
+        "displayTarget": "[1, [], 2, [], 3]",
+        "displayArgs": [
+          "1"
+        ],
+        "expected": "[Circular]"
       }
     ],
     "isComponent": false,
@@ -570,97 +560,221 @@ export const problems: ProblemRecord[] = [
     "testCases": {
       "examples": [
         {
+          "id": "example-1",
+          "hidden": false,
           "input": {
-            "args": "(value) => { sum += value }); return sum })("
+            "target": "[1, 2, 3]",
+            "args": [
+              "x => console.log(x)"
+            ]
           },
-          "expected": 6
+          "expected": undefined
         },
         {
+          "id": "example-2",
+          "hidden": false,
           "input": {
-            "args": "function (value) { total += value + this.base }, context); return total })("
+            "target": "[\"a\", \"b\", \"c\"]",
+            "args": [
+              "(x, i) => console.log(i, x)"
+            ]
           },
-          "expected": 23
+          "expected": undefined
         },
         {
+          "id": "example-3",
+          "hidden": false,
           "input": {
-            "args": "() => { count += 1 }); return count })("
+            "target": "[]",
+            "args": [
+              "x => x * 2"
+            ]
           },
-          "expected": 2
+          "expected": undefined
         }
       ],
       "hidden": [
         {
+          "id": "hidden-1",
+          "hidden": true,
           "input": {
-            "args": "() => { called = true }); return called })("
+            "target": "[1, 2, 3]",
+            "args": [
+              "(x, i, arr) => console.log(arr.length)"
+            ]
           },
-          "expected": false
+          "expected": undefined
         },
         {
+          "id": "hidden-2",
+          "hidden": true,
           "input": {
-            "args": "'nope') } catch (error) { return error instanceof TypeError } })("
+            "target": "[1, 2, 3]",
+            "args": [
+              "function(x) { this.sum += x; }"
+            ],
+            "thisArg": "{ sum: 0 }"
           },
-          "expected": true
+          "expected": undefined
+        },
+        {
+          "id": "hidden-3",
+          "hidden": true,
+          "input": {
+            "target": "[1, 2, 3]",
+            "args": [
+              "x => x"
+            ]
+          },
+          "expected": undefined
+        },
+        {
+          "id": "hidden-4",
+          "hidden": true,
+          "input": {
+            "target": "[1, , 3]",
+            "args": [
+              "x => console.log(x)"
+            ]
+          },
+          "expected": undefined
+        },
+        {
+          "id": "hidden-5",
+          "hidden": true,
+          "input": {
+            "target": "new Array(3)",
+            "args": [
+              "(x, i) => console.log(i)"
+            ]
+          },
+          "expected": undefined
         }
       ]
     },
     "basicCases": [
       {
-        "id": "case-1",
+        "id": "example-1",
         "type": "basic",
         "description": "示例 1",
-        "input": "{\"args\":\"(value) => { sum += value }); return sum })(\"}",
-        "expected": 6
+        "input": "[1, 2, 3](x => console.log(x))",
+        "displayTarget": "[1, 2, 3]",
+        "displayArgs": [
+          "x => console.log(x)"
+        ],
+        "expected": undefined
       },
       {
-        "id": "case-2",
+        "id": "example-2",
         "type": "basic",
         "description": "示例 2",
-        "input": "{\"args\":\"function (value) { total += value + this.base }, context); return total })(\"}",
-        "expected": 23
+        "input": "[\"a\", \"b\", \"c\"]((x, i) => console.log(i, x))",
+        "displayTarget": "[\"a\", \"b\", \"c\"]",
+        "displayArgs": [
+          "(x, i) => console.log(i, x)"
+        ],
+        "expected": undefined
       },
       {
-        "id": "case-3",
+        "id": "example-3",
         "type": "basic",
         "description": "示例 3",
-        "input": "{\"args\":\"() => { count += 1 }); return count })(\"}",
-        "expected": 2
+        "input": "[](x => x * 2)",
+        "displayTarget": "[]",
+        "displayArgs": [
+          "x => x * 2"
+        ],
+        "expected": undefined
       }
     ],
     "fullCases": [
       {
-        "id": "case-1",
+        "id": "example-1",
         "type": "basic",
         "description": "示例 1",
-        "input": "{\"args\":\"(value) => { sum += value }); return sum })(\"}",
-        "expected": 6
+        "input": "[1, 2, 3](x => console.log(x))",
+        "displayTarget": "[1, 2, 3]",
+        "displayArgs": [
+          "x => console.log(x)"
+        ],
+        "expected": undefined
       },
       {
-        "id": "case-2",
+        "id": "example-2",
         "type": "basic",
         "description": "示例 2",
-        "input": "{\"args\":\"function (value) { total += value + this.base }, context); return total })(\"}",
-        "expected": 23
+        "input": "[\"a\", \"b\", \"c\"]((x, i) => console.log(i, x))",
+        "displayTarget": "[\"a\", \"b\", \"c\"]",
+        "displayArgs": [
+          "(x, i) => console.log(i, x)"
+        ],
+        "expected": undefined
       },
       {
-        "id": "case-3",
+        "id": "example-3",
         "type": "basic",
         "description": "示例 3",
-        "input": "{\"args\":\"() => { count += 1 }); return count })(\"}",
-        "expected": 2
+        "input": "[](x => x * 2)",
+        "displayTarget": "[]",
+        "displayArgs": [
+          "x => x * 2"
+        ],
+        "expected": undefined
       },
       {
         "id": "hidden-1",
         "type": "edge",
         "description": "隐藏 1",
-        "input": "{\"args\":\"() => { called = true }); return called })(\"}",
-        "expected": false
+        "input": "[1, 2, 3]((x, i, arr) => console.log(arr.length))",
+        "displayTarget": "[1, 2, 3]",
+        "displayArgs": [
+          "(x, i, arr) => console.log(arr.length)"
+        ],
+        "expected": undefined
       },
       {
         "id": "hidden-2",
         "type": "edge",
         "description": "隐藏 2",
-        "input": "{\"args\":\"'nope') } catch (error) { return error instanceof TypeError } })(\"}",
-        "expected": true
+        "input": "[1, 2, 3](function(x) { this.sum += x; })",
+        "displayTarget": "[1, 2, 3]",
+        "displayArgs": [
+          "function(x) { this.sum += x; }"
+        ],
+        "expected": undefined
+      },
+      {
+        "id": "hidden-3",
+        "type": "edge",
+        "description": "隐藏 3",
+        "input": "[1, 2, 3](x => x)",
+        "displayTarget": "[1, 2, 3]",
+        "displayArgs": [
+          "x => x"
+        ],
+        "expected": undefined
+      },
+      {
+        "id": "hidden-4",
+        "type": "edge",
+        "description": "隐藏 4",
+        "input": "[1, , 3](x => console.log(x))",
+        "displayTarget": "[1, , 3]",
+        "displayArgs": [
+          "x => console.log(x)"
+        ],
+        "expected": undefined
+      },
+      {
+        "id": "hidden-5",
+        "type": "edge",
+        "description": "隐藏 5",
+        "input": "new Array(3)((x, i) => console.log(i))",
+        "displayTarget": "new Array(3)",
+        "displayArgs": [
+          "(x, i) => console.log(i)"
+        ],
+        "expected": undefined
       }
     ],
     "isComponent": false,
@@ -686,9 +800,13 @@ export const problems: ProblemRecord[] = [
     "testCases": {
       "examples": [
         {
+          "id": "example-1",
+          "hidden": false,
           "input": {
-            "arr": "1, 2, 3",
-            "fn": "(value) => value * 2"
+            "target": "[1, 2, 3]",
+            "args": [
+              "x => x * 2"
+            ]
           },
           "expected": [
             2,
@@ -697,128 +815,239 @@ export const problems: ProblemRecord[] = [
           ]
         },
         {
+          "id": "example-2",
+          "hidden": false,
           "input": {
-            "arr": "'a', 'b'",
-            "fn": "function (value) { return this.prefix + value }, { prefix: 'x-' }"
+            "target": "[1, 2, 3]",
+            "args": [
+              "x => String(x)"
+            ]
           },
           "expected": [
-            "x-a",
-            "x-b"
+            "1",
+            "2",
+            "3"
           ]
         },
         {
+          "id": "example-3",
+          "hidden": false,
           "input": {
-            "args": "(value) => value * 2); return [result.length, 1 in result, 2 in result, result[0], result[2]] })("
+            "target": "[1, 2, 3]",
+            "args": [
+              "x => x * x"
+            ]
           },
           "expected": [
-            3,
-            false,
-            true,
-            2,
-            6
+            1,
+            4,
+            9
           ]
         }
       ],
       "hidden": [
         {
+          "id": "hidden-1",
+          "hidden": true,
           "input": {
-            "arr": "",
-            "fn": "() => 1"
+            "target": "[]",
+            "args": [
+              "x => x * 2"
+            ]
           },
           "expected": []
         },
         {
+          "id": "hidden-2",
+          "hidden": true,
           "input": {
-            "args": "null) } catch (error) { return error instanceof TypeError } })("
+            "target": "[1, 2, 3]",
+            "args": [
+              "(x, i) => x + i"
+            ]
           },
-          "expected": true
+          "expected": [
+            1,
+            3,
+            5
+          ]
+        },
+        {
+          "id": "hidden-3",
+          "hidden": true,
+          "input": {
+            "target": "[1, , 3]",
+            "args": [
+              "x => x * 2"
+            ]
+          },
+          "expected": [
+            2,
+            undefined,
+            6
+          ]
+        },
+        {
+          "id": "hidden-4",
+          "hidden": true,
+          "input": {
+            "target": "[1, 2, 3]",
+            "args": [
+              "x => ({ value: x })"
+            ]
+          },
+          "expected": [
+            {
+              "value": 1
+            },
+            {
+              "value": 2
+            },
+            {
+              "value": 3
+            }
+          ]
+        },
+        {
+          "id": "hidden-5",
+          "hidden": true,
+          "input": {
+            "target": "[\"a\", \"b\", \"c\"]",
+            "args": [
+              "(x, i, arr) => x + i + arr.length"
+            ]
+          },
+          "expected": [
+            "a03",
+            "b13",
+            "c23"
+          ]
         }
       ]
     },
     "basicCases": [
       {
-        "id": "case-1",
+        "id": "example-1",
         "type": "basic",
         "description": "示例 1",
-        "input": "{\"arr\":\"1, 2, 3\",\"fn\":\"(value) => value * 2\"}",
-        "expected": [
-          2,
-          4,
-          6
-        ]
+        "input": "[1, 2, 3](x => x * 2)",
+        "displayTarget": "[1, 2, 3]",
+        "displayArgs": [
+          "x => x * 2"
+        ],
+        "expected": "[Circular]"
       },
       {
-        "id": "case-2",
+        "id": "example-2",
         "type": "basic",
         "description": "示例 2",
-        "input": "{\"arr\":\"'a', 'b'\",\"fn\":\"function (value) { return this.prefix + value }, { prefix: 'x-' }\"}",
-        "expected": [
-          "x-a",
-          "x-b"
-        ]
+        "input": "[1, 2, 3](x => String(x))",
+        "displayTarget": "[1, 2, 3]",
+        "displayArgs": [
+          "x => String(x)"
+        ],
+        "expected": "[Circular]"
       },
       {
-        "id": "case-3",
+        "id": "example-3",
         "type": "basic",
         "description": "示例 3",
-        "input": "{\"args\":\"(value) => value * 2); return [result.length, 1 in result, 2 in result, result[0], result[2]] })(\"}",
-        "expected": [
-          3,
-          false,
-          true,
-          2,
-          6
-        ]
+        "input": "[1, 2, 3](x => x * x)",
+        "displayTarget": "[1, 2, 3]",
+        "displayArgs": [
+          "x => x * x"
+        ],
+        "expected": "[Circular]"
       }
     ],
     "fullCases": [
       {
-        "id": "case-1",
+        "id": "example-1",
         "type": "basic",
         "description": "示例 1",
-        "input": "{\"arr\":\"1, 2, 3\",\"fn\":\"(value) => value * 2\"}",
-        "expected": [
-          2,
-          4,
-          6
-        ]
+        "input": "[1, 2, 3](x => x * 2)",
+        "displayTarget": "[1, 2, 3]",
+        "displayArgs": [
+          "x => x * 2"
+        ],
+        "expected": "[Circular]"
       },
       {
-        "id": "case-2",
+        "id": "example-2",
         "type": "basic",
         "description": "示例 2",
-        "input": "{\"arr\":\"'a', 'b'\",\"fn\":\"function (value) { return this.prefix + value }, { prefix: 'x-' }\"}",
-        "expected": [
-          "x-a",
-          "x-b"
-        ]
+        "input": "[1, 2, 3](x => String(x))",
+        "displayTarget": "[1, 2, 3]",
+        "displayArgs": [
+          "x => String(x)"
+        ],
+        "expected": "[Circular]"
       },
       {
-        "id": "case-3",
+        "id": "example-3",
         "type": "basic",
         "description": "示例 3",
-        "input": "{\"args\":\"(value) => value * 2); return [result.length, 1 in result, 2 in result, result[0], result[2]] })(\"}",
-        "expected": [
-          3,
-          false,
-          true,
-          2,
-          6
-        ]
+        "input": "[1, 2, 3](x => x * x)",
+        "displayTarget": "[1, 2, 3]",
+        "displayArgs": [
+          "x => x * x"
+        ],
+        "expected": "[Circular]"
       },
       {
         "id": "hidden-1",
         "type": "edge",
         "description": "隐藏 1",
-        "input": "{\"arr\":\"\",\"fn\":\"() => 1\"}",
-        "expected": []
+        "input": "[](x => x * 2)",
+        "displayTarget": "[]",
+        "displayArgs": [
+          "x => x * 2"
+        ],
+        "expected": "[Circular]"
       },
       {
         "id": "hidden-2",
         "type": "edge",
         "description": "隐藏 2",
-        "input": "{\"args\":\"null) } catch (error) { return error instanceof TypeError } })(\"}",
-        "expected": true
+        "input": "[1, 2, 3]((x, i) => x + i)",
+        "displayTarget": "[1, 2, 3]",
+        "displayArgs": [
+          "(x, i) => x + i"
+        ],
+        "expected": "[Circular]"
+      },
+      {
+        "id": "hidden-3",
+        "type": "edge",
+        "description": "隐藏 3",
+        "input": "[1, , 3](x => x * 2)",
+        "displayTarget": "[1, , 3]",
+        "displayArgs": [
+          "x => x * 2"
+        ],
+        "expected": "[Circular]"
+      },
+      {
+        "id": "hidden-4",
+        "type": "edge",
+        "description": "隐藏 4",
+        "input": "[1, 2, 3](x => ({ value: x }))",
+        "displayTarget": "[1, 2, 3]",
+        "displayArgs": [
+          "x => ({ value: x })"
+        ],
+        "expected": "[Circular]"
+      },
+      {
+        "id": "hidden-5",
+        "type": "edge",
+        "description": "隐藏 5",
+        "input": "[\"a\", \"b\", \"c\"]((x, i, arr) => x + i + arr.length)",
+        "displayTarget": "[\"a\", \"b\", \"c\"]",
+        "displayArgs": [
+          "(x, i, arr) => x + i + arr.length"
+        ],
+        "expected": "[Circular]"
       }
     ],
     "isComponent": false,
@@ -844,100 +1073,241 @@ export const problems: ProblemRecord[] = [
     "testCases": {
       "examples": [
         {
+          "id": "example-1",
+          "hidden": false,
           "input": {
-            "arr": "1, 2, 3",
-            "fn": "(sum, value) => sum + value, 0"
+            "target": "[1, 2, 3, 4]",
+            "args": [
+              "(acc, x) => acc + x",
+              "0"
+            ]
           },
-          "expected": 6
+          "expected": 10
         },
         {
+          "id": "example-2",
+          "hidden": false,
           "input": {
-            "arr": "1, 2, 3",
-            "fn": "(sum, value) => sum + value"
+            "target": "[1, 2, 3, 4]",
+            "args": [
+              "(acc, x) => acc * x",
+              "1"
+            ]
           },
-          "expected": 6
+          "expected": 24
         },
         {
+          "id": "example-3",
+          "hidden": false,
           "input": {
-            "arr": "{ count: 1 }, { count: 2 }",
-            "fn": "(sum, item) => sum + item.count, 0"
+            "target": "[[1, 2], [3, 4], [5]]",
+            "args": [
+              "(acc, x) => acc.concat(x)",
+              "[]"
+            ]
           },
-          "expected": 3
+          "expected": [
+            1,
+            2,
+            3,
+            4,
+            5
+          ]
         }
       ],
       "hidden": [
         {
+          "id": "hidden-1",
+          "hidden": true,
           "input": {
-            "args": "(sum, value) => sum + value, 0) })("
+            "target": "[1, 2, 3]",
+            "args": [
+              "(acc, x) => acc + x"
+            ]
           },
-          "expected": 3
+          "expected": 6
         },
         {
+          "id": "hidden-2",
+          "hidden": true,
           "input": {
-            "args": "(sum, value) => sum + value) } catch (error) { return error instanceof TypeError } })("
+            "target": "[1]",
+            "args": [
+              "(acc, x) => acc + x"
+            ]
           },
-          "expected": true
+          "expected": 1
+        },
+        {
+          "id": "hidden-3",
+          "hidden": true,
+          "input": {
+            "target": "[\"a\", \"b\", \"c\"]",
+            "args": [
+              "(acc, x) => acc + x",
+              "\"\""
+            ]
+          },
+          "expected": "abc"
+        },
+        {
+          "id": "hidden-4",
+          "hidden": true,
+          "input": {
+            "target": "[{a: 1}, {a: 2}, {a: 3}]",
+            "args": [
+              "(acc, x) => ({ a: acc.a + x.a })"
+            ]
+          },
+          "expected": {
+            "a": 6
+          }
+        },
+        {
+          "id": "hidden-5",
+          "hidden": true,
+          "input": {
+            "target": "[1, 2, 3, 4]",
+            "args": [
+              "(acc, x, i) => acc + x * i",
+              "0"
+            ]
+          },
+          "expected": 20
         }
       ]
     },
     "basicCases": [
       {
-        "id": "case-1",
+        "id": "example-1",
         "type": "basic",
         "description": "示例 1",
-        "input": "{\"arr\":\"1, 2, 3\",\"fn\":\"(sum, value) => sum + value, 0\"}",
-        "expected": 6
+        "input": "[1, 2, 3, 4]((acc, x) => acc + x, 0)",
+        "displayTarget": "[1, 2, 3, 4]",
+        "displayArgs": [
+          "(acc, x) => acc + x",
+          "0"
+        ],
+        "expected": 10
       },
       {
-        "id": "case-2",
+        "id": "example-2",
         "type": "basic",
         "description": "示例 2",
-        "input": "{\"arr\":\"1, 2, 3\",\"fn\":\"(sum, value) => sum + value\"}",
-        "expected": 6
+        "input": "[1, 2, 3, 4]((acc, x) => acc * x, 1)",
+        "displayTarget": "[1, 2, 3, 4]",
+        "displayArgs": [
+          "(acc, x) => acc * x",
+          "1"
+        ],
+        "expected": 24
       },
       {
-        "id": "case-3",
+        "id": "example-3",
         "type": "basic",
         "description": "示例 3",
-        "input": "{\"arr\":\"{ count: 1 }, { count: 2 }\",\"fn\":\"(sum, item) => sum + item.count, 0\"}",
-        "expected": 3
+        "input": "[[1, 2], [3, 4], [5]]((acc, x) => acc.concat(x), [])",
+        "displayTarget": "[[1, 2], [3, 4], [5]]",
+        "displayArgs": [
+          "(acc, x) => acc.concat(x)",
+          "[]"
+        ],
+        "expected": "[Circular]"
       }
     ],
     "fullCases": [
       {
-        "id": "case-1",
+        "id": "example-1",
         "type": "basic",
         "description": "示例 1",
-        "input": "{\"arr\":\"1, 2, 3\",\"fn\":\"(sum, value) => sum + value, 0\"}",
-        "expected": 6
+        "input": "[1, 2, 3, 4]((acc, x) => acc + x, 0)",
+        "displayTarget": "[1, 2, 3, 4]",
+        "displayArgs": [
+          "(acc, x) => acc + x",
+          "0"
+        ],
+        "expected": 10
       },
       {
-        "id": "case-2",
+        "id": "example-2",
         "type": "basic",
         "description": "示例 2",
-        "input": "{\"arr\":\"1, 2, 3\",\"fn\":\"(sum, value) => sum + value\"}",
-        "expected": 6
+        "input": "[1, 2, 3, 4]((acc, x) => acc * x, 1)",
+        "displayTarget": "[1, 2, 3, 4]",
+        "displayArgs": [
+          "(acc, x) => acc * x",
+          "1"
+        ],
+        "expected": 24
       },
       {
-        "id": "case-3",
+        "id": "example-3",
         "type": "basic",
         "description": "示例 3",
-        "input": "{\"arr\":\"{ count: 1 }, { count: 2 }\",\"fn\":\"(sum, item) => sum + item.count, 0\"}",
-        "expected": 3
+        "input": "[[1, 2], [3, 4], [5]]((acc, x) => acc.concat(x), [])",
+        "displayTarget": "[[1, 2], [3, 4], [5]]",
+        "displayArgs": [
+          "(acc, x) => acc.concat(x)",
+          "[]"
+        ],
+        "expected": "[Circular]"
       },
       {
         "id": "hidden-1",
         "type": "edge",
         "description": "隐藏 1",
-        "input": "{\"args\":\"(sum, value) => sum + value, 0) })(\"}",
-        "expected": 3
+        "input": "[1, 2, 3]((acc, x) => acc + x)",
+        "displayTarget": "[1, 2, 3]",
+        "displayArgs": [
+          "(acc, x) => acc + x"
+        ],
+        "expected": 6
       },
       {
         "id": "hidden-2",
         "type": "edge",
         "description": "隐藏 2",
-        "input": "{\"args\":\"(sum, value) => sum + value) } catch (error) { return error instanceof TypeError } })(\"}",
-        "expected": true
+        "input": "[1]((acc, x) => acc + x)",
+        "displayTarget": "[1]",
+        "displayArgs": [
+          "(acc, x) => acc + x"
+        ],
+        "expected": 1
+      },
+      {
+        "id": "hidden-3",
+        "type": "edge",
+        "description": "隐藏 3",
+        "input": "[\"a\", \"b\", \"c\"]((acc, x) => acc + x, \"\")",
+        "displayTarget": "[\"a\", \"b\", \"c\"]",
+        "displayArgs": [
+          "(acc, x) => acc + x",
+          "\"\""
+        ],
+        "expected": "abc"
+      },
+      {
+        "id": "hidden-4",
+        "type": "edge",
+        "description": "隐藏 4",
+        "input": "[{a: 1}, {a: 2}, {a: 3}]((acc, x) => ({ a: acc.a + x.a }))",
+        "displayTarget": "[{a: 1}, {a: 2}, {a: 3}]",
+        "displayArgs": [
+          "(acc, x) => ({ a: acc.a + x.a })"
+        ],
+        "expected": "[Circular]"
+      },
+      {
+        "id": "hidden-5",
+        "type": "edge",
+        "description": "隐藏 5",
+        "input": "[1, 2, 3, 4]((acc, x, i) => acc + x * i, 0)",
+        "displayTarget": "[1, 2, 3, 4]",
+        "displayArgs": [
+          "(acc, x, i) => acc + x * i",
+          "0"
+        ],
+        "expected": 20
       }
     ],
     "isComponent": false,
@@ -963,97 +1333,244 @@ export const problems: ProblemRecord[] = [
     "testCases": {
       "examples": [
         {
+          "id": "example-1",
+          "hidden": false,
           "input": {
-            "args": "a, b) { return this.base + a + b } return add.myApply({ base: 1 }, [2, 3]) })("
+            "target": "function(a, b) { return this.x + a + b; }",
+            "args": [
+              "{ x: 10 }",
+              "[1, 2]"
+            ]
           },
-          "expected": 6
+          "expected": 13
         },
         {
+          "id": "example-2",
+          "hidden": false,
           "input": {
-            "args": "extra) { return this.base + extra } const result = read.myApply(null, [2]); delete globalThis.base; return result })("
+            "target": "function() { return this.name; }",
+            "args": [
+              "{ name: \"test\" }",
+              "[]"
+            ]
           },
-          "expected": 6
+          "expected": "test"
         },
         {
+          "id": "example-3",
+          "hidden": false,
           "input": {
-            "args": ") { return Object.prototype.toString.call(this) } return tag.myApply('hi') })("
+            "target": "Math.max",
+            "args": [
+              "null",
+              "[1, 5, 3]"
+            ]
           },
-          "expected": "[object String]"
+          "expected": 5
         }
       ],
       "hidden": [
         {
+          "id": "hidden-1",
+          "hidden": true,
           "input": {
-            "args": "a, b) { return [a, b].join('-') } return join.myApply({}, { 0: 'x', 1: 'y', length: 2 }) })("
+            "target": "function() { return this; }",
+            "args": [
+              "null",
+              "[]"
+            ]
           },
-          "expected": "x-y"
+          "expected": null
         },
         {
+          "id": "hidden-2",
+          "hidden": true,
           "input": {
-            "args": "{}, null, []) } catch (error) { return error instanceof TypeError } })("
+            "target": "function() { return arguments.length; }",
+            "args": [
+              "{}",
+              "[1, 2, 3, 4]"
+            ]
           },
-          "expected": true
+          "expected": 4
+        },
+        {
+          "id": "hidden-3",
+          "hidden": true,
+          "input": {
+            "target": "Array.prototype.concat",
+            "args": [
+              "[1, 2]",
+              "[3, 4]"
+            ]
+          },
+          "expected": [
+            1,
+            2,
+            3,
+            4
+          ]
+        },
+        {
+          "id": "hidden-4",
+          "hidden": true,
+          "input": {
+            "target": "function(a, b, c) { return a + b + c; }",
+            "args": [
+              "{}",
+              "[1, 2, 3]"
+            ]
+          },
+          "expected": 6
+        },
+        {
+          "id": "hidden-5",
+          "hidden": true,
+          "input": {
+            "target": "String.prototype.slice",
+            "args": [
+              "\"hello\"",
+              "[1, 4]"
+            ]
+          },
+          "expected": "ell"
         }
       ]
     },
     "basicCases": [
       {
-        "id": "case-1",
+        "id": "example-1",
         "type": "basic",
         "description": "示例 1",
-        "input": "{\"args\":\"a, b) { return this.base + a + b } return add.myApply({ base: 1 }, [2, 3]) })(\"}",
-        "expected": 6
+        "input": "function(a, b) { return this.x + a + b; }({ x: 10 }, [1, 2])",
+        "displayTarget": "function(a, b) { return this.x + a + b; }",
+        "displayArgs": [
+          "{ x: 10 }",
+          "[1, 2]"
+        ],
+        "expected": 13
       },
       {
-        "id": "case-2",
+        "id": "example-2",
         "type": "basic",
         "description": "示例 2",
-        "input": "{\"args\":\"extra) { return this.base + extra } const result = read.myApply(null, [2]); delete globalThis.base; return result })(\"}",
-        "expected": 6
+        "input": "function() { return this.name; }({ name: \"test\" }, [])",
+        "displayTarget": "function() { return this.name; }",
+        "displayArgs": [
+          "{ name: \"test\" }",
+          "[]"
+        ],
+        "expected": "test"
       },
       {
-        "id": "case-3",
+        "id": "example-3",
         "type": "basic",
         "description": "示例 3",
-        "input": "{\"args\":\") { return Object.prototype.toString.call(this) } return tag.myApply('hi') })(\"}",
-        "expected": "[object String]"
+        "input": "Math.max(null, [1, 5, 3])",
+        "displayTarget": "Math.max",
+        "displayArgs": [
+          "null",
+          "[1, 5, 3]"
+        ],
+        "expected": 5
       }
     ],
     "fullCases": [
       {
-        "id": "case-1",
+        "id": "example-1",
         "type": "basic",
         "description": "示例 1",
-        "input": "{\"args\":\"a, b) { return this.base + a + b } return add.myApply({ base: 1 }, [2, 3]) })(\"}",
-        "expected": 6
+        "input": "function(a, b) { return this.x + a + b; }({ x: 10 }, [1, 2])",
+        "displayTarget": "function(a, b) { return this.x + a + b; }",
+        "displayArgs": [
+          "{ x: 10 }",
+          "[1, 2]"
+        ],
+        "expected": 13
       },
       {
-        "id": "case-2",
+        "id": "example-2",
         "type": "basic",
         "description": "示例 2",
-        "input": "{\"args\":\"extra) { return this.base + extra } const result = read.myApply(null, [2]); delete globalThis.base; return result })(\"}",
-        "expected": 6
+        "input": "function() { return this.name; }({ name: \"test\" }, [])",
+        "displayTarget": "function() { return this.name; }",
+        "displayArgs": [
+          "{ name: \"test\" }",
+          "[]"
+        ],
+        "expected": "test"
       },
       {
-        "id": "case-3",
+        "id": "example-3",
         "type": "basic",
         "description": "示例 3",
-        "input": "{\"args\":\") { return Object.prototype.toString.call(this) } return tag.myApply('hi') })(\"}",
-        "expected": "[object String]"
+        "input": "Math.max(null, [1, 5, 3])",
+        "displayTarget": "Math.max",
+        "displayArgs": [
+          "null",
+          "[1, 5, 3]"
+        ],
+        "expected": 5
       },
       {
         "id": "hidden-1",
         "type": "edge",
         "description": "隐藏 1",
-        "input": "{\"args\":\"a, b) { return [a, b].join('-') } return join.myApply({}, { 0: 'x', 1: 'y', length: 2 }) })(\"}",
-        "expected": "x-y"
+        "input": "function() { return this; }(null, [])",
+        "displayTarget": "function() { return this; }",
+        "displayArgs": [
+          "null",
+          "[]"
+        ],
+        "expected": null
       },
       {
         "id": "hidden-2",
         "type": "edge",
         "description": "隐藏 2",
-        "input": "{\"args\":\"{}, null, []) } catch (error) { return error instanceof TypeError } })(\"}",
-        "expected": true
+        "input": "function() { return arguments.length; }({}, [1, 2, 3, 4])",
+        "displayTarget": "function() { return arguments.length; }",
+        "displayArgs": [
+          "{}",
+          "[1, 2, 3, 4]"
+        ],
+        "expected": 4
+      },
+      {
+        "id": "hidden-3",
+        "type": "edge",
+        "description": "隐藏 3",
+        "input": "Array.prototype.concat([1, 2], [3, 4])",
+        "displayTarget": "Array.prototype.concat",
+        "displayArgs": [
+          "[1, 2]",
+          "[3, 4]"
+        ],
+        "expected": "[Circular]"
+      },
+      {
+        "id": "hidden-4",
+        "type": "edge",
+        "description": "隐藏 4",
+        "input": "function(a, b, c) { return a + b + c; }({}, [1, 2, 3])",
+        "displayTarget": "function(a, b, c) { return a + b + c; }",
+        "displayArgs": [
+          "{}",
+          "[1, 2, 3]"
+        ],
+        "expected": 6
+      },
+      {
+        "id": "hidden-5",
+        "type": "edge",
+        "description": "隐藏 5",
+        "input": "String.prototype.slice(\"hello\", [1, 4])",
+        "displayTarget": "String.prototype.slice",
+        "displayArgs": [
+          "\"hello\"",
+          "[1, 4]"
+        ],
+        "expected": "ell"
       }
     ],
     "isComponent": false,
@@ -1079,97 +1596,231 @@ export const problems: ProblemRecord[] = [
     "testCases": {
       "examples": [
         {
+          "id": "example-1",
+          "hidden": false,
           "input": {
-            "args": "a, b) { return this.base + a + b } const bound = add.myBind({ base: 1 }, 2); return bound(3) })("
+            "target": "function(a, b) { return this.x + a + b; }",
+            "args": [
+              "{ x: 10 }",
+              "1"
+            ]
           },
-          "expected": 6
+          "expected": "bind_result"
         },
         {
+          "id": "example-2",
+          "hidden": false,
           "input": {
-            "args": "name) { this.name = name } Person.prototype.getName = function () { return this.name }; const BoundPerson = Person.myBind({ ignored: true }); const person = new BoundPerson('Tom'); return person.getName() })("
+            "target": "function() { return this.name; }",
+            "args": [
+              "{ name: \"bound\" }"
+            ]
           },
-          "expected": "Tom"
+          "expected": "bind_result"
         },
         {
+          "id": "example-3",
+          "hidden": false,
           "input": {
-            "args": "a, b, c) { return a * b * c } const bound = multiply.myBind(null, 2, 3); return bound(4) })("
+            "target": "function(a, b, c) { return a + b + c; }",
+            "args": [
+              "{}",
+              "1",
+              "2"
+            ]
           },
-          "expected": 24
+          "expected": "bind_result"
         }
       ],
       "hidden": [
         {
+          "id": "hidden-1",
+          "hidden": true,
           "input": {
-            "args": ") { return Object.prototype.toString.call(this) } const bound = read.myBind('x'); return bound() })("
+            "target": "function() { return this; }",
+            "args": [
+              "{ a: 1 }"
+            ]
           },
-          "expected": "[object String]"
+          "expected": "bind_result"
         },
         {
+          "id": "hidden-2",
+          "hidden": true,
           "input": {
-            "args": "{}, null) } catch (error) { return error instanceof TypeError } })("
+            "target": "function() { return new.target; }",
+            "args": [
+              "{}"
+            ]
           },
-          "expected": true
+          "expected": "bind_result"
+        },
+        {
+          "id": "hidden-3",
+          "hidden": true,
+          "input": {
+            "target": "function(x) { return this.val + x; }",
+            "args": [
+              "{ val: 5 }"
+            ]
+          },
+          "expected": "bind_result"
+        },
+        {
+          "id": "hidden-4",
+          "hidden": true,
+          "input": {
+            "target": "function(a, b) { return a * b; }",
+            "args": [
+              "null",
+              "3"
+            ]
+          },
+          "expected": "bind_result"
+        },
+        {
+          "id": "hidden-5",
+          "hidden": true,
+          "input": {
+            "target": "Array.prototype.push",
+            "args": [
+              "[1, 2]"
+            ]
+          },
+          "expected": "bind_result"
         }
       ]
     },
     "basicCases": [
       {
-        "id": "case-1",
+        "id": "example-1",
         "type": "basic",
         "description": "示例 1",
-        "input": "{\"args\":\"a, b) { return this.base + a + b } const bound = add.myBind({ base: 1 }, 2); return bound(3) })(\"}",
-        "expected": 6
+        "input": "function(a, b) { return this.x + a + b; }({ x: 10 }, 1)",
+        "displayTarget": "function(a, b) { return this.x + a + b; }",
+        "displayArgs": [
+          "{ x: 10 }",
+          "1"
+        ],
+        "expected": "bind_result"
       },
       {
-        "id": "case-2",
+        "id": "example-2",
         "type": "basic",
         "description": "示例 2",
-        "input": "{\"args\":\"name) { this.name = name } Person.prototype.getName = function () { return this.name }; const BoundPerson = Person.myBind({ ignored: true }); const person = new BoundPerson('Tom'); return person.getName() })(\"}",
-        "expected": "Tom"
+        "input": "function() { return this.name; }({ name: \"bound\" })",
+        "displayTarget": "function() { return this.name; }",
+        "displayArgs": [
+          "{ name: \"bound\" }"
+        ],
+        "expected": "bind_result"
       },
       {
-        "id": "case-3",
+        "id": "example-3",
         "type": "basic",
         "description": "示例 3",
-        "input": "{\"args\":\"a, b, c) { return a * b * c } const bound = multiply.myBind(null, 2, 3); return bound(4) })(\"}",
-        "expected": 24
+        "input": "function(a, b, c) { return a + b + c; }({}, 1, 2)",
+        "displayTarget": "function(a, b, c) { return a + b + c; }",
+        "displayArgs": [
+          "{}",
+          "1",
+          "2"
+        ],
+        "expected": "bind_result"
       }
     ],
     "fullCases": [
       {
-        "id": "case-1",
+        "id": "example-1",
         "type": "basic",
         "description": "示例 1",
-        "input": "{\"args\":\"a, b) { return this.base + a + b } const bound = add.myBind({ base: 1 }, 2); return bound(3) })(\"}",
-        "expected": 6
+        "input": "function(a, b) { return this.x + a + b; }({ x: 10 }, 1)",
+        "displayTarget": "function(a, b) { return this.x + a + b; }",
+        "displayArgs": [
+          "{ x: 10 }",
+          "1"
+        ],
+        "expected": "bind_result"
       },
       {
-        "id": "case-2",
+        "id": "example-2",
         "type": "basic",
         "description": "示例 2",
-        "input": "{\"args\":\"name) { this.name = name } Person.prototype.getName = function () { return this.name }; const BoundPerson = Person.myBind({ ignored: true }); const person = new BoundPerson('Tom'); return person.getName() })(\"}",
-        "expected": "Tom"
+        "input": "function() { return this.name; }({ name: \"bound\" })",
+        "displayTarget": "function() { return this.name; }",
+        "displayArgs": [
+          "{ name: \"bound\" }"
+        ],
+        "expected": "bind_result"
       },
       {
-        "id": "case-3",
+        "id": "example-3",
         "type": "basic",
         "description": "示例 3",
-        "input": "{\"args\":\"a, b, c) { return a * b * c } const bound = multiply.myBind(null, 2, 3); return bound(4) })(\"}",
-        "expected": 24
+        "input": "function(a, b, c) { return a + b + c; }({}, 1, 2)",
+        "displayTarget": "function(a, b, c) { return a + b + c; }",
+        "displayArgs": [
+          "{}",
+          "1",
+          "2"
+        ],
+        "expected": "bind_result"
       },
       {
         "id": "hidden-1",
         "type": "edge",
         "description": "隐藏 1",
-        "input": "{\"args\":\") { return Object.prototype.toString.call(this) } const bound = read.myBind('x'); return bound() })(\"}",
-        "expected": "[object String]"
+        "input": "function() { return this; }({ a: 1 })",
+        "displayTarget": "function() { return this; }",
+        "displayArgs": [
+          "{ a: 1 }"
+        ],
+        "expected": "bind_result"
       },
       {
         "id": "hidden-2",
         "type": "edge",
         "description": "隐藏 2",
-        "input": "{\"args\":\"{}, null) } catch (error) { return error instanceof TypeError } })(\"}",
-        "expected": true
+        "input": "function() { return new.target; }({})",
+        "displayTarget": "function() { return new.target; }",
+        "displayArgs": [
+          "{}"
+        ],
+        "expected": "bind_result"
+      },
+      {
+        "id": "hidden-3",
+        "type": "edge",
+        "description": "隐藏 3",
+        "input": "function(x) { return this.val + x; }({ val: 5 })",
+        "displayTarget": "function(x) { return this.val + x; }",
+        "displayArgs": [
+          "{ val: 5 }"
+        ],
+        "expected": "bind_result"
+      },
+      {
+        "id": "hidden-4",
+        "type": "edge",
+        "description": "隐藏 4",
+        "input": "function(a, b) { return a * b; }(null, 3)",
+        "displayTarget": "function(a, b) { return a * b; }",
+        "displayArgs": [
+          "null",
+          "3"
+        ],
+        "expected": "bind_result"
+      },
+      {
+        "id": "hidden-5",
+        "type": "edge",
+        "description": "隐藏 5",
+        "input": "Array.prototype.push([1, 2])",
+        "displayTarget": "Array.prototype.push",
+        "displayArgs": [
+          "[1, 2]"
+        ],
+        "expected": "bind_result"
       }
     ],
     "isComponent": false,
@@ -1195,97 +1846,246 @@ export const problems: ProblemRecord[] = [
     "testCases": {
       "examples": [
         {
+          "id": "example-1",
+          "hidden": false,
           "input": {
-            "args": "a, b) { return this.base + a + b } return add.myCall({ base: 1 }, 2, 3) })("
+            "target": "function(a, b) { return this.x + a + b; }",
+            "args": [
+              "{ x: 10 }",
+              "1",
+              "2"
+            ]
           },
-          "expected": 6
+          "expected": 13
         },
         {
+          "id": "example-2",
+          "hidden": false,
           "input": {
-            "args": "extra) { return this.base + extra } const result = read.myCall(null, 2); delete globalThis.base; return result })("
+            "target": "function() { return this.name; }",
+            "args": [
+              "{ name: \"test\" }"
+            ]
           },
-          "expected": 7
+          "expected": "test"
         },
         {
+          "id": "example-3",
+          "hidden": false,
           "input": {
-            "args": ") { return Object.prototype.toString.call(this) } return tag.myCall('hi') })("
+            "target": "String.prototype.slice",
+            "args": [
+              "\"hello world\"",
+              "0",
+              "5"
+            ]
           },
-          "expected": "[object String]"
+          "expected": "hello"
         }
       ],
       "hidden": [
         {
+          "id": "hidden-1",
+          "hidden": true,
           "input": {
-            "args": ") { return this.value } return getValue.myCall({ value: 'ok' }) })("
+            "target": "function() { return this; }",
+            "args": [
+              "null"
+            ]
           },
-          "expected": "ok"
+          "expected": null
         },
         {
+          "id": "hidden-2",
+          "hidden": true,
           "input": {
-            "args": "{}, null) } catch (error) { return error instanceof TypeError } })("
+            "target": "function() { return this; }",
+            "args": [
+              "undefined"
+            ]
           },
-          "expected": true
+          "expected": undefined
+        },
+        {
+          "id": "hidden-3",
+          "hidden": true,
+          "input": {
+            "target": "function(a, b, c) { return a + b + c; }",
+            "args": [
+              "{}",
+              "1",
+              "2",
+              "3"
+            ]
+          },
+          "expected": 6
+        },
+        {
+          "id": "hidden-4",
+          "hidden": true,
+          "input": {
+            "target": "Math.max",
+            "args": [
+              "null",
+              "1",
+              "5",
+              "3"
+            ]
+          },
+          "expected": 5
+        },
+        {
+          "id": "hidden-5",
+          "hidden": true,
+          "input": {
+            "target": "Array.prototype.join",
+            "args": [
+              "[\"a\", \"b\", \"c\"]",
+              "\"-\""
+            ]
+          },
+          "expected": "a-b-c"
         }
       ]
     },
     "basicCases": [
       {
-        "id": "case-1",
+        "id": "example-1",
         "type": "basic",
         "description": "示例 1",
-        "input": "{\"args\":\"a, b) { return this.base + a + b } return add.myCall({ base: 1 }, 2, 3) })(\"}",
-        "expected": 6
+        "input": "function(a, b) { return this.x + a + b; }({ x: 10 }, 1, 2)",
+        "displayTarget": "function(a, b) { return this.x + a + b; }",
+        "displayArgs": [
+          "{ x: 10 }",
+          "1",
+          "2"
+        ],
+        "expected": 13
       },
       {
-        "id": "case-2",
+        "id": "example-2",
         "type": "basic",
         "description": "示例 2",
-        "input": "{\"args\":\"extra) { return this.base + extra } const result = read.myCall(null, 2); delete globalThis.base; return result })(\"}",
-        "expected": 7
+        "input": "function() { return this.name; }({ name: \"test\" })",
+        "displayTarget": "function() { return this.name; }",
+        "displayArgs": [
+          "{ name: \"test\" }"
+        ],
+        "expected": "test"
       },
       {
-        "id": "case-3",
+        "id": "example-3",
         "type": "basic",
         "description": "示例 3",
-        "input": "{\"args\":\") { return Object.prototype.toString.call(this) } return tag.myCall('hi') })(\"}",
-        "expected": "[object String]"
+        "input": "String.prototype.slice(\"hello world\", 0, 5)",
+        "displayTarget": "String.prototype.slice",
+        "displayArgs": [
+          "\"hello world\"",
+          "0",
+          "5"
+        ],
+        "expected": "hello"
       }
     ],
     "fullCases": [
       {
-        "id": "case-1",
+        "id": "example-1",
         "type": "basic",
         "description": "示例 1",
-        "input": "{\"args\":\"a, b) { return this.base + a + b } return add.myCall({ base: 1 }, 2, 3) })(\"}",
-        "expected": 6
+        "input": "function(a, b) { return this.x + a + b; }({ x: 10 }, 1, 2)",
+        "displayTarget": "function(a, b) { return this.x + a + b; }",
+        "displayArgs": [
+          "{ x: 10 }",
+          "1",
+          "2"
+        ],
+        "expected": 13
       },
       {
-        "id": "case-2",
+        "id": "example-2",
         "type": "basic",
         "description": "示例 2",
-        "input": "{\"args\":\"extra) { return this.base + extra } const result = read.myCall(null, 2); delete globalThis.base; return result })(\"}",
-        "expected": 7
+        "input": "function() { return this.name; }({ name: \"test\" })",
+        "displayTarget": "function() { return this.name; }",
+        "displayArgs": [
+          "{ name: \"test\" }"
+        ],
+        "expected": "test"
       },
       {
-        "id": "case-3",
+        "id": "example-3",
         "type": "basic",
         "description": "示例 3",
-        "input": "{\"args\":\") { return Object.prototype.toString.call(this) } return tag.myCall('hi') })(\"}",
-        "expected": "[object String]"
+        "input": "String.prototype.slice(\"hello world\", 0, 5)",
+        "displayTarget": "String.prototype.slice",
+        "displayArgs": [
+          "\"hello world\"",
+          "0",
+          "5"
+        ],
+        "expected": "hello"
       },
       {
         "id": "hidden-1",
         "type": "edge",
         "description": "隐藏 1",
-        "input": "{\"args\":\") { return this.value } return getValue.myCall({ value: 'ok' }) })(\"}",
-        "expected": "ok"
+        "input": "function() { return this; }(null)",
+        "displayTarget": "function() { return this; }",
+        "displayArgs": [
+          "null"
+        ],
+        "expected": null
       },
       {
         "id": "hidden-2",
         "type": "edge",
         "description": "隐藏 2",
-        "input": "{\"args\":\"{}, null) } catch (error) { return error instanceof TypeError } })(\"}",
-        "expected": true
+        "input": "function() { return this; }(undefined)",
+        "displayTarget": "function() { return this; }",
+        "displayArgs": [
+          "undefined"
+        ],
+        "expected": undefined
+      },
+      {
+        "id": "hidden-3",
+        "type": "edge",
+        "description": "隐藏 3",
+        "input": "function(a, b, c) { return a + b + c; }({}, 1, 2, 3)",
+        "displayTarget": "function(a, b, c) { return a + b + c; }",
+        "displayArgs": [
+          "{}",
+          "1",
+          "2",
+          "3"
+        ],
+        "expected": 6
+      },
+      {
+        "id": "hidden-4",
+        "type": "edge",
+        "description": "隐藏 4",
+        "input": "Math.max(null, 1, 5, 3)",
+        "displayTarget": "Math.max",
+        "displayArgs": [
+          "null",
+          "1",
+          "5",
+          "3"
+        ],
+        "expected": 5
+      },
+      {
+        "id": "hidden-5",
+        "type": "edge",
+        "description": "隐藏 5",
+        "input": "Array.prototype.join([\"a\", \"b\", \"c\"], \"-\")",
+        "displayTarget": "Array.prototype.join",
+        "displayArgs": [
+          "[\"a\", \"b\", \"c\"]",
+          "\"-\""
+        ],
+        "expected": "a-b-c"
       }
     ],
     "isComponent": false,
@@ -1311,97 +2111,174 @@ export const problems: ProblemRecord[] = [
     "testCases": {
       "examples": [
         {
+          "id": "example-1",
+          "hidden": false,
           "input": {
-            "args": "head).val })("
+            "target": "[3, 2, 0, -4]"
           },
-          "expected": 2
+          "expected": null
         },
         {
+          "id": "example-2",
+          "hidden": false,
           "input": {
-            "args": "node).val })("
+            "target": "[1, 2]"
           },
-          "expected": 1
+          "expected": null
         },
         {
+          "id": "example-3",
+          "hidden": false,
           "input": {
-            "args": "null"
+            "target": "[1]"
           },
           "expected": null
         }
       ],
       "hidden": [
         {
+          "id": "hidden-1",
+          "hidden": true,
           "input": {
-            "args": "head) })("
+            "target": "[]"
           },
           "expected": null
         },
         {
+          "id": "hidden-2",
+          "hidden": true,
           "input": {
-            "args": "{ length: 200 }, (_, index) => ({ val: index, next: null })); for (let index = 0; index < nodes.length - 1; index += 1) nodes[index].next = nodes[index + 1]; nodes[nodes.length - 1].next = nodes[120]; return detectCycle(nodes[0]).val })("
+            "target": "[1, 2, 3, 4, 5]"
           },
-          "expected": 120
+          "expected": null
+        },
+        {
+          "id": "hidden-3",
+          "hidden": true,
+          "input": {
+            "target": "[1, 2, 3]"
+          },
+          "expected": null
+        },
+        {
+          "id": "hidden-4",
+          "hidden": true,
+          "input": {
+            "target": "[0, 0, 0]"
+          },
+          "expected": null
+        },
+        {
+          "id": "hidden-5",
+          "hidden": true,
+          "input": {
+            "target": "[1, 2, 3, 4]"
+          },
+          "expected": null
         }
       ]
     },
     "basicCases": [
       {
-        "id": "case-1",
+        "id": "example-1",
         "type": "basic",
         "description": "示例 1",
-        "input": "{\"args\":\"head).val })(\"}",
-        "expected": 2
+        "input": "[3, 2, 0, -4]",
+        "displayTarget": "[3, 2, 0, -4]",
+        "displayArgs": undefined,
+        "expected": null
       },
       {
-        "id": "case-2",
+        "id": "example-2",
         "type": "basic",
         "description": "示例 2",
-        "input": "{\"args\":\"node).val })(\"}",
-        "expected": 1
+        "input": "[1, 2]",
+        "displayTarget": "[1, 2]",
+        "displayArgs": undefined,
+        "expected": null
       },
       {
-        "id": "case-3",
+        "id": "example-3",
         "type": "basic",
         "description": "示例 3",
-        "input": "{\"args\":\"null\"}",
+        "input": "[1]",
+        "displayTarget": "[1]",
+        "displayArgs": undefined,
         "expected": null
       }
     ],
     "fullCases": [
       {
-        "id": "case-1",
+        "id": "example-1",
         "type": "basic",
         "description": "示例 1",
-        "input": "{\"args\":\"head).val })(\"}",
-        "expected": 2
+        "input": "[3, 2, 0, -4]",
+        "displayTarget": "[3, 2, 0, -4]",
+        "displayArgs": undefined,
+        "expected": null
       },
       {
-        "id": "case-2",
+        "id": "example-2",
         "type": "basic",
         "description": "示例 2",
-        "input": "{\"args\":\"node).val })(\"}",
-        "expected": 1
+        "input": "[1, 2]",
+        "displayTarget": "[1, 2]",
+        "displayArgs": undefined,
+        "expected": null
       },
       {
-        "id": "case-3",
+        "id": "example-3",
         "type": "basic",
         "description": "示例 3",
-        "input": "{\"args\":\"null\"}",
+        "input": "[1]",
+        "displayTarget": "[1]",
+        "displayArgs": undefined,
         "expected": null
       },
       {
         "id": "hidden-1",
         "type": "edge",
         "description": "隐藏 1",
-        "input": "{\"args\":\"head) })(\"}",
+        "input": "[]",
+        "displayTarget": "[]",
+        "displayArgs": undefined,
         "expected": null
       },
       {
         "id": "hidden-2",
         "type": "edge",
         "description": "隐藏 2",
-        "input": "{\"args\":\"{ length: 200 }, (_, index) => ({ val: index, next: null })); for (let index = 0; index < nodes.length - 1; index += 1) nodes[index].next = nodes[index + 1]; nodes[nodes.length - 1].next = nodes[120]; return detectCycle(nodes[0]).val })(\"}",
-        "expected": 120
+        "input": "[1, 2, 3, 4, 5]",
+        "displayTarget": "[1, 2, 3, 4, 5]",
+        "displayArgs": undefined,
+        "expected": null
+      },
+      {
+        "id": "hidden-3",
+        "type": "edge",
+        "description": "隐藏 3",
+        "input": "[1, 2, 3]",
+        "displayTarget": "[1, 2, 3]",
+        "displayArgs": undefined,
+        "expected": null
+      },
+      {
+        "id": "hidden-4",
+        "type": "edge",
+        "description": "隐藏 4",
+        "input": "[0, 0, 0]",
+        "displayTarget": "[0, 0, 0]",
+        "displayArgs": undefined,
+        "expected": null
+      },
+      {
+        "id": "hidden-5",
+        "type": "edge",
+        "description": "隐藏 5",
+        "input": "[1, 2, 3, 4]",
+        "displayTarget": "[1, 2, 3, 4]",
+        "displayArgs": undefined,
+        "expected": null
       }
     ],
     "isComponent": false,
@@ -1427,34 +2304,68 @@ export const problems: ProblemRecord[] = [
     "testCases": {
       "examples": [
         {
+          "id": "example-1",
+          "hidden": false,
           "input": {
-            "args": "head) })("
-          },
-          "expected": true
-        },
-        {
-          "input": {
-            "args": "head) })("
+            "target": "[3, 2, 0, -4]"
           },
           "expected": false
         },
         {
+          "id": "example-2",
+          "hidden": false,
           "input": {
-            "args": "null"
+            "target": "[1, 2]"
+          },
+          "expected": false
+        },
+        {
+          "id": "example-3",
+          "hidden": false,
+          "input": {
+            "target": "[1]"
           },
           "expected": false
         }
       ],
       "hidden": [
         {
+          "id": "hidden-1",
+          "hidden": true,
           "input": {
-            "args": "node) })("
+            "target": "[]"
           },
-          "expected": true
+          "expected": false
         },
         {
+          "id": "hidden-2",
+          "hidden": true,
           "input": {
-            "args": "{ length: 300 }, (_, index) => ({ val: index, next: null })); for (let index = 0; index < nodes.length - 1; index += 1) nodes[index].next = nodes[index + 1]; return hasCycle(nodes[0]) })("
+            "target": "[1, 2, 3, 4, 5]"
+          },
+          "expected": false
+        },
+        {
+          "id": "hidden-3",
+          "hidden": true,
+          "input": {
+            "target": "[1, 2, 3]"
+          },
+          "expected": false
+        },
+        {
+          "id": "hidden-4",
+          "hidden": true,
+          "input": {
+            "target": "[0, 0, 0]"
+          },
+          "expected": false
+        },
+        {
+          "id": "hidden-5",
+          "hidden": true,
+          "input": {
+            "target": "[1, 2, 3, 4]"
           },
           "expected": false
         }
@@ -1462,61 +2373,104 @@ export const problems: ProblemRecord[] = [
     },
     "basicCases": [
       {
-        "id": "case-1",
+        "id": "example-1",
         "type": "basic",
         "description": "示例 1",
-        "input": "{\"args\":\"head) })(\"}",
-        "expected": true
-      },
-      {
-        "id": "case-2",
-        "type": "basic",
-        "description": "示例 2",
-        "input": "{\"args\":\"head) })(\"}",
+        "input": "[3, 2, 0, -4]",
+        "displayTarget": "[3, 2, 0, -4]",
+        "displayArgs": undefined,
         "expected": false
       },
       {
-        "id": "case-3",
+        "id": "example-2",
+        "type": "basic",
+        "description": "示例 2",
+        "input": "[1, 2]",
+        "displayTarget": "[1, 2]",
+        "displayArgs": undefined,
+        "expected": false
+      },
+      {
+        "id": "example-3",
         "type": "basic",
         "description": "示例 3",
-        "input": "{\"args\":\"null\"}",
+        "input": "[1]",
+        "displayTarget": "[1]",
+        "displayArgs": undefined,
         "expected": false
       }
     ],
     "fullCases": [
       {
-        "id": "case-1",
+        "id": "example-1",
         "type": "basic",
         "description": "示例 1",
-        "input": "{\"args\":\"head) })(\"}",
-        "expected": true
-      },
-      {
-        "id": "case-2",
-        "type": "basic",
-        "description": "示例 2",
-        "input": "{\"args\":\"head) })(\"}",
+        "input": "[3, 2, 0, -4]",
+        "displayTarget": "[3, 2, 0, -4]",
+        "displayArgs": undefined,
         "expected": false
       },
       {
-        "id": "case-3",
+        "id": "example-2",
+        "type": "basic",
+        "description": "示例 2",
+        "input": "[1, 2]",
+        "displayTarget": "[1, 2]",
+        "displayArgs": undefined,
+        "expected": false
+      },
+      {
+        "id": "example-3",
         "type": "basic",
         "description": "示例 3",
-        "input": "{\"args\":\"null\"}",
+        "input": "[1]",
+        "displayTarget": "[1]",
+        "displayArgs": undefined,
         "expected": false
       },
       {
         "id": "hidden-1",
         "type": "edge",
         "description": "隐藏 1",
-        "input": "{\"args\":\"node) })(\"}",
-        "expected": true
+        "input": "[]",
+        "displayTarget": "[]",
+        "displayArgs": undefined,
+        "expected": false
       },
       {
         "id": "hidden-2",
         "type": "edge",
         "description": "隐藏 2",
-        "input": "{\"args\":\"{ length: 300 }, (_, index) => ({ val: index, next: null })); for (let index = 0; index < nodes.length - 1; index += 1) nodes[index].next = nodes[index + 1]; return hasCycle(nodes[0]) })(\"}",
+        "input": "[1, 2, 3, 4, 5]",
+        "displayTarget": "[1, 2, 3, 4, 5]",
+        "displayArgs": undefined,
+        "expected": false
+      },
+      {
+        "id": "hidden-3",
+        "type": "edge",
+        "description": "隐藏 3",
+        "input": "[1, 2, 3]",
+        "displayTarget": "[1, 2, 3]",
+        "displayArgs": undefined,
+        "expected": false
+      },
+      {
+        "id": "hidden-4",
+        "type": "edge",
+        "description": "隐藏 4",
+        "input": "[0, 0, 0]",
+        "displayTarget": "[0, 0, 0]",
+        "displayArgs": undefined,
+        "expected": false
+      },
+      {
+        "id": "hidden-5",
+        "type": "edge",
+        "description": "隐藏 5",
+        "input": "[1, 2, 3, 4]",
+        "displayTarget": "[1, 2, 3, 4]",
+        "displayArgs": undefined,
         "expected": false
       }
     ],
@@ -1543,128 +2497,255 @@ export const problems: ProblemRecord[] = [
     "testCases": {
       "examples": [
         {
+          "id": "example-1",
+          "hidden": false,
           "input": {
-            "args": "l1, l2); const values = []; let current = head; while (current) { values.push(current.val); current = current.next } return values })("
+            "target": "[1, 2, 4]",
+            "args": [
+              "[1, 3, 4]"
+            ]
           },
           "expected": [
             1,
+            1,
             2,
             3,
+            4,
             4
           ]
         },
         {
+          "id": "example-2",
+          "hidden": false,
           "input": {
-            "args": "null, { val: 1, next: null }); const values = []; let current = head; while (current) { values.push(current.val); current = current.next } return values })("
+            "target": "[]",
+            "args": [
+              "[]"
+            ]
           },
-          "expected": [
-            1
-          ]
+          "expected": []
         },
         {
+          "id": "example-3",
+          "hidden": false,
           "input": {
-            "args": "null, null); return head })("
+            "target": "[]",
+            "args": [
+              "[0]"
+            ]
           },
-          "expected": null
+          "expected": [
+            0
+          ]
         }
       ],
       "hidden": [
         {
+          "id": "hidden-1",
+          "hidden": true,
           "input": {
-            "args": "l1, l2); const values = []; let current = head; while (current) { values.push(current.val); current = current.next } return values })("
+            "target": "[1]",
+            "args": [
+              "[2]"
+            ]
           },
           "expected": [
-            1,
-            1,
             1,
             2
           ]
         },
         {
+          "id": "hidden-2",
+          "hidden": true,
           "input": {
-            "args": "let index = start; index < 200; index += 2) { tail.next = { val: index, next: null }; tail = tail.next } return dummy.next }; const head = mergeTwoLists(build(0), build(1)); let current = head; let count = 0; while (current) { count += 1; current = current.next } return count })("
+            "target": "[1, 3, 5]",
+            "args": [
+              "[2, 4, 6]"
+            ]
           },
-          "expected": 200
+          "expected": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ]
+        },
+        {
+          "id": "hidden-3",
+          "hidden": true,
+          "input": {
+            "target": "[1, 2, 3]",
+            "args": [
+              "[]"
+            ]
+          },
+          "expected": [
+            1,
+            2,
+            3
+          ]
+        },
+        {
+          "id": "hidden-4",
+          "hidden": true,
+          "input": {
+            "target": "[1, 1, 1]",
+            "args": [
+              "[1, 1]"
+            ]
+          },
+          "expected": [
+            1,
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "id": "hidden-5",
+          "hidden": true,
+          "input": {
+            "target": "[-3, -1, 0]",
+            "args": [
+              "[-2, 2]"
+            ]
+          },
+          "expected": [
+            -3,
+            -2,
+            -1,
+            0,
+            2
+          ]
         }
       ]
     },
     "basicCases": [
       {
-        "id": "case-1",
+        "id": "example-1",
         "type": "basic",
         "description": "示例 1",
-        "input": "{\"args\":\"l1, l2); const values = []; let current = head; while (current) { values.push(current.val); current = current.next } return values })(\"}",
-        "expected": [
-          1,
-          2,
-          3,
-          4
-        ]
+        "input": "[1, 2, 4]([1, 3, 4])",
+        "displayTarget": "[1, 2, 4]",
+        "displayArgs": [
+          "[1, 3, 4]"
+        ],
+        "expected": "[Circular]"
       },
       {
-        "id": "case-2",
+        "id": "example-2",
         "type": "basic",
         "description": "示例 2",
-        "input": "{\"args\":\"null, { val: 1, next: null }); const values = []; let current = head; while (current) { values.push(current.val); current = current.next } return values })(\"}",
-        "expected": [
-          1
-        ]
+        "input": "[]([])",
+        "displayTarget": "[]",
+        "displayArgs": [
+          "[]"
+        ],
+        "expected": "[Circular]"
       },
       {
-        "id": "case-3",
+        "id": "example-3",
         "type": "basic",
         "description": "示例 3",
-        "input": "{\"args\":\"null, null); return head })(\"}",
-        "expected": null
+        "input": "[]([0])",
+        "displayTarget": "[]",
+        "displayArgs": [
+          "[0]"
+        ],
+        "expected": "[Circular]"
       }
     ],
     "fullCases": [
       {
-        "id": "case-1",
+        "id": "example-1",
         "type": "basic",
         "description": "示例 1",
-        "input": "{\"args\":\"l1, l2); const values = []; let current = head; while (current) { values.push(current.val); current = current.next } return values })(\"}",
-        "expected": [
-          1,
-          2,
-          3,
-          4
-        ]
+        "input": "[1, 2, 4]([1, 3, 4])",
+        "displayTarget": "[1, 2, 4]",
+        "displayArgs": [
+          "[1, 3, 4]"
+        ],
+        "expected": "[Circular]"
       },
       {
-        "id": "case-2",
+        "id": "example-2",
         "type": "basic",
         "description": "示例 2",
-        "input": "{\"args\":\"null, { val: 1, next: null }); const values = []; let current = head; while (current) { values.push(current.val); current = current.next } return values })(\"}",
-        "expected": [
-          1
-        ]
+        "input": "[]([])",
+        "displayTarget": "[]",
+        "displayArgs": [
+          "[]"
+        ],
+        "expected": "[Circular]"
       },
       {
-        "id": "case-3",
+        "id": "example-3",
         "type": "basic",
         "description": "示例 3",
-        "input": "{\"args\":\"null, null); return head })(\"}",
-        "expected": null
+        "input": "[]([0])",
+        "displayTarget": "[]",
+        "displayArgs": [
+          "[0]"
+        ],
+        "expected": "[Circular]"
       },
       {
         "id": "hidden-1",
         "type": "edge",
         "description": "隐藏 1",
-        "input": "{\"args\":\"l1, l2); const values = []; let current = head; while (current) { values.push(current.val); current = current.next } return values })(\"}",
-        "expected": [
-          1,
-          1,
-          1,
-          2
-        ]
+        "input": "[1]([2])",
+        "displayTarget": "[1]",
+        "displayArgs": [
+          "[2]"
+        ],
+        "expected": "[Circular]"
       },
       {
         "id": "hidden-2",
         "type": "edge",
         "description": "隐藏 2",
-        "input": "{\"args\":\"let index = start; index < 200; index += 2) { tail.next = { val: index, next: null }; tail = tail.next } return dummy.next }; const head = mergeTwoLists(build(0), build(1)); let current = head; let count = 0; while (current) { count += 1; current = current.next } return count })(\"}",
-        "expected": 200
+        "input": "[1, 3, 5]([2, 4, 6])",
+        "displayTarget": "[1, 3, 5]",
+        "displayArgs": [
+          "[2, 4, 6]"
+        ],
+        "expected": "[Circular]"
+      },
+      {
+        "id": "hidden-3",
+        "type": "edge",
+        "description": "隐藏 3",
+        "input": "[1, 2, 3]([])",
+        "displayTarget": "[1, 2, 3]",
+        "displayArgs": [
+          "[]"
+        ],
+        "expected": "[Circular]"
+      },
+      {
+        "id": "hidden-4",
+        "type": "edge",
+        "description": "隐藏 4",
+        "input": "[1, 1, 1]([1, 1])",
+        "displayTarget": "[1, 1, 1]",
+        "displayArgs": [
+          "[1, 1]"
+        ],
+        "expected": "[Circular]"
+      },
+      {
+        "id": "hidden-5",
+        "type": "edge",
+        "description": "隐藏 5",
+        "input": "[-3, -1, 0]([-2, 2])",
+        "displayTarget": "[-3, -1, 0]",
+        "displayArgs": [
+          "[-2, 2]"
+        ],
+        "expected": "[Circular]"
       }
     ],
     "isComponent": false,
@@ -1690,8 +2771,10 @@ export const problems: ProblemRecord[] = [
     "testCases": {
       "examples": [
         {
+          "id": "example-1",
+          "hidden": false,
           "input": {
-            "args": "head); const values = []; let current = reversed; while (current) { values.push(current.val); current = current.next } return values })("
+            "target": "[1, 2, 3]"
           },
           "expected": [
             3,
@@ -1700,99 +2783,193 @@ export const problems: ProblemRecord[] = [
           ]
         },
         {
+          "id": "example-2",
+          "hidden": false,
           "input": {
-            "args": "null"
+            "target": "[1]"
           },
-          "expected": null
+          "expected": [
+            1
+          ]
         },
         {
+          "id": "example-3",
+          "hidden": false,
           "input": {
-            "args": "head).val })("
+            "target": "[]"
           },
-          "expected": 9
+          "expected": []
         }
       ],
       "hidden": [
         {
+          "id": "hidden-1",
+          "hidden": true,
           "input": {
-            "args": "head); return reversed.next.val })("
+            "target": "[1, 2]"
           },
-          "expected": 1
+          "expected": [
+            2,
+            1
+          ]
         },
         {
+          "id": "hidden-2",
+          "hidden": true,
           "input": {
-            "args": "let index = 0; index < 200; index += 1) head = { val: index, next: head }; const reversed = reverseList(head); let current = reversed; let count = 0; while (current) { count += 1; current = current.next } return count })("
+            "target": "[5, 4, 3, 2, 1]"
           },
-          "expected": 200
+          "expected": [
+            1,
+            2,
+            3,
+            4,
+            5
+          ]
+        },
+        {
+          "id": "hidden-3",
+          "hidden": true,
+          "input": {
+            "target": "[1, 2, 3, 4]"
+          },
+          "expected": [
+            4,
+            3,
+            2,
+            1
+          ]
+        },
+        {
+          "id": "hidden-4",
+          "hidden": true,
+          "input": {
+            "target": "[1, 1, 1, 1]"
+          },
+          "expected": [
+            1,
+            1,
+            1,
+            1
+          ]
+        },
+        {
+          "id": "hidden-5",
+          "hidden": true,
+          "input": {
+            "target": "[10, 20, 30, 40, 50]"
+          },
+          "expected": [
+            50,
+            40,
+            30,
+            20,
+            10
+          ]
         }
       ]
     },
     "basicCases": [
       {
-        "id": "case-1",
+        "id": "example-1",
         "type": "basic",
         "description": "示例 1",
-        "input": "{\"args\":\"head); const values = []; let current = reversed; while (current) { values.push(current.val); current = current.next } return values })(\"}",
-        "expected": [
-          3,
-          2,
-          1
-        ]
+        "input": "[1, 2, 3]",
+        "displayTarget": "[1, 2, 3]",
+        "displayArgs": undefined,
+        "expected": "[Circular]"
       },
       {
-        "id": "case-2",
+        "id": "example-2",
         "type": "basic",
         "description": "示例 2",
-        "input": "{\"args\":\"null\"}",
-        "expected": null
+        "input": "[1]",
+        "displayTarget": "[1]",
+        "displayArgs": undefined,
+        "expected": "[Circular]"
       },
       {
-        "id": "case-3",
+        "id": "example-3",
         "type": "basic",
         "description": "示例 3",
-        "input": "{\"args\":\"head).val })(\"}",
-        "expected": 9
+        "input": "[]",
+        "displayTarget": "[]",
+        "displayArgs": undefined,
+        "expected": "[Circular]"
       }
     ],
     "fullCases": [
       {
-        "id": "case-1",
+        "id": "example-1",
         "type": "basic",
         "description": "示例 1",
-        "input": "{\"args\":\"head); const values = []; let current = reversed; while (current) { values.push(current.val); current = current.next } return values })(\"}",
-        "expected": [
-          3,
-          2,
-          1
-        ]
+        "input": "[1, 2, 3]",
+        "displayTarget": "[1, 2, 3]",
+        "displayArgs": undefined,
+        "expected": "[Circular]"
       },
       {
-        "id": "case-2",
+        "id": "example-2",
         "type": "basic",
         "description": "示例 2",
-        "input": "{\"args\":\"null\"}",
-        "expected": null
+        "input": "[1]",
+        "displayTarget": "[1]",
+        "displayArgs": undefined,
+        "expected": "[Circular]"
       },
       {
-        "id": "case-3",
+        "id": "example-3",
         "type": "basic",
         "description": "示例 3",
-        "input": "{\"args\":\"head).val })(\"}",
-        "expected": 9
+        "input": "[]",
+        "displayTarget": "[]",
+        "displayArgs": undefined,
+        "expected": "[Circular]"
       },
       {
         "id": "hidden-1",
         "type": "edge",
         "description": "隐藏 1",
-        "input": "{\"args\":\"head); return reversed.next.val })(\"}",
-        "expected": 1
+        "input": "[1, 2]",
+        "displayTarget": "[1, 2]",
+        "displayArgs": undefined,
+        "expected": "[Circular]"
       },
       {
         "id": "hidden-2",
         "type": "edge",
         "description": "隐藏 2",
-        "input": "{\"args\":\"let index = 0; index < 200; index += 1) head = { val: index, next: head }; const reversed = reverseList(head); let current = reversed; let count = 0; while (current) { count += 1; current = current.next } return count })(\"}",
-        "expected": 200
+        "input": "[5, 4, 3, 2, 1]",
+        "displayTarget": "[5, 4, 3, 2, 1]",
+        "displayArgs": undefined,
+        "expected": "[Circular]"
+      },
+      {
+        "id": "hidden-3",
+        "type": "edge",
+        "description": "隐藏 3",
+        "input": "[1, 2, 3, 4]",
+        "displayTarget": "[1, 2, 3, 4]",
+        "displayArgs": undefined,
+        "expected": "[Circular]"
+      },
+      {
+        "id": "hidden-4",
+        "type": "edge",
+        "description": "隐藏 4",
+        "input": "[1, 1, 1, 1]",
+        "displayTarget": "[1, 1, 1, 1]",
+        "displayArgs": undefined,
+        "expected": "[Circular]"
+      },
+      {
+        "id": "hidden-5",
+        "type": "edge",
+        "description": "隐藏 5",
+        "input": "[10, 20, 30, 40, 50]",
+        "displayTarget": "[10, 20, 30, 40, 50]",
+        "displayArgs": undefined,
+        "expected": "[Circular]"
       }
     ],
     "isComponent": false,
@@ -1818,193 +2995,214 @@ export const problems: ProblemRecord[] = [
     "testCases": {
       "examples": [
         {
+          "id": "example-1",
+          "hidden": false,
           "input": {
-            "obj": {
-              "a": 1,
-              "b": {
-                "c": 2
-              }
-            }
+            "target": "{ a: 1, b: 2 }",
+            "args": []
           },
           "expected": {
             "a": 1,
-            "b": {
-              "c": 2
-            }
+            "b": 2
           }
         },
         {
+          "id": "example-2",
+          "hidden": false,
           "input": {
-            "obj": [
-              1,
-              [
-                2,
-                3
-              ],
-              {
-                "a": 4
-              }
-            ]
-          },
-          "expected": [
-            1,
-            [
-              2,
-              3
-            ],
-            {
-              "a": 4
-            }
-          ]
-        },
-        {
-          "input": {
-            "obj": {
-              "date": "new Date()"
-            }
+            "target": "{ arr: [1, 2, 3] }",
+            "args": []
           },
           "expected": {
-            "date": "[Date]"
+            "arr": [
+              1,
+              2,
+              3
+            ]
+          }
+        },
+        {
+          "id": "example-3",
+          "hidden": false,
+          "input": {
+            "target": "{ nested: { a: 1 } }",
+            "args": []
+          },
+          "expected": {
+            "nested": {
+              "a": 1
+            }
           }
         }
       ],
       "hidden": [
         {
+          "id": "hidden-1",
+          "hidden": true,
           "input": {
-            "obj": {
-              "a": 1,
-              "self": null
-            }
+            "target": "[]",
+            "args": []
+          },
+          "expected": []
+        },
+        {
+          "id": "hidden-2",
+          "hidden": true,
+          "input": {
+            "target": "{ a: { b: { c: 1 } } }",
+            "args": []
           },
           "expected": {
-            "a": 1,
-            "self": null
+            "a": {
+              "b": {
+                "c": 1
+              }
+            }
           }
         },
         {
+          "id": "hidden-3",
+          "hidden": true,
           "input": {
-            "obj": "{ list: Array(100).fill(0).map((_, i) => ({ index: i })) }"
+            "target": "[1, [2, [3]]]",
+            "args": []
+          },
+          "expected": [
+            1,
+            [
+              2,
+              [
+                3
+              ]
+            ]
+          ]
+        },
+        {
+          "id": "hidden-4",
+          "hidden": true,
+          "input": {
+            "target": "{ a: null, b: undefined }",
+            "args": []
           },
           "expected": {
-            "list": "Array(100).fill(0).map((_, i) => ({ index: i }))"
+            "a": null,
+            "b": undefined
           }
         },
         {
+          "id": "hidden-5",
+          "hidden": true,
           "input": {
-            "obj": {
-              "regex": "/abc/gi"
-            }
+            "target": "{ date: new Date(2024, 0, 1) }",
+            "args": []
           },
           "expected": {
-            "regex": "/abc/gi"
+            "date": "2023-12-31T16:00:00.000Z"
           }
         }
       ]
     },
     "basicCases": [
       {
-        "id": "case-1",
+        "id": "example-1",
         "type": "basic",
         "description": "示例 1",
-        "input": "{\"obj\":{\"a\":1,\"b\":{\"c\":2}}}",
-        "expected": {
-          "a": 1,
-          "b": {
-            "c": 2
-          }
-        }
+        "input": "{ a: 1, b: 2 }",
+        "displayTarget": "{ a: 1, b: 2 }",
+        "displayArgs": [],
+        "expected": "[Circular]"
       },
       {
-        "id": "case-2",
+        "id": "example-2",
         "type": "basic",
         "description": "示例 2",
-        "input": "{\"obj\":[1,[2,3],{\"a\":4}]}",
-        "expected": [
-          1,
-          [
-            2,
-            3
-          ],
-          {
-            "a": 4
-          }
-        ]
+        "input": "{ arr: [1, 2, 3] }",
+        "displayTarget": "{ arr: [1, 2, 3] }",
+        "displayArgs": [],
+        "expected": "[Circular]"
       },
       {
-        "id": "case-3",
+        "id": "example-3",
         "type": "basic",
         "description": "示例 3",
-        "input": "{\"obj\":{\"date\":\"new Date()\"}}",
-        "expected": {
-          "date": "[Date]"
-        }
+        "input": "{ nested: { a: 1 } }",
+        "displayTarget": "{ nested: { a: 1 } }",
+        "displayArgs": [],
+        "expected": "[Circular]"
       }
     ],
     "fullCases": [
       {
-        "id": "case-1",
+        "id": "example-1",
         "type": "basic",
         "description": "示例 1",
-        "input": "{\"obj\":{\"a\":1,\"b\":{\"c\":2}}}",
-        "expected": {
-          "a": 1,
-          "b": {
-            "c": 2
-          }
-        }
+        "input": "{ a: 1, b: 2 }",
+        "displayTarget": "{ a: 1, b: 2 }",
+        "displayArgs": [],
+        "expected": "[Circular]"
       },
       {
-        "id": "case-2",
+        "id": "example-2",
         "type": "basic",
         "description": "示例 2",
-        "input": "{\"obj\":[1,[2,3],{\"a\":4}]}",
-        "expected": [
-          1,
-          [
-            2,
-            3
-          ],
-          {
-            "a": 4
-          }
-        ]
+        "input": "{ arr: [1, 2, 3] }",
+        "displayTarget": "{ arr: [1, 2, 3] }",
+        "displayArgs": [],
+        "expected": "[Circular]"
       },
       {
-        "id": "case-3",
+        "id": "example-3",
         "type": "basic",
         "description": "示例 3",
-        "input": "{\"obj\":{\"date\":\"new Date()\"}}",
-        "expected": {
-          "date": "[Date]"
-        }
+        "input": "{ nested: { a: 1 } }",
+        "displayTarget": "{ nested: { a: 1 } }",
+        "displayArgs": [],
+        "expected": "[Circular]"
       },
       {
         "id": "hidden-1",
         "type": "edge",
         "description": "隐藏 1",
-        "input": "{\"obj\":{\"a\":1,\"self\":null}}",
-        "expected": {
-          "a": 1,
-          "self": null
-        }
+        "input": "[]",
+        "displayTarget": "[]",
+        "displayArgs": [],
+        "expected": "[Circular]"
       },
       {
         "id": "hidden-2",
         "type": "edge",
         "description": "隐藏 2",
-        "input": "{\"obj\":\"{ list: Array(100).fill(0).map((_, i) => ({ index: i })) }\"}",
-        "expected": {
-          "list": "Array(100).fill(0).map((_, i) => ({ index: i }))"
-        }
+        "input": "{ a: { b: { c: 1 } } }",
+        "displayTarget": "{ a: { b: { c: 1 } } }",
+        "displayArgs": [],
+        "expected": "[Circular]"
       },
       {
         "id": "hidden-3",
         "type": "edge",
         "description": "隐藏 3",
-        "input": "{\"obj\":{\"regex\":\"/abc/gi\"}}",
-        "expected": {
-          "regex": "/abc/gi"
-        }
+        "input": "[1, [2, [3]]]",
+        "displayTarget": "[1, [2, [3]]]",
+        "displayArgs": [],
+        "expected": "[Circular]"
+      },
+      {
+        "id": "hidden-4",
+        "type": "edge",
+        "description": "隐藏 4",
+        "input": "{ a: null, b: undefined }",
+        "displayTarget": "{ a: null, b: undefined }",
+        "displayArgs": [],
+        "expected": "[Circular]"
+      },
+      {
+        "id": "hidden-5",
+        "type": "edge",
+        "description": "隐藏 5",
+        "input": "{ date: new Date(2024, 0, 1) }",
+        "displayTarget": "{ date: new Date(2024, 0, 1) }",
+        "displayArgs": [],
+        "expected": "[Circular]"
       }
     ],
     "isComponent": false,
@@ -2030,34 +3228,92 @@ export const problems: ProblemRecord[] = [
     "testCases": {
       "examples": [
         {
+          "id": "example-1",
+          "hidden": false,
           "input": {
-            "args": ") {} const person = new Person(); return myInstanceof(person, Person) })("
+            "target": "[]",
+            "args": [
+              "Array"
+            ]
           },
           "expected": true
         },
         {
+          "id": "example-2",
+          "hidden": false,
           "input": {
-            "args": ") {} function Animal() {} const person = new Person(); return myInstanceof(person, Animal) })("
+            "target": "{}",
+            "args": [
+              "Array"
+            ]
           },
           "expected": false
         },
         {
+          "id": "example-3",
+          "hidden": false,
           "input": {
-            "args": "'text', String"
+            "target": "new Date()",
+            "args": [
+              "Date"
+            ]
           },
-          "expected": false
+          "expected": true
         }
       ],
       "hidden": [
         {
+          "id": "hidden-1",
+          "hidden": true,
           "input": {
-            "args": "function demo() {}, Function"
+            "target": "function() {}",
+            "args": [
+              "Function"
+            ]
           },
           "expected": true
         },
         {
+          "id": "hidden-2",
+          "hidden": true,
           "input": {
-            "args": "{}, {}"
+            "target": "/abc/",
+            "args": [
+              "RegExp"
+            ]
+          },
+          "expected": true
+        },
+        {
+          "id": "hidden-3",
+          "hidden": true,
+          "input": {
+            "target": "new String(\"hello\")",
+            "args": [
+              "String"
+            ]
+          },
+          "expected": true
+        },
+        {
+          "id": "hidden-4",
+          "hidden": true,
+          "input": {
+            "target": "null",
+            "args": [
+              "Object"
+            ]
+          },
+          "expected": false
+        },
+        {
+          "id": "hidden-5",
+          "hidden": true,
+          "input": {
+            "target": "Object.create(null)",
+            "args": [
+              "Object"
+            ]
           },
           "expected": false
         }
@@ -2065,61 +3321,126 @@ export const problems: ProblemRecord[] = [
     },
     "basicCases": [
       {
-        "id": "case-1",
+        "id": "example-1",
         "type": "basic",
         "description": "示例 1",
-        "input": "{\"args\":\") {} const person = new Person(); return myInstanceof(person, Person) })(\"}",
+        "input": "[](Array)",
+        "displayTarget": "[]",
+        "displayArgs": [
+          "Array"
+        ],
         "expected": true
       },
       {
-        "id": "case-2",
+        "id": "example-2",
         "type": "basic",
         "description": "示例 2",
-        "input": "{\"args\":\") {} function Animal() {} const person = new Person(); return myInstanceof(person, Animal) })(\"}",
+        "input": "{}(Array)",
+        "displayTarget": "{}",
+        "displayArgs": [
+          "Array"
+        ],
         "expected": false
       },
       {
-        "id": "case-3",
+        "id": "example-3",
         "type": "basic",
         "description": "示例 3",
-        "input": "{\"args\":\"'text', String\"}",
-        "expected": false
+        "input": "new Date()(Date)",
+        "displayTarget": "new Date()",
+        "displayArgs": [
+          "Date"
+        ],
+        "expected": true
       }
     ],
     "fullCases": [
       {
-        "id": "case-1",
+        "id": "example-1",
         "type": "basic",
         "description": "示例 1",
-        "input": "{\"args\":\") {} const person = new Person(); return myInstanceof(person, Person) })(\"}",
+        "input": "[](Array)",
+        "displayTarget": "[]",
+        "displayArgs": [
+          "Array"
+        ],
         "expected": true
       },
       {
-        "id": "case-2",
+        "id": "example-2",
         "type": "basic",
         "description": "示例 2",
-        "input": "{\"args\":\") {} function Animal() {} const person = new Person(); return myInstanceof(person, Animal) })(\"}",
+        "input": "{}(Array)",
+        "displayTarget": "{}",
+        "displayArgs": [
+          "Array"
+        ],
         "expected": false
       },
       {
-        "id": "case-3",
+        "id": "example-3",
         "type": "basic",
         "description": "示例 3",
-        "input": "{\"args\":\"'text', String\"}",
-        "expected": false
+        "input": "new Date()(Date)",
+        "displayTarget": "new Date()",
+        "displayArgs": [
+          "Date"
+        ],
+        "expected": true
       },
       {
         "id": "hidden-1",
         "type": "edge",
         "description": "隐藏 1",
-        "input": "{\"args\":\"function demo() {}, Function\"}",
+        "input": "function() {}(Function)",
+        "displayTarget": "function() {}",
+        "displayArgs": [
+          "Function"
+        ],
         "expected": true
       },
       {
         "id": "hidden-2",
         "type": "edge",
         "description": "隐藏 2",
-        "input": "{\"args\":\"{}, {}\"}",
+        "input": "/abc/(RegExp)",
+        "displayTarget": "/abc/",
+        "displayArgs": [
+          "RegExp"
+        ],
+        "expected": true
+      },
+      {
+        "id": "hidden-3",
+        "type": "edge",
+        "description": "隐藏 3",
+        "input": "new String(\"hello\")(String)",
+        "displayTarget": "new String(\"hello\")",
+        "displayArgs": [
+          "String"
+        ],
+        "expected": true
+      },
+      {
+        "id": "hidden-4",
+        "type": "edge",
+        "description": "隐藏 4",
+        "input": "null(Object)",
+        "displayTarget": "null",
+        "displayArgs": [
+          "Object"
+        ],
+        "expected": false
+      },
+      {
+        "id": "hidden-5",
+        "type": "edge",
+        "description": "隐藏 5",
+        "input": "Object.create(null)(Object)",
+        "displayTarget": "Object.create(null)",
+        "displayArgs": [
+          "Object"
+        ],
         "expected": false
       }
     ],
@@ -2146,97 +3467,230 @@ export const problems: ProblemRecord[] = [
     "testCases": {
       "examples": [
         {
+          "id": "example-1",
+          "hidden": false,
           "input": {
-            "args": "name) { this.name = name } Person.prototype.getName = function () { return this.name }; return myNew(Person, 'Tom').getName() })("
+            "target": "function Person(name) { this.name = name; }",
+            "args": [
+              "\"Alice\""
+            ]
           },
-          "expected": "Tom"
+          "expected": {
+            "name": "Alice"
+          }
         },
         {
+          "id": "example-2",
+          "hidden": false,
           "input": {
-            "args": ") { this.value = 1; return { value: 2 } } return myNew(Factory).value })("
+            "target": "function Counter() { this.count = 0; }",
+            "args": []
           },
-          "expected": 2
+          "expected": {
+            "count": 0
+          }
         },
         {
+          "id": "example-3",
+          "hidden": false,
           "input": {
-            "args": ") { this.value = 3; return 4 } return myNew(Factory).value })("
+            "target": "function Point(x, y) { this.x = x; this.y = y; }",
+            "args": [
+              "3",
+              "4"
+            ]
           },
-          "expected": 3
+          "expected": {
+            "x": 3,
+            "y": 4
+          }
         }
       ],
       "hidden": [
         {
+          "id": "hidden-1",
+          "hidden": true,
           "input": {
-            "args": "null) } catch (error) { return error instanceof TypeError } })("
+            "target": "function Fn() { this.a = 1; return { b: 2 }; }",
+            "args": []
           },
-          "expected": true
+          "expected": {
+            "b": 2
+          }
         },
         {
+          "id": "hidden-2",
+          "hidden": true,
           "input": {
-            "args": "a, b) { this.total = a + b } return myNew(Sum, 3, 4).total })("
+            "target": "function Fn() { return 42; }",
+            "args": []
           },
-          "expected": 7
+          "expected": {}
+        },
+        {
+          "id": "hidden-3",
+          "hidden": true,
+          "input": {
+            "target": "function Fn(a, b, c) { this.sum = a + b + c; }",
+            "args": [
+              "1",
+              "2",
+              "3"
+            ]
+          },
+          "expected": {
+            "sum": 6
+          }
+        },
+        {
+          "id": "hidden-4",
+          "hidden": true,
+          "input": {
+            "target": "function Fn() { this.args = arguments.length; }",
+            "args": [
+              "1",
+              "2"
+            ]
+          },
+          "expected": {
+            "args": 2
+          }
+        },
+        {
+          "id": "hidden-5",
+          "hidden": true,
+          "input": {
+            "target": "class MyClass { constructor(x) { this.x = x; } }",
+            "args": [
+              "10"
+            ]
+          },
+          "expected": {
+            "x": 10
+          }
         }
       ]
     },
     "basicCases": [
       {
-        "id": "case-1",
+        "id": "example-1",
         "type": "basic",
         "description": "示例 1",
-        "input": "{\"args\":\"name) { this.name = name } Person.prototype.getName = function () { return this.name }; return myNew(Person, 'Tom').getName() })(\"}",
-        "expected": "Tom"
+        "input": "function Person(name) { this.name = name; }(\"Alice\")",
+        "displayTarget": "function Person(name) { this.name = name; }",
+        "displayArgs": [
+          "\"Alice\""
+        ],
+        "expected": "[Circular]"
       },
       {
-        "id": "case-2",
+        "id": "example-2",
         "type": "basic",
         "description": "示例 2",
-        "input": "{\"args\":\") { this.value = 1; return { value: 2 } } return myNew(Factory).value })(\"}",
-        "expected": 2
+        "input": "function Counter() { this.count = 0; }",
+        "displayTarget": "function Counter() { this.count = 0; }",
+        "displayArgs": [],
+        "expected": "[Circular]"
       },
       {
-        "id": "case-3",
+        "id": "example-3",
         "type": "basic",
         "description": "示例 3",
-        "input": "{\"args\":\") { this.value = 3; return 4 } return myNew(Factory).value })(\"}",
-        "expected": 3
+        "input": "function Point(x, y) { this.x = x; this.y = y; }(3, 4)",
+        "displayTarget": "function Point(x, y) { this.x = x; this.y = y; }",
+        "displayArgs": [
+          "3",
+          "4"
+        ],
+        "expected": "[Circular]"
       }
     ],
     "fullCases": [
       {
-        "id": "case-1",
+        "id": "example-1",
         "type": "basic",
         "description": "示例 1",
-        "input": "{\"args\":\"name) { this.name = name } Person.prototype.getName = function () { return this.name }; return myNew(Person, 'Tom').getName() })(\"}",
-        "expected": "Tom"
+        "input": "function Person(name) { this.name = name; }(\"Alice\")",
+        "displayTarget": "function Person(name) { this.name = name; }",
+        "displayArgs": [
+          "\"Alice\""
+        ],
+        "expected": "[Circular]"
       },
       {
-        "id": "case-2",
+        "id": "example-2",
         "type": "basic",
         "description": "示例 2",
-        "input": "{\"args\":\") { this.value = 1; return { value: 2 } } return myNew(Factory).value })(\"}",
-        "expected": 2
+        "input": "function Counter() { this.count = 0; }",
+        "displayTarget": "function Counter() { this.count = 0; }",
+        "displayArgs": [],
+        "expected": "[Circular]"
       },
       {
-        "id": "case-3",
+        "id": "example-3",
         "type": "basic",
         "description": "示例 3",
-        "input": "{\"args\":\") { this.value = 3; return 4 } return myNew(Factory).value })(\"}",
-        "expected": 3
+        "input": "function Point(x, y) { this.x = x; this.y = y; }(3, 4)",
+        "displayTarget": "function Point(x, y) { this.x = x; this.y = y; }",
+        "displayArgs": [
+          "3",
+          "4"
+        ],
+        "expected": "[Circular]"
       },
       {
         "id": "hidden-1",
         "type": "edge",
         "description": "隐藏 1",
-        "input": "{\"args\":\"null) } catch (error) { return error instanceof TypeError } })(\"}",
-        "expected": true
+        "input": "function Fn() { this.a = 1; return { b: 2 }; }",
+        "displayTarget": "function Fn() { this.a = 1; return { b: 2 }; }",
+        "displayArgs": [],
+        "expected": "[Circular]"
       },
       {
         "id": "hidden-2",
         "type": "edge",
         "description": "隐藏 2",
-        "input": "{\"args\":\"a, b) { this.total = a + b } return myNew(Sum, 3, 4).total })(\"}",
-        "expected": 7
+        "input": "function Fn() { return 42; }",
+        "displayTarget": "function Fn() { return 42; }",
+        "displayArgs": [],
+        "expected": "[Circular]"
+      },
+      {
+        "id": "hidden-3",
+        "type": "edge",
+        "description": "隐藏 3",
+        "input": "function Fn(a, b, c) { this.sum = a + b + c; }(1, 2, 3)",
+        "displayTarget": "function Fn(a, b, c) { this.sum = a + b + c; }",
+        "displayArgs": [
+          "1",
+          "2",
+          "3"
+        ],
+        "expected": "[Circular]"
+      },
+      {
+        "id": "hidden-4",
+        "type": "edge",
+        "description": "隐藏 4",
+        "input": "function Fn() { this.args = arguments.length; }(1, 2)",
+        "displayTarget": "function Fn() { this.args = arguments.length; }",
+        "displayArgs": [
+          "1",
+          "2"
+        ],
+        "expected": "[Circular]"
+      },
+      {
+        "id": "hidden-5",
+        "type": "edge",
+        "description": "隐藏 5",
+        "input": "class MyClass { constructor(x) { this.x = x; } }(10)",
+        "displayTarget": "class MyClass { constructor(x) { this.x = x; } }",
+        "displayArgs": [
+          "10"
+        ],
+        "expected": "[Circular]"
       }
     ],
     "isComponent": false,
@@ -2260,99 +3714,205 @@ export const problems: ProblemRecord[] = [
     "template": "class MyPromise {\n  \n  constructor(executor) {\n  \n}\n\n  \n  then(onFulfilled, onRejected) {\n  \n}\n\n  catch(onRejected) {\n  \n}\n\n  finally(callback) {\n  \n}\n\n  static resolve(value) {\n  \n}\n\n  static reject(reason) {\n  \n}\n\n}\n\nfunction resolvePromise(promise2, x, resolve, reject) {\n\n}",
     "solutionCode": "class MyPromise {\n  /**\n   * @param {Function} executor - 执行器函数\n   */\n  constructor(executor) {\n    this.state = \"pending\";\n    this.value = undefined;\n    this.reason = undefined;\n    this.onFulfilledCallbacks = [];\n    this.onRejectedCallbacks = [];\n\n    const resolve = (value) => {\n      if (this.state === \"pending\") {\n        this.state = \"fulfilled\";\n        this.value = value;\n        this.onFulfilledCallbacks.forEach((fn) => fn());\n      }\n    };\n\n    const reject = (reason) => {\n      if (this.state === \"pending\") {\n        this.state = \"rejected\";\n        this.reason = reason;\n        this.onRejectedCallbacks.forEach((fn) => fn());\n      }\n    };\n\n    try {\n      executor(resolve, reject);\n    } catch (error) {\n      reject(error);\n    }\n  }\n\n  /**\n   * @param {Function} [onFulfilled] - 成功回调\n   * @param {Function} [onRejected] - 失败回调\n   * @returns {MyPromise} 新 Promise 支持链式调用\n   */\n  then(onFulfilled, onRejected) {\n    onFulfilled =\n      typeof onFulfilled === \"function\" ? onFulfilled : (value) => value;\n    onRejected =\n      typeof onRejected === \"function\"\n        ? onRejected\n        : (reason) => {\n            throw reason;\n          };\n\n    const promise2 = new MyPromise((resolve, reject) => {\n      if (this.state === \"fulfilled\") {\n        setTimeout(() => {\n          try {\n            const x = onFulfilled(this.value);\n            resolvePromise(promise2, x, resolve, reject);\n          } catch (error) {\n            reject(error);\n          }\n        }, 0);\n      }\n\n      if (this.state === \"rejected\") {\n        setTimeout(() => {\n          try {\n            const x = onRejected(this.reason);\n            resolvePromise(promise2, x, resolve, reject);\n          } catch (error) {\n            reject(error);\n          }\n        }, 0);\n      }\n\n      if (this.state === \"pending\") {\n        this.onFulfilledCallbacks.push(() => {\n          setTimeout(() => {\n            try {\n              const x = onFulfilled(this.value);\n              resolvePromise(promise2, x, resolve, reject);\n            } catch (error) {\n              reject(error);\n            }\n          }, 0);\n        });\n\n        this.onRejectedCallbacks.push(() => {\n          setTimeout(() => {\n            try {\n              const x = onRejected(this.reason);\n              resolvePromise(promise2, x, resolve, reject);\n            } catch (error) {\n              reject(error);\n            }\n          }, 0);\n        });\n      }\n    });\n\n    return promise2;\n  }\n\n  catch(onRejected) {\n    return this.then(null, onRejected);\n  }\n\n  finally(callback) {\n    return this.then(\n      (value) => MyPromise.resolve(callback()).then(() => value),\n      (reason) =>\n        MyPromise.resolve(callback()).then(() => {\n          throw reason;\n        }),\n    );\n  }\n\n  static resolve(value) {\n    return new MyPromise((resolve) => resolve(value));\n  }\n\n  static reject(reason) {\n    return new MyPromise((_, reject) => reject(reason));\n  }\n}\n\nfunction resolvePromise(promise2, x, resolve, reject) {\n  if (promise2 === x) {\n    reject(new TypeError(\"Chaining cycle detected for promise\"));\n    return;\n  }\n\n  let called = false;\n  if (x != null && (typeof x === \"object\" || typeof x === \"function\")) {\n    try {\n      const then = x.then;\n      if (typeof then === \"function\") {\n        then.call(\n          x,\n          (y) => {\n            if (called) return;\n            called = true;\n            resolvePromise(promise2, y, resolve, reject);\n          },\n          (r) => {\n            if (called) return;\n            called = true;\n            reject(r);\n          },\n        );\n      } else {\n        resolve(x);\n      }\n    } catch (error) {\n      if (called) return;\n      called = true;\n      reject(error);\n    }\n  } else {\n    resolve(x);\n  }\n}",
     "testCases": {
+      "noCustomCase": true,
       "examples": [
         {
+          "id": "example-1",
+          "hidden": false,
           "input": {
-            "args": ") => { const result = await new MyPromise((resolve) => resolve(1)).then((value) => value + 1); return result })("
+            "target": "new MyPromise(resolve => resolve(42))",
+            "args": []
           },
-          "expected": 2
+          "expected": 42
         },
         {
+          "id": "example-2",
+          "hidden": false,
           "input": {
-            "args": ") => { const result = await new MyPromise((resolve) => setTimeout(() => resolve(\"ok\"), 10)); return result })("
+            "target": "new MyPromise((resolve, reject) => reject(new Error(\"fail\")))",
+            "args": []
           },
-          "expected": "ok"
+          "expected": {
+            "error": "fail"
+          }
         },
         {
+          "id": "example-3",
+          "hidden": false,
           "input": {
-            "args": ") => { const result = await new MyPromise((resolve) => resolve(2)).then((value) => value * 3); return result })("
+            "target": "new MyPromise(resolve => resolve(5))",
+            "args": [
+              "v => v * 2"
+            ]
           },
-          "expected": 6
+          "expected": 10
         }
       ],
       "hidden": [
         {
+          "id": "hidden-1",
+          "hidden": true,
           "input": {
-            "args": ") => { try { await new MyPromise((resolve, reject) => reject(new Error(\"fail\"))) } catch (error) { return error.message } })("
+            "target": "new MyPromise(resolve => setTimeout(() => resolve(100), 10))",
+            "args": []
           },
-          "expected": "fail"
+          "expected": 100
         },
         {
+          "id": "hidden-2",
+          "hidden": true,
           "input": {
-            "args": ") => { let current = new MyPromise((resolve) => resolve(0)); for (let index = 0; index < 20; index += 1) current = current.then((value) => value + 1); return current })("
+            "target": "new MyPromise(resolve => resolve(1))",
+            "args": [
+              "v => v + 1",
+              "v => v * 2"
+            ]
           },
-          "expected": 20
+          "expected": 4
+        },
+        {
+          "id": "hidden-3",
+          "hidden": true,
+          "input": {
+            "target": "new MyPromise((resolve, reject) => reject(\"error\"))",
+            "args": []
+          },
+          "expected": {
+            "error": "error"
+          }
+        },
+        {
+          "id": "hidden-4",
+          "hidden": true,
+          "input": {
+            "target": "new MyPromise(resolve => resolve({ a: 1 }))",
+            "args": [
+              "obj => obj.a"
+            ]
+          },
+          "expected": 1
+        },
+        {
+          "id": "hidden-5",
+          "hidden": true,
+          "input": {
+            "target": "MyPromise.resolve(10)",
+            "args": []
+          },
+          "expected": 10
         }
       ]
     },
     "basicCases": [
       {
-        "id": "case-1",
+        "id": "example-1",
         "type": "basic",
         "description": "示例 1",
-        "input": "{\"args\":\") => { const result = await new MyPromise((resolve) => resolve(1)).then((value) => value + 1); return result })(\"}",
-        "expected": 2
+        "input": "new MyPromise(resolve => resolve(42))",
+        "displayTarget": "new MyPromise(resolve => resolve(42))",
+        "displayArgs": [],
+        "expected": 42
       },
       {
-        "id": "case-2",
+        "id": "example-2",
         "type": "basic",
         "description": "示例 2",
-        "input": "{\"args\":\") => { const result = await new MyPromise((resolve) => setTimeout(() => resolve(\\\"ok\\\"), 10)); return result })(\"}",
-        "expected": "ok"
+        "input": "new MyPromise((resolve, reject) => reject(new Error(\"fail\")))",
+        "displayTarget": "new MyPromise((resolve, reject) => reject(new Error(\"fail\")))",
+        "displayArgs": [],
+        "expected": "[Circular]"
       },
       {
-        "id": "case-3",
+        "id": "example-3",
         "type": "basic",
         "description": "示例 3",
-        "input": "{\"args\":\") => { const result = await new MyPromise((resolve) => resolve(2)).then((value) => value * 3); return result })(\"}",
-        "expected": 6
+        "input": "new MyPromise(resolve => resolve(5))(v => v * 2)",
+        "displayTarget": "new MyPromise(resolve => resolve(5))",
+        "displayArgs": [
+          "v => v * 2"
+        ],
+        "expected": 10
       }
     ],
     "fullCases": [
       {
-        "id": "case-1",
+        "id": "example-1",
         "type": "basic",
         "description": "示例 1",
-        "input": "{\"args\":\") => { const result = await new MyPromise((resolve) => resolve(1)).then((value) => value + 1); return result })(\"}",
-        "expected": 2
+        "input": "new MyPromise(resolve => resolve(42))",
+        "displayTarget": "new MyPromise(resolve => resolve(42))",
+        "displayArgs": [],
+        "expected": 42
       },
       {
-        "id": "case-2",
+        "id": "example-2",
         "type": "basic",
         "description": "示例 2",
-        "input": "{\"args\":\") => { const result = await new MyPromise((resolve) => setTimeout(() => resolve(\\\"ok\\\"), 10)); return result })(\"}",
-        "expected": "ok"
+        "input": "new MyPromise((resolve, reject) => reject(new Error(\"fail\")))",
+        "displayTarget": "new MyPromise((resolve, reject) => reject(new Error(\"fail\")))",
+        "displayArgs": [],
+        "expected": "[Circular]"
       },
       {
-        "id": "case-3",
+        "id": "example-3",
         "type": "basic",
         "description": "示例 3",
-        "input": "{\"args\":\") => { const result = await new MyPromise((resolve) => resolve(2)).then((value) => value * 3); return result })(\"}",
-        "expected": 6
+        "input": "new MyPromise(resolve => resolve(5))(v => v * 2)",
+        "displayTarget": "new MyPromise(resolve => resolve(5))",
+        "displayArgs": [
+          "v => v * 2"
+        ],
+        "expected": 10
       },
       {
         "id": "hidden-1",
         "type": "edge",
         "description": "隐藏 1",
-        "input": "{\"args\":\") => { try { await new MyPromise((resolve, reject) => reject(new Error(\\\"fail\\\"))) } catch (error) { return error.message } })(\"}",
-        "expected": "fail"
+        "input": "new MyPromise(resolve => setTimeout(() => resolve(100), 10))",
+        "displayTarget": "new MyPromise(resolve => setTimeout(() => resolve(100), 10))",
+        "displayArgs": [],
+        "expected": 100
       },
       {
         "id": "hidden-2",
         "type": "edge",
         "description": "隐藏 2",
-        "input": "{\"args\":\") => { let current = new MyPromise((resolve) => resolve(0)); for (let index = 0; index < 20; index += 1) current = current.then((value) => value + 1); return current })(\"}",
-        "expected": 20
+        "input": "new MyPromise(resolve => resolve(1))(v => v + 1, v => v * 2)",
+        "displayTarget": "new MyPromise(resolve => resolve(1))",
+        "displayArgs": [
+          "v => v + 1",
+          "v => v * 2"
+        ],
+        "expected": 4
+      },
+      {
+        "id": "hidden-3",
+        "type": "edge",
+        "description": "隐藏 3",
+        "input": "new MyPromise((resolve, reject) => reject(\"error\"))",
+        "displayTarget": "new MyPromise((resolve, reject) => reject(\"error\"))",
+        "displayArgs": [],
+        "expected": "[Circular]"
+      },
+      {
+        "id": "hidden-4",
+        "type": "edge",
+        "description": "隐藏 4",
+        "input": "new MyPromise(resolve => resolve({ a: 1 }))(obj => obj.a)",
+        "displayTarget": "new MyPromise(resolve => resolve({ a: 1 }))",
+        "displayArgs": [
+          "obj => obj.a"
+        ],
+        "expected": 1
+      },
+      {
+        "id": "hidden-5",
+        "type": "edge",
+        "description": "隐藏 5",
+        "input": "MyPromise.resolve(10)",
+        "displayTarget": "MyPromise.resolve(10)",
+        "displayArgs": [],
+        "expected": 10
       }
     ],
     "isComponent": false,
@@ -2376,19 +3936,14 @@ export const problems: ProblemRecord[] = [
     "template": "Promise.myAll = function (promises) {\n\n};\nPromise.myAll;",
     "solutionCode": "Promise.myAll = function (promises) {\n  return new Promise((resolve, reject) => {\n    const queue = Array.from(promises);\n    const length = queue.length;\n\n    if (length === 0) {\n      resolve([]);\n      return;\n    }\n\n    const results = new Array(length);\n    let completedCount = 0;\n    let isRejected = false;\n\n    queue.forEach((item, index) => {\n      Promise.resolve(item)\n        .then((value) => {\n          if (isRejected) return;\n          results[index] = value;\n          completedCount++;\n          if (completedCount === length) resolve(results);\n        })\n        .catch((reason) => {\n          if (isRejected) return;\n          isRejected = true;\n          reject(reason);\n        });\n    });\n  });\n};\nPromise.myAll;",
     "testCases": {
+      "noCustomCase": true,
       "examples": [
         {
+          "id": "example-1",
+          "hidden": false,
           "input": {
-            "args": ") => Promise.myAll([Promise.resolve(1), Promise.resolve(2)]))("
-          },
-          "expected": [
-            1,
-            2
-          ]
-        },
-        {
-          "input": {
-            "args": ") => Promise.myAll([1, Promise.resolve(2), 3]))("
+            "target": "promiseAll([MyPromise.resolve(1), MyPromise.resolve(2), MyPromise.resolve(3)])",
+            "args": []
           },
           "expected": [
             1,
@@ -2397,105 +3952,194 @@ export const problems: ProblemRecord[] = [
           ]
         },
         {
+          "id": "example-2",
+          "hidden": false,
           "input": {
-            "args": ") => Promise.myAll([]))("
+            "target": "promiseAll([])",
+            "args": []
           },
           "expected": []
+        },
+        {
+          "id": "example-3",
+          "hidden": false,
+          "input": {
+            "target": "promiseAll([MyPromise.resolve(\"a\"), MyPromise.resolve(\"b\")])",
+            "args": []
+          },
+          "expected": [
+            "a",
+            "b"
+          ]
         }
       ],
       "hidden": [
         {
+          "id": "hidden-1",
+          "hidden": true,
           "input": {
-            "args": ") => { try { await Promise.myAll([Promise.resolve(1), Promise.reject(new Error('fail'))]) } catch (error) { return error.message } })("
-          },
-          "expected": "fail"
-        },
-        {
-          "input": {
-            "args": ") => Promise.myAll([new Promise((resolve) => setTimeout(() => resolve('slow'), 20)), Promise.resolve('fast')]))("
+            "target": "promiseAll([1, 2, 3])",
+            "args": []
           },
           "expected": [
-            "slow",
-            "fast"
+            1,
+            2,
+            3
           ]
+        },
+        {
+          "id": "hidden-2",
+          "hidden": true,
+          "input": {
+            "target": "promiseAll([MyPromise.resolve(1), MyPromise.reject(new Error(\"err\"))])",
+            "args": []
+          },
+          "expected": {
+            "error": "err"
+          }
+        },
+        {
+          "id": "hidden-3",
+          "hidden": true,
+          "input": {
+            "target": "promiseAll([new MyPromise(r => setTimeout(() => r(1), 10)), MyPromise.resolve(2)])",
+            "args": []
+          },
+          "expected": [
+            1,
+            2
+          ]
+        },
+        {
+          "id": "hidden-4",
+          "hidden": true,
+          "input": {
+            "target": "promiseAll([MyPromise.resolve({ x: 1 }), MyPromise.resolve({ y: 2 })])",
+            "args": []
+          },
+          "expected": [
+            {
+              "x": 1
+            },
+            {
+              "y": 2
+            }
+          ]
+        },
+        {
+          "id": "hidden-5",
+          "hidden": true,
+          "input": {
+            "target": "promiseAll([MyPromise.reject(\"fail\"), MyPromise.resolve(1)])",
+            "args": []
+          },
+          "expected": {
+            "error": "fail"
+          }
         }
       ]
     },
     "basicCases": [
       {
-        "id": "case-1",
+        "id": "example-1",
         "type": "basic",
         "description": "示例 1",
-        "input": "{\"args\":\") => Promise.myAll([Promise.resolve(1), Promise.resolve(2)]))(\"}",
-        "expected": [
-          1,
-          2
-        ]
+        "input": "promiseAll([MyPromise.resolve(1), MyPromise.resolve(2), MyPromise.resolve(3)])",
+        "displayTarget": "promiseAll([MyPromise.resolve(1), MyPromise.resolve(2), MyPromise.resolve(3)])",
+        "displayArgs": [],
+        "expected": "[Circular]"
       },
       {
-        "id": "case-2",
+        "id": "example-2",
         "type": "basic",
         "description": "示例 2",
-        "input": "{\"args\":\") => Promise.myAll([1, Promise.resolve(2), 3]))(\"}",
-        "expected": [
-          1,
-          2,
-          3
-        ]
+        "input": "promiseAll([])",
+        "displayTarget": "promiseAll([])",
+        "displayArgs": [],
+        "expected": "[Circular]"
       },
       {
-        "id": "case-3",
+        "id": "example-3",
         "type": "basic",
         "description": "示例 3",
-        "input": "{\"args\":\") => Promise.myAll([]))(\"}",
-        "expected": []
+        "input": "promiseAll([MyPromise.resolve(\"a\"), MyPromise.resolve(\"b\")])",
+        "displayTarget": "promiseAll([MyPromise.resolve(\"a\"), MyPromise.resolve(\"b\")])",
+        "displayArgs": [],
+        "expected": "[Circular]"
       }
     ],
     "fullCases": [
       {
-        "id": "case-1",
+        "id": "example-1",
         "type": "basic",
         "description": "示例 1",
-        "input": "{\"args\":\") => Promise.myAll([Promise.resolve(1), Promise.resolve(2)]))(\"}",
-        "expected": [
-          1,
-          2
-        ]
+        "input": "promiseAll([MyPromise.resolve(1), MyPromise.resolve(2), MyPromise.resolve(3)])",
+        "displayTarget": "promiseAll([MyPromise.resolve(1), MyPromise.resolve(2), MyPromise.resolve(3)])",
+        "displayArgs": [],
+        "expected": "[Circular]"
       },
       {
-        "id": "case-2",
+        "id": "example-2",
         "type": "basic",
         "description": "示例 2",
-        "input": "{\"args\":\") => Promise.myAll([1, Promise.resolve(2), 3]))(\"}",
-        "expected": [
-          1,
-          2,
-          3
-        ]
+        "input": "promiseAll([])",
+        "displayTarget": "promiseAll([])",
+        "displayArgs": [],
+        "expected": "[Circular]"
       },
       {
-        "id": "case-3",
+        "id": "example-3",
         "type": "basic",
         "description": "示例 3",
-        "input": "{\"args\":\") => Promise.myAll([]))(\"}",
-        "expected": []
+        "input": "promiseAll([MyPromise.resolve(\"a\"), MyPromise.resolve(\"b\")])",
+        "displayTarget": "promiseAll([MyPromise.resolve(\"a\"), MyPromise.resolve(\"b\")])",
+        "displayArgs": [],
+        "expected": "[Circular]"
       },
       {
         "id": "hidden-1",
         "type": "edge",
         "description": "隐藏 1",
-        "input": "{\"args\":\") => { try { await Promise.myAll([Promise.resolve(1), Promise.reject(new Error('fail'))]) } catch (error) { return error.message } })(\"}",
-        "expected": "fail"
+        "input": "promiseAll([1, 2, 3])",
+        "displayTarget": "promiseAll([1, 2, 3])",
+        "displayArgs": [],
+        "expected": "[Circular]"
       },
       {
         "id": "hidden-2",
         "type": "edge",
         "description": "隐藏 2",
-        "input": "{\"args\":\") => Promise.myAll([new Promise((resolve) => setTimeout(() => resolve('slow'), 20)), Promise.resolve('fast')]))(\"}",
-        "expected": [
-          "slow",
-          "fast"
-        ]
+        "input": "promiseAll([MyPromise.resolve(1), MyPromise.reject(new Error(\"err\"))])",
+        "displayTarget": "promiseAll([MyPromise.resolve(1), MyPromise.reject(new Error(\"err\"))])",
+        "displayArgs": [],
+        "expected": "[Circular]"
+      },
+      {
+        "id": "hidden-3",
+        "type": "edge",
+        "description": "隐藏 3",
+        "input": "promiseAll([new MyPromise(r => setTimeout(() => r(1), 10)), MyPromise.resolve(2)])",
+        "displayTarget": "promiseAll([new MyPromise(r => setTimeout(() => r(1), 10)), MyPromise.resolve(2)])",
+        "displayArgs": [],
+        "expected": "[Circular]"
+      },
+      {
+        "id": "hidden-4",
+        "type": "edge",
+        "description": "隐藏 4",
+        "input": "promiseAll([MyPromise.resolve({ x: 1 }), MyPromise.resolve({ y: 2 })])",
+        "displayTarget": "promiseAll([MyPromise.resolve({ x: 1 }), MyPromise.resolve({ y: 2 })])",
+        "displayArgs": [],
+        "expected": "[Circular]"
+      },
+      {
+        "id": "hidden-5",
+        "type": "edge",
+        "description": "隐藏 5",
+        "input": "promiseAll([MyPromise.reject(\"fail\"), MyPromise.resolve(1)])",
+        "displayTarget": "promiseAll([MyPromise.reject(\"fail\"), MyPromise.resolve(1)])",
+        "displayArgs": [],
+        "expected": "[Circular]"
       }
     ],
     "isComponent": false,
@@ -2519,99 +4163,193 @@ export const problems: ProblemRecord[] = [
     "template": "Promise.myRace = function (promises) {\n\n};",
     "solutionCode": "Promise.myRace = function (promises) {\n  return new Promise((resolve, reject) => {\n    const queue = Array.from(promises);\n\n    if (queue.length === 0) {\n      return;\n    }\n\n    let is_settled = false;\n\n    queue.forEach((item) => {\n      Promise.resolve(item)\n        .then((value) => {\n          if (is_settled) {\n            return;\n          }\n\n          is_settled = true;\n          resolve(value);\n        })\n        .catch((reason) => {\n          if (is_settled) {\n            return;\n          }\n\n          is_settled = true;\n          reject(reason);\n        });\n    });\n  });\n};",
     "testCases": {
+      "noCustomCase": true,
       "examples": [
         {
+          "id": "example-1",
+          "hidden": false,
           "input": {
-            "args": ") => Promise.myRace([new Promise((resolve) => setTimeout(() => resolve('slow'), 20)), Promise.resolve('fast')]))("
+            "target": "promiseRace([MyPromise.resolve(1), MyPromise.resolve(2)])",
+            "args": []
           },
-          "expected": "fast"
+          "expected": 1
         },
         {
+          "id": "example-2",
+          "hidden": false,
           "input": {
-            "args": ") => { try { await Promise.myRace([new Promise((_, reject) => setTimeout(() => reject(new Error('boom')), 10)), new Promise((resolve) => setTimeout(() => resolve('ok'), 20))]) } catch (error) { return error.message } })("
+            "target": "promiseRace([])",
+            "args": []
           },
-          "expected": "boom"
+          "expected": {
+            "error": ""
+          }
         },
         {
+          "id": "example-3",
+          "hidden": false,
           "input": {
-            "args": ") => Promise.myRace([3, Promise.resolve(4)]))("
+            "target": "promiseRace([MyPromise.reject(new Error(\"err\")), MyPromise.resolve(1)])",
+            "args": []
           },
-          "expected": 3
+          "expected": {
+            "error": "err"
+          }
         }
       ],
       "hidden": [
         {
+          "id": "hidden-1",
+          "hidden": true,
           "input": {
-            "args": ") => { const pending = Promise.myRace([]); let settled = false; pending.then(() => { settled = true }, () => { settled = true }); await new Promise((resolve) => setTimeout(resolve, 20)); return settled })("
+            "target": "promiseRace([1, 2, 3])",
+            "args": []
           },
-          "expected": false
+          "expected": 1
         },
         {
+          "id": "hidden-2",
+          "hidden": true,
           "input": {
-            "args": ") => Promise.myRace([new Promise((resolve) => setTimeout(() => resolve('first'), 5)), new Promise((resolve) => setTimeout(() => resolve('second'), 15))]))("
+            "target": "promiseRace([MyPromise.resolve(\"first\"), MyPromise.resolve(\"second\")])",
+            "args": []
           },
           "expected": "first"
+        },
+        {
+          "id": "hidden-3",
+          "hidden": true,
+          "input": {
+            "target": "promiseRace([new MyPromise(r => setTimeout(() => r(1), 100)), MyPromise.resolve(2)])",
+            "args": []
+          },
+          "expected": 2
+        },
+        {
+          "id": "hidden-4",
+          "hidden": true,
+          "input": {
+            "target": "promiseRace([MyPromise.resolve({ a: 1 })])",
+            "args": []
+          },
+          "expected": {
+            "a": 1
+          }
+        },
+        {
+          "id": "hidden-5",
+          "hidden": true,
+          "input": {
+            "target": "promiseRace([MyPromise.reject(\"fail\"), MyPromise.reject(\"error\")])",
+            "args": []
+          },
+          "expected": {
+            "error": "fail"
+          }
         }
       ]
     },
     "basicCases": [
       {
-        "id": "case-1",
+        "id": "example-1",
         "type": "basic",
         "description": "示例 1",
-        "input": "{\"args\":\") => Promise.myRace([new Promise((resolve) => setTimeout(() => resolve('slow'), 20)), Promise.resolve('fast')]))(\"}",
-        "expected": "fast"
+        "input": "promiseRace([MyPromise.resolve(1), MyPromise.resolve(2)])",
+        "displayTarget": "promiseRace([MyPromise.resolve(1), MyPromise.resolve(2)])",
+        "displayArgs": [],
+        "expected": 1
       },
       {
-        "id": "case-2",
+        "id": "example-2",
         "type": "basic",
         "description": "示例 2",
-        "input": "{\"args\":\") => { try { await Promise.myRace([new Promise((_, reject) => setTimeout(() => reject(new Error('boom')), 10)), new Promise((resolve) => setTimeout(() => resolve('ok'), 20))]) } catch (error) { return error.message } })(\"}",
-        "expected": "boom"
+        "input": "promiseRace([])",
+        "displayTarget": "promiseRace([])",
+        "displayArgs": [],
+        "expected": "[Circular]"
       },
       {
-        "id": "case-3",
+        "id": "example-3",
         "type": "basic",
         "description": "示例 3",
-        "input": "{\"args\":\") => Promise.myRace([3, Promise.resolve(4)]))(\"}",
-        "expected": 3
+        "input": "promiseRace([MyPromise.reject(new Error(\"err\")), MyPromise.resolve(1)])",
+        "displayTarget": "promiseRace([MyPromise.reject(new Error(\"err\")), MyPromise.resolve(1)])",
+        "displayArgs": [],
+        "expected": "[Circular]"
       }
     ],
     "fullCases": [
       {
-        "id": "case-1",
+        "id": "example-1",
         "type": "basic",
         "description": "示例 1",
-        "input": "{\"args\":\") => Promise.myRace([new Promise((resolve) => setTimeout(() => resolve('slow'), 20)), Promise.resolve('fast')]))(\"}",
-        "expected": "fast"
+        "input": "promiseRace([MyPromise.resolve(1), MyPromise.resolve(2)])",
+        "displayTarget": "promiseRace([MyPromise.resolve(1), MyPromise.resolve(2)])",
+        "displayArgs": [],
+        "expected": 1
       },
       {
-        "id": "case-2",
+        "id": "example-2",
         "type": "basic",
         "description": "示例 2",
-        "input": "{\"args\":\") => { try { await Promise.myRace([new Promise((_, reject) => setTimeout(() => reject(new Error('boom')), 10)), new Promise((resolve) => setTimeout(() => resolve('ok'), 20))]) } catch (error) { return error.message } })(\"}",
-        "expected": "boom"
+        "input": "promiseRace([])",
+        "displayTarget": "promiseRace([])",
+        "displayArgs": [],
+        "expected": "[Circular]"
       },
       {
-        "id": "case-3",
+        "id": "example-3",
         "type": "basic",
         "description": "示例 3",
-        "input": "{\"args\":\") => Promise.myRace([3, Promise.resolve(4)]))(\"}",
-        "expected": 3
+        "input": "promiseRace([MyPromise.reject(new Error(\"err\")), MyPromise.resolve(1)])",
+        "displayTarget": "promiseRace([MyPromise.reject(new Error(\"err\")), MyPromise.resolve(1)])",
+        "displayArgs": [],
+        "expected": "[Circular]"
       },
       {
         "id": "hidden-1",
         "type": "edge",
         "description": "隐藏 1",
-        "input": "{\"args\":\") => { const pending = Promise.myRace([]); let settled = false; pending.then(() => { settled = true }, () => { settled = true }); await new Promise((resolve) => setTimeout(resolve, 20)); return settled })(\"}",
-        "expected": false
+        "input": "promiseRace([1, 2, 3])",
+        "displayTarget": "promiseRace([1, 2, 3])",
+        "displayArgs": [],
+        "expected": 1
       },
       {
         "id": "hidden-2",
         "type": "edge",
         "description": "隐藏 2",
-        "input": "{\"args\":\") => Promise.myRace([new Promise((resolve) => setTimeout(() => resolve('first'), 5)), new Promise((resolve) => setTimeout(() => resolve('second'), 15))]))(\"}",
+        "input": "promiseRace([MyPromise.resolve(\"first\"), MyPromise.resolve(\"second\")])",
+        "displayTarget": "promiseRace([MyPromise.resolve(\"first\"), MyPromise.resolve(\"second\")])",
+        "displayArgs": [],
         "expected": "first"
+      },
+      {
+        "id": "hidden-3",
+        "type": "edge",
+        "description": "隐藏 3",
+        "input": "promiseRace([new MyPromise(r => setTimeout(() => r(1), 100)), MyPromise.resolve(2)])",
+        "displayTarget": "promiseRace([new MyPromise(r => setTimeout(() => r(1), 100)), MyPromise.resolve(2)])",
+        "displayArgs": [],
+        "expected": 2
+      },
+      {
+        "id": "hidden-4",
+        "type": "edge",
+        "description": "隐藏 4",
+        "input": "promiseRace([MyPromise.resolve({ a: 1 })])",
+        "displayTarget": "promiseRace([MyPromise.resolve({ a: 1 })])",
+        "displayArgs": [],
+        "expected": "[Circular]"
+      },
+      {
+        "id": "hidden-5",
+        "type": "edge",
+        "description": "隐藏 5",
+        "input": "promiseRace([MyPromise.reject(\"fail\"), MyPromise.reject(\"error\")])",
+        "displayTarget": "promiseRace([MyPromise.reject(\"fail\"), MyPromise.reject(\"error\")])",
+        "displayArgs": [],
+        "expected": "[Circular]"
       }
     ],
     "isComponent": false,
@@ -2637,8 +4375,42 @@ export const problems: ProblemRecord[] = [
     "testCases": {
       "examples": [
         {
+          "id": "example-1",
+          "hidden": false,
           "input": {
-            "args": "{ val: 1, left: { val: 2, left: null, right: null }, right: { val: 3, left: null, right: null } }"
+            "target": "[1, null, 2, 3]"
+          },
+          "expected": [
+            1,
+            3,
+            2
+          ]
+        },
+        {
+          "id": "example-2",
+          "hidden": false,
+          "input": {
+            "target": "[]"
+          },
+          "expected": []
+        },
+        {
+          "id": "example-3",
+          "hidden": false,
+          "input": {
+            "target": "[1]"
+          },
+          "expected": [
+            1
+          ]
+        }
+      ],
+      "hidden": [
+        {
+          "id": "hidden-1",
+          "hidden": true,
+          "input": {
+            "target": "[1, 2, 3]"
           },
           "expected": [
             2,
@@ -2647,117 +4419,162 @@ export const problems: ProblemRecord[] = [
           ]
         },
         {
+          "id": "hidden-2",
+          "hidden": true,
           "input": {
-            "args": "null"
-          },
-          "expected": []
-        },
-        {
-          "input": {
-            "args": "{ val: 9, left: null, right: null }"
-          },
-          "expected": [
-            9
-          ]
-        }
-      ],
-      "hidden": [
-        {
-          "input": {
-            "args": "{ val: 1, left: { val: 2, left: { val: 4, left: null, right: null }, right: null }, right: { val: 3, left: null, right: { val: 5, left: null, right: null } } }"
+            "target": "[1, 2, 3, 4, 5, 6, 7]"
           },
           "expected": [
             4,
             2,
+            5,
             1,
+            6,
             3,
-            5
+            7
           ]
         },
         {
+          "id": "hidden-3",
+          "hidden": true,
           "input": {
-            "args": "let index = 1; index <= 80; index += 1) { current.right = { val: index, left: null, right: null }; current = current.right } return inorderTraversal(root).length })("
+            "target": "[1, null, 2, null, 3]"
           },
-          "expected": 81
+          "expected": [
+            1,
+            2,
+            3
+          ]
+        },
+        {
+          "id": "hidden-4",
+          "hidden": true,
+          "input": {
+            "target": "[3, 9, 20, null, null, 15, 7]"
+          },
+          "expected": [
+            9,
+            3,
+            15,
+            20,
+            7
+          ]
+        },
+        {
+          "id": "hidden-5",
+          "hidden": true,
+          "input": {
+            "target": "[2, 1, 3]"
+          },
+          "expected": [
+            1,
+            2,
+            3
+          ]
         }
       ]
     },
     "basicCases": [
       {
-        "id": "case-1",
+        "id": "example-1",
         "type": "basic",
         "description": "示例 1",
-        "input": "{\"args\":\"{ val: 1, left: { val: 2, left: null, right: null }, right: { val: 3, left: null, right: null } }\"}",
-        "expected": [
-          2,
-          1,
-          3
-        ]
+        "input": "[1, null, 2, 3]",
+        "displayTarget": "[1, null, 2, 3]",
+        "displayArgs": undefined,
+        "expected": "[Circular]"
       },
       {
-        "id": "case-2",
+        "id": "example-2",
         "type": "basic",
         "description": "示例 2",
-        "input": "{\"args\":\"null\"}",
-        "expected": []
+        "input": "[]",
+        "displayTarget": "[]",
+        "displayArgs": undefined,
+        "expected": "[Circular]"
       },
       {
-        "id": "case-3",
+        "id": "example-3",
         "type": "basic",
         "description": "示例 3",
-        "input": "{\"args\":\"{ val: 9, left: null, right: null }\"}",
-        "expected": [
-          9
-        ]
+        "input": "[1]",
+        "displayTarget": "[1]",
+        "displayArgs": undefined,
+        "expected": "[Circular]"
       }
     ],
     "fullCases": [
       {
-        "id": "case-1",
+        "id": "example-1",
         "type": "basic",
         "description": "示例 1",
-        "input": "{\"args\":\"{ val: 1, left: { val: 2, left: null, right: null }, right: { val: 3, left: null, right: null } }\"}",
-        "expected": [
-          2,
-          1,
-          3
-        ]
+        "input": "[1, null, 2, 3]",
+        "displayTarget": "[1, null, 2, 3]",
+        "displayArgs": undefined,
+        "expected": "[Circular]"
       },
       {
-        "id": "case-2",
+        "id": "example-2",
         "type": "basic",
         "description": "示例 2",
-        "input": "{\"args\":\"null\"}",
-        "expected": []
+        "input": "[]",
+        "displayTarget": "[]",
+        "displayArgs": undefined,
+        "expected": "[Circular]"
       },
       {
-        "id": "case-3",
+        "id": "example-3",
         "type": "basic",
         "description": "示例 3",
-        "input": "{\"args\":\"{ val: 9, left: null, right: null }\"}",
-        "expected": [
-          9
-        ]
+        "input": "[1]",
+        "displayTarget": "[1]",
+        "displayArgs": undefined,
+        "expected": "[Circular]"
       },
       {
         "id": "hidden-1",
         "type": "edge",
         "description": "隐藏 1",
-        "input": "{\"args\":\"{ val: 1, left: { val: 2, left: { val: 4, left: null, right: null }, right: null }, right: { val: 3, left: null, right: { val: 5, left: null, right: null } } }\"}",
-        "expected": [
-          4,
-          2,
-          1,
-          3,
-          5
-        ]
+        "input": "[1, 2, 3]",
+        "displayTarget": "[1, 2, 3]",
+        "displayArgs": undefined,
+        "expected": "[Circular]"
       },
       {
         "id": "hidden-2",
         "type": "edge",
         "description": "隐藏 2",
-        "input": "{\"args\":\"let index = 1; index <= 80; index += 1) { current.right = { val: index, left: null, right: null }; current = current.right } return inorderTraversal(root).length })(\"}",
-        "expected": 81
+        "input": "[1, 2, 3, 4, 5, 6, 7]",
+        "displayTarget": "[1, 2, 3, 4, 5, 6, 7]",
+        "displayArgs": undefined,
+        "expected": "[Circular]"
+      },
+      {
+        "id": "hidden-3",
+        "type": "edge",
+        "description": "隐藏 3",
+        "input": "[1, null, 2, null, 3]",
+        "displayTarget": "[1, null, 2, null, 3]",
+        "displayArgs": undefined,
+        "expected": "[Circular]"
+      },
+      {
+        "id": "hidden-4",
+        "type": "edge",
+        "description": "隐藏 4",
+        "input": "[3, 9, 20, null, null, 15, 7]",
+        "displayTarget": "[3, 9, 20, null, null, 15, 7]",
+        "displayArgs": undefined,
+        "expected": "[Circular]"
+      },
+      {
+        "id": "hidden-5",
+        "type": "edge",
+        "description": "隐藏 5",
+        "input": "[2, 1, 3]",
+        "displayTarget": "[2, 1, 3]",
+        "displayArgs": undefined,
+        "expected": "[Circular]"
       }
     ],
     "isComponent": false,
@@ -2783,34 +4600,68 @@ export const problems: ProblemRecord[] = [
     "testCases": {
       "examples": [
         {
+          "id": "example-1",
+          "hidden": false,
           "input": {
-            "args": "{ val: 2, left: { val: 1, left: null, right: null }, right: { val: 3, left: null, right: null } }"
+            "target": "[2, 1, 3]"
           },
           "expected": true
         },
         {
+          "id": "example-2",
+          "hidden": false,
           "input": {
-            "args": "{ val: 5, left: { val: 1, left: null, right: null }, right: { val: 4, left: { val: 3, left: null, right: null }, right: { val: 6, left: null, right: null } } }"
+            "target": "[5, 1, 4, null, null, 3, 6]"
           },
           "expected": false
         },
         {
+          "id": "example-3",
+          "hidden": false,
           "input": {
-            "args": "{ val: 10, left: { val: 5, left: null, right: { val: 12, left: null, right: null } }, right: { val: 15, left: null, right: null } }"
+            "target": "[]"
           },
-          "expected": false
+          "expected": true
         }
       ],
       "hidden": [
         {
+          "id": "hidden-1",
+          "hidden": true,
           "input": {
-            "args": "{ val: 1, left: null, right: null }"
+            "target": "[1]"
           },
           "expected": true
         },
         {
+          "id": "hidden-2",
+          "hidden": true,
           "input": {
-            "args": "null"
+            "target": "[1, 1]"
+          },
+          "expected": false
+        },
+        {
+          "id": "hidden-3",
+          "hidden": true,
+          "input": {
+            "target": "[10, 5, 15, null, null, 6, 20]"
+          },
+          "expected": false
+        },
+        {
+          "id": "hidden-4",
+          "hidden": true,
+          "input": {
+            "target": "[3, null, 30, 10, null, null, 15, null, 45]"
+          },
+          "expected": false
+        },
+        {
+          "id": "hidden-5",
+          "hidden": true,
+          "input": {
+            "target": "[0, -1]"
           },
           "expected": true
         }
@@ -2818,61 +4669,104 @@ export const problems: ProblemRecord[] = [
     },
     "basicCases": [
       {
-        "id": "case-1",
+        "id": "example-1",
         "type": "basic",
         "description": "示例 1",
-        "input": "{\"args\":\"{ val: 2, left: { val: 1, left: null, right: null }, right: { val: 3, left: null, right: null } }\"}",
+        "input": "[2, 1, 3]",
+        "displayTarget": "[2, 1, 3]",
+        "displayArgs": undefined,
         "expected": true
       },
       {
-        "id": "case-2",
+        "id": "example-2",
         "type": "basic",
         "description": "示例 2",
-        "input": "{\"args\":\"{ val: 5, left: { val: 1, left: null, right: null }, right: { val: 4, left: { val: 3, left: null, right: null }, right: { val: 6, left: null, right: null } } }\"}",
+        "input": "[5, 1, 4, null, null, 3, 6]",
+        "displayTarget": "[5, 1, 4, null, null, 3, 6]",
+        "displayArgs": undefined,
         "expected": false
       },
       {
-        "id": "case-3",
+        "id": "example-3",
         "type": "basic",
         "description": "示例 3",
-        "input": "{\"args\":\"{ val: 10, left: { val: 5, left: null, right: { val: 12, left: null, right: null } }, right: { val: 15, left: null, right: null } }\"}",
-        "expected": false
+        "input": "[]",
+        "displayTarget": "[]",
+        "displayArgs": undefined,
+        "expected": true
       }
     ],
     "fullCases": [
       {
-        "id": "case-1",
+        "id": "example-1",
         "type": "basic",
         "description": "示例 1",
-        "input": "{\"args\":\"{ val: 2, left: { val: 1, left: null, right: null }, right: { val: 3, left: null, right: null } }\"}",
+        "input": "[2, 1, 3]",
+        "displayTarget": "[2, 1, 3]",
+        "displayArgs": undefined,
         "expected": true
       },
       {
-        "id": "case-2",
+        "id": "example-2",
         "type": "basic",
         "description": "示例 2",
-        "input": "{\"args\":\"{ val: 5, left: { val: 1, left: null, right: null }, right: { val: 4, left: { val: 3, left: null, right: null }, right: { val: 6, left: null, right: null } } }\"}",
+        "input": "[5, 1, 4, null, null, 3, 6]",
+        "displayTarget": "[5, 1, 4, null, null, 3, 6]",
+        "displayArgs": undefined,
         "expected": false
       },
       {
-        "id": "case-3",
+        "id": "example-3",
         "type": "basic",
         "description": "示例 3",
-        "input": "{\"args\":\"{ val: 10, left: { val: 5, left: null, right: { val: 12, left: null, right: null } }, right: { val: 15, left: null, right: null } }\"}",
-        "expected": false
+        "input": "[]",
+        "displayTarget": "[]",
+        "displayArgs": undefined,
+        "expected": true
       },
       {
         "id": "hidden-1",
         "type": "edge",
         "description": "隐藏 1",
-        "input": "{\"args\":\"{ val: 1, left: null, right: null }\"}",
+        "input": "[1]",
+        "displayTarget": "[1]",
+        "displayArgs": undefined,
         "expected": true
       },
       {
         "id": "hidden-2",
         "type": "edge",
         "description": "隐藏 2",
-        "input": "{\"args\":\"null\"}",
+        "input": "[1, 1]",
+        "displayTarget": "[1, 1]",
+        "displayArgs": undefined,
+        "expected": false
+      },
+      {
+        "id": "hidden-3",
+        "type": "edge",
+        "description": "隐藏 3",
+        "input": "[10, 5, 15, null, null, 6, 20]",
+        "displayTarget": "[10, 5, 15, null, null, 6, 20]",
+        "displayArgs": undefined,
+        "expected": false
+      },
+      {
+        "id": "hidden-4",
+        "type": "edge",
+        "description": "隐藏 4",
+        "input": "[3, null, 30, 10, null, null, 15, null, 45]",
+        "displayTarget": "[3, null, 30, 10, null, null, 15, null, 45]",
+        "displayArgs": undefined,
+        "expected": false
+      },
+      {
+        "id": "hidden-5",
+        "type": "edge",
+        "description": "隐藏 5",
+        "input": "[0, -1]",
+        "displayTarget": "[0, -1]",
+        "displayArgs": undefined,
         "expected": true
       }
     ],
@@ -2899,40 +4793,52 @@ export const problems: ProblemRecord[] = [
     "testCases": {
       "examples": [
         {
+          "id": "example-1",
+          "hidden": false,
           "input": {
-            "args": "{ val: 1, left: { val: 2, left: null, right: null }, right: { val: 3, left: null, right: null } }"
+            "target": "[3, 9, 20, null, null, 15, 7]"
+          },
+          "expected": [
+            [
+              3
+            ],
+            [
+              9,
+              20
+            ],
+            [
+              15,
+              7
+            ]
+          ]
+        },
+        {
+          "id": "example-2",
+          "hidden": false,
+          "input": {
+            "target": "[1]"
           },
           "expected": [
             [
               1
-            ],
-            [
-              2,
-              3
             ]
           ]
         },
         {
+          "id": "example-3",
+          "hidden": false,
           "input": {
-            "args": "null"
+            "target": "[]"
           },
           "expected": []
-        },
-        {
-          "input": {
-            "args": "{ val: 9, left: null, right: null }"
-          },
-          "expected": [
-            [
-              9
-            ]
-          ]
         }
       ],
       "hidden": [
         {
+          "id": "hidden-1",
+          "hidden": true,
           "input": {
-            "args": "{ val: 1, left: { val: 2, left: { val: 4, left: null, right: null }, right: null }, right: { val: 3, left: null, right: { val: 5, left: null, right: null } } }"
+            "target": "[1, 2, 3, 4, 5]"
           },
           "expected": [
             [
@@ -2949,107 +4855,178 @@ export const problems: ProblemRecord[] = [
           ]
         },
         {
+          "id": "hidden-2",
+          "hidden": true,
           "input": {
-            "args": "let index = 1; index <= 80; index += 1) { current.right = { val: index, left: null, right: null }; current = current.right } return levelOrder(root).length })("
+            "target": "[1, 2, 3, null, null, 4, 5]"
           },
-          "expected": 81
+          "expected": [
+            [
+              1
+            ],
+            [
+              2,
+              3
+            ],
+            [
+              4,
+              5
+            ]
+          ]
+        },
+        {
+          "id": "hidden-3",
+          "hidden": true,
+          "input": {
+            "target": "[1, 2]"
+          },
+          "expected": [
+            [
+              1
+            ],
+            [
+              2
+            ]
+          ]
+        },
+        {
+          "id": "hidden-4",
+          "hidden": true,
+          "input": {
+            "target": "[1, null, 2]"
+          },
+          "expected": [
+            [
+              1
+            ],
+            [
+              2
+            ]
+          ]
+        },
+        {
+          "id": "hidden-5",
+          "hidden": true,
+          "input": {
+            "target": "[1, 2, 3, 4, null, null, 5]"
+          },
+          "expected": [
+            [
+              1
+            ],
+            [
+              2,
+              3
+            ],
+            [
+              4,
+              5
+            ]
+          ]
         }
       ]
     },
     "basicCases": [
       {
-        "id": "case-1",
+        "id": "example-1",
         "type": "basic",
         "description": "示例 1",
-        "input": "{\"args\":\"{ val: 1, left: { val: 2, left: null, right: null }, right: { val: 3, left: null, right: null } }\"}",
-        "expected": [
-          [
-            1
-          ],
-          [
-            2,
-            3
-          ]
-        ]
+        "input": "[3, 9, 20, null, null, 15, 7]",
+        "displayTarget": "[3, 9, 20, null, null, 15, 7]",
+        "displayArgs": undefined,
+        "expected": "[Circular]"
       },
       {
-        "id": "case-2",
+        "id": "example-2",
         "type": "basic",
         "description": "示例 2",
-        "input": "{\"args\":\"null\"}",
-        "expected": []
+        "input": "[1]",
+        "displayTarget": "[1]",
+        "displayArgs": undefined,
+        "expected": "[Circular]"
       },
       {
-        "id": "case-3",
+        "id": "example-3",
         "type": "basic",
         "description": "示例 3",
-        "input": "{\"args\":\"{ val: 9, left: null, right: null }\"}",
-        "expected": [
-          [
-            9
-          ]
-        ]
+        "input": "[]",
+        "displayTarget": "[]",
+        "displayArgs": undefined,
+        "expected": "[Circular]"
       }
     ],
     "fullCases": [
       {
-        "id": "case-1",
+        "id": "example-1",
         "type": "basic",
         "description": "示例 1",
-        "input": "{\"args\":\"{ val: 1, left: { val: 2, left: null, right: null }, right: { val: 3, left: null, right: null } }\"}",
-        "expected": [
-          [
-            1
-          ],
-          [
-            2,
-            3
-          ]
-        ]
+        "input": "[3, 9, 20, null, null, 15, 7]",
+        "displayTarget": "[3, 9, 20, null, null, 15, 7]",
+        "displayArgs": undefined,
+        "expected": "[Circular]"
       },
       {
-        "id": "case-2",
+        "id": "example-2",
         "type": "basic",
         "description": "示例 2",
-        "input": "{\"args\":\"null\"}",
-        "expected": []
+        "input": "[1]",
+        "displayTarget": "[1]",
+        "displayArgs": undefined,
+        "expected": "[Circular]"
       },
       {
-        "id": "case-3",
+        "id": "example-3",
         "type": "basic",
         "description": "示例 3",
-        "input": "{\"args\":\"{ val: 9, left: null, right: null }\"}",
-        "expected": [
-          [
-            9
-          ]
-        ]
+        "input": "[]",
+        "displayTarget": "[]",
+        "displayArgs": undefined,
+        "expected": "[Circular]"
       },
       {
         "id": "hidden-1",
         "type": "edge",
         "description": "隐藏 1",
-        "input": "{\"args\":\"{ val: 1, left: { val: 2, left: { val: 4, left: null, right: null }, right: null }, right: { val: 3, left: null, right: { val: 5, left: null, right: null } } }\"}",
-        "expected": [
-          [
-            1
-          ],
-          [
-            2,
-            3
-          ],
-          [
-            4,
-            5
-          ]
-        ]
+        "input": "[1, 2, 3, 4, 5]",
+        "displayTarget": "[1, 2, 3, 4, 5]",
+        "displayArgs": undefined,
+        "expected": "[Circular]"
       },
       {
         "id": "hidden-2",
         "type": "edge",
         "description": "隐藏 2",
-        "input": "{\"args\":\"let index = 1; index <= 80; index += 1) { current.right = { val: index, left: null, right: null }; current = current.right } return levelOrder(root).length })(\"}",
-        "expected": 81
+        "input": "[1, 2, 3, null, null, 4, 5]",
+        "displayTarget": "[1, 2, 3, null, null, 4, 5]",
+        "displayArgs": undefined,
+        "expected": "[Circular]"
+      },
+      {
+        "id": "hidden-3",
+        "type": "edge",
+        "description": "隐藏 3",
+        "input": "[1, 2]",
+        "displayTarget": "[1, 2]",
+        "displayArgs": undefined,
+        "expected": "[Circular]"
+      },
+      {
+        "id": "hidden-4",
+        "type": "edge",
+        "description": "隐藏 4",
+        "input": "[1, null, 2]",
+        "displayTarget": "[1, null, 2]",
+        "displayArgs": undefined,
+        "expected": "[Circular]"
+      },
+      {
+        "id": "hidden-5",
+        "type": "edge",
+        "description": "隐藏 5",
+        "input": "[1, 2, 3, 4, null, null, 5]",
+        "displayTarget": "[1, 2, 3, 4, null, null, 5]",
+        "displayArgs": undefined,
+        "expected": "[Circular]"
       }
     ],
     "isComponent": false,
@@ -3075,34 +5052,68 @@ export const problems: ProblemRecord[] = [
     "testCases": {
       "examples": [
         {
+          "id": "example-1",
+          "hidden": false,
           "input": {
-            "args": "null"
-          },
-          "expected": 0
-        },
-        {
-          "input": {
-            "args": "{ val: 1, left: null, right: null }"
-          },
-          "expected": 1
-        },
-        {
-          "input": {
-            "args": "{ val: 1, left: { val: 2, left: { val: 3, left: null, right: null }, right: null }, right: null }"
+            "target": "[3, 9, 20, null, null, 15, 7]"
           },
           "expected": 3
+        },
+        {
+          "id": "example-2",
+          "hidden": false,
+          "input": {
+            "target": "[1, null, 2]"
+          },
+          "expected": 2
+        },
+        {
+          "id": "example-3",
+          "hidden": false,
+          "input": {
+            "target": "[]"
+          },
+          "expected": 0
         }
       ],
       "hidden": [
         {
+          "id": "hidden-1",
+          "hidden": true,
           "input": {
-            "args": "{ val: 1, left: { val: 2, left: null, right: null }, right: { val: 3, left: { val: 4, left: null, right: null }, right: { val: 5, left: null, right: null } } }"
+            "target": "[1]"
+          },
+          "expected": 1
+        },
+        {
+          "id": "hidden-2",
+          "hidden": true,
+          "input": {
+            "target": "[1, 2, 3, 4, 5, 6, 7]"
           },
           "expected": 3
         },
         {
+          "id": "hidden-3",
+          "hidden": true,
           "input": {
-            "args": "{ val: 1, left: { val: 2, left: { val: 4, left: null, right: null }, right: null }, right: { val: 3, left: null, right: { val: 5, left: { val: 6, left: null, right: null }, right: null } } }"
+            "target": "[1, 2, null, 3, null, 4]"
+          },
+          "expected": 4
+        },
+        {
+          "id": "hidden-4",
+          "hidden": true,
+          "input": {
+            "target": "[1, 2, 3, null, null, null, 4]"
+          },
+          "expected": 3
+        },
+        {
+          "id": "hidden-5",
+          "hidden": true,
+          "input": {
+            "target": "[5, 4, 7, 3, null, 2, null, 1]"
           },
           "expected": 4
         }
@@ -3110,61 +5121,104 @@ export const problems: ProblemRecord[] = [
     },
     "basicCases": [
       {
-        "id": "case-1",
+        "id": "example-1",
         "type": "basic",
         "description": "示例 1",
-        "input": "{\"args\":\"null\"}",
-        "expected": 0
+        "input": "[3, 9, 20, null, null, 15, 7]",
+        "displayTarget": "[3, 9, 20, null, null, 15, 7]",
+        "displayArgs": undefined,
+        "expected": 3
       },
       {
-        "id": "case-2",
+        "id": "example-2",
         "type": "basic",
         "description": "示例 2",
-        "input": "{\"args\":\"{ val: 1, left: null, right: null }\"}",
-        "expected": 1
+        "input": "[1, null, 2]",
+        "displayTarget": "[1, null, 2]",
+        "displayArgs": undefined,
+        "expected": 2
       },
       {
-        "id": "case-3",
+        "id": "example-3",
         "type": "basic",
         "description": "示例 3",
-        "input": "{\"args\":\"{ val: 1, left: { val: 2, left: { val: 3, left: null, right: null }, right: null }, right: null }\"}",
-        "expected": 3
+        "input": "[]",
+        "displayTarget": "[]",
+        "displayArgs": undefined,
+        "expected": 0
       }
     ],
     "fullCases": [
       {
-        "id": "case-1",
+        "id": "example-1",
         "type": "basic",
         "description": "示例 1",
-        "input": "{\"args\":\"null\"}",
-        "expected": 0
+        "input": "[3, 9, 20, null, null, 15, 7]",
+        "displayTarget": "[3, 9, 20, null, null, 15, 7]",
+        "displayArgs": undefined,
+        "expected": 3
       },
       {
-        "id": "case-2",
+        "id": "example-2",
         "type": "basic",
         "description": "示例 2",
-        "input": "{\"args\":\"{ val: 1, left: null, right: null }\"}",
-        "expected": 1
+        "input": "[1, null, 2]",
+        "displayTarget": "[1, null, 2]",
+        "displayArgs": undefined,
+        "expected": 2
       },
       {
-        "id": "case-3",
+        "id": "example-3",
         "type": "basic",
         "description": "示例 3",
-        "input": "{\"args\":\"{ val: 1, left: { val: 2, left: { val: 3, left: null, right: null }, right: null }, right: null }\"}",
-        "expected": 3
+        "input": "[]",
+        "displayTarget": "[]",
+        "displayArgs": undefined,
+        "expected": 0
       },
       {
         "id": "hidden-1",
         "type": "edge",
         "description": "隐藏 1",
-        "input": "{\"args\":\"{ val: 1, left: { val: 2, left: null, right: null }, right: { val: 3, left: { val: 4, left: null, right: null }, right: { val: 5, left: null, right: null } } }\"}",
-        "expected": 3
+        "input": "[1]",
+        "displayTarget": "[1]",
+        "displayArgs": undefined,
+        "expected": 1
       },
       {
         "id": "hidden-2",
         "type": "edge",
         "description": "隐藏 2",
-        "input": "{\"args\":\"{ val: 1, left: { val: 2, left: { val: 4, left: null, right: null }, right: null }, right: { val: 3, left: null, right: { val: 5, left: { val: 6, left: null, right: null }, right: null } } }\"}",
+        "input": "[1, 2, 3, 4, 5, 6, 7]",
+        "displayTarget": "[1, 2, 3, 4, 5, 6, 7]",
+        "displayArgs": undefined,
+        "expected": 3
+      },
+      {
+        "id": "hidden-3",
+        "type": "edge",
+        "description": "隐藏 3",
+        "input": "[1, 2, null, 3, null, 4]",
+        "displayTarget": "[1, 2, null, 3, null, 4]",
+        "displayArgs": undefined,
+        "expected": 4
+      },
+      {
+        "id": "hidden-4",
+        "type": "edge",
+        "description": "隐藏 4",
+        "input": "[1, 2, 3, null, null, null, 4]",
+        "displayTarget": "[1, 2, 3, null, null, null, 4]",
+        "displayArgs": undefined,
+        "expected": 3
+      },
+      {
+        "id": "hidden-5",
+        "type": "edge",
+        "description": "隐藏 5",
+        "input": "[5, 4, 7, 3, null, 2, null, 1]",
+        "displayTarget": "[5, 4, 7, 3, null, 2, null, 1]",
+        "displayArgs": undefined,
         "expected": 4
       }
     ],
@@ -3191,127 +5245,206 @@ export const problems: ProblemRecord[] = [
     "testCases": {
       "examples": [
         {
+          "id": "example-1",
+          "hidden": false,
           "input": {
-            "args": "{ val: 1, left: { val: 2, left: null, right: null }, right: { val: 3, left: null, right: null } }"
+            "target": "[1, null, 2, 3]"
           },
           "expected": [
-            2,
             3,
+            2,
             1
           ]
         },
         {
+          "id": "example-2",
+          "hidden": false,
           "input": {
-            "args": "null"
+            "target": "[]"
           },
           "expected": []
         },
         {
+          "id": "example-3",
+          "hidden": false,
           "input": {
-            "args": "{ val: 9, left: null, right: null }"
+            "target": "[1]"
           },
           "expected": [
-            9
+            1
           ]
         }
       ],
       "hidden": [
         {
+          "id": "hidden-1",
+          "hidden": true,
           "input": {
-            "args": "{ val: 1, left: { val: 2, left: { val: 4, left: null, right: null }, right: null }, right: { val: 3, left: null, right: { val: 5, left: null, right: null } } }"
+            "target": "[1, 2, 3]"
           },
           "expected": [
-            4,
             2,
-            5,
             3,
             1
           ]
         },
         {
+          "id": "hidden-2",
+          "hidden": true,
           "input": {
-            "args": "let index = 1; index <= 80; index += 1) { current.right = { val: index, left: null, right: null }; current = current.right } return postorderTraversal(root).length })("
+            "target": "[1, 2, 3, 4, 5, 6, 7]"
           },
-          "expected": 81
+          "expected": [
+            4,
+            5,
+            2,
+            6,
+            7,
+            3,
+            1
+          ]
+        },
+        {
+          "id": "hidden-3",
+          "hidden": true,
+          "input": {
+            "target": "[1, null, 2, null, 3]"
+          },
+          "expected": [
+            3,
+            2,
+            1
+          ]
+        },
+        {
+          "id": "hidden-4",
+          "hidden": true,
+          "input": {
+            "target": "[3, 9, 20, null, null, 15, 7]"
+          },
+          "expected": [
+            9,
+            15,
+            7,
+            20,
+            3
+          ]
+        },
+        {
+          "id": "hidden-5",
+          "hidden": true,
+          "input": {
+            "target": "[2, 1, 3]"
+          },
+          "expected": [
+            1,
+            3,
+            2
+          ]
         }
       ]
     },
     "basicCases": [
       {
-        "id": "case-1",
+        "id": "example-1",
         "type": "basic",
         "description": "示例 1",
-        "input": "{\"args\":\"{ val: 1, left: { val: 2, left: null, right: null }, right: { val: 3, left: null, right: null } }\"}",
-        "expected": [
-          2,
-          3,
-          1
-        ]
+        "input": "[1, null, 2, 3]",
+        "displayTarget": "[1, null, 2, 3]",
+        "displayArgs": undefined,
+        "expected": "[Circular]"
       },
       {
-        "id": "case-2",
+        "id": "example-2",
         "type": "basic",
         "description": "示例 2",
-        "input": "{\"args\":\"null\"}",
-        "expected": []
+        "input": "[]",
+        "displayTarget": "[]",
+        "displayArgs": undefined,
+        "expected": "[Circular]"
       },
       {
-        "id": "case-3",
+        "id": "example-3",
         "type": "basic",
         "description": "示例 3",
-        "input": "{\"args\":\"{ val: 9, left: null, right: null }\"}",
-        "expected": [
-          9
-        ]
+        "input": "[1]",
+        "displayTarget": "[1]",
+        "displayArgs": undefined,
+        "expected": "[Circular]"
       }
     ],
     "fullCases": [
       {
-        "id": "case-1",
+        "id": "example-1",
         "type": "basic",
         "description": "示例 1",
-        "input": "{\"args\":\"{ val: 1, left: { val: 2, left: null, right: null }, right: { val: 3, left: null, right: null } }\"}",
-        "expected": [
-          2,
-          3,
-          1
-        ]
+        "input": "[1, null, 2, 3]",
+        "displayTarget": "[1, null, 2, 3]",
+        "displayArgs": undefined,
+        "expected": "[Circular]"
       },
       {
-        "id": "case-2",
+        "id": "example-2",
         "type": "basic",
         "description": "示例 2",
-        "input": "{\"args\":\"null\"}",
-        "expected": []
+        "input": "[]",
+        "displayTarget": "[]",
+        "displayArgs": undefined,
+        "expected": "[Circular]"
       },
       {
-        "id": "case-3",
+        "id": "example-3",
         "type": "basic",
         "description": "示例 3",
-        "input": "{\"args\":\"{ val: 9, left: null, right: null }\"}",
-        "expected": [
-          9
-        ]
+        "input": "[1]",
+        "displayTarget": "[1]",
+        "displayArgs": undefined,
+        "expected": "[Circular]"
       },
       {
         "id": "hidden-1",
         "type": "edge",
         "description": "隐藏 1",
-        "input": "{\"args\":\"{ val: 1, left: { val: 2, left: { val: 4, left: null, right: null }, right: null }, right: { val: 3, left: null, right: { val: 5, left: null, right: null } } }\"}",
-        "expected": [
-          4,
-          2,
-          5,
-          3,
-          1
-        ]
+        "input": "[1, 2, 3]",
+        "displayTarget": "[1, 2, 3]",
+        "displayArgs": undefined,
+        "expected": "[Circular]"
       },
       {
         "id": "hidden-2",
         "type": "edge",
         "description": "隐藏 2",
-        "input": "{\"args\":\"let index = 1; index <= 80; index += 1) { current.right = { val: index, left: null, right: null }; current = current.right } return postorderTraversal(root).length })(\"}",
-        "expected": 81
+        "input": "[1, 2, 3, 4, 5, 6, 7]",
+        "displayTarget": "[1, 2, 3, 4, 5, 6, 7]",
+        "displayArgs": undefined,
+        "expected": "[Circular]"
+      },
+      {
+        "id": "hidden-3",
+        "type": "edge",
+        "description": "隐藏 3",
+        "input": "[1, null, 2, null, 3]",
+        "displayTarget": "[1, null, 2, null, 3]",
+        "displayArgs": undefined,
+        "expected": "[Circular]"
+      },
+      {
+        "id": "hidden-4",
+        "type": "edge",
+        "description": "隐藏 4",
+        "input": "[3, 9, 20, null, null, 15, 7]",
+        "displayTarget": "[3, 9, 20, null, null, 15, 7]",
+        "displayArgs": undefined,
+        "expected": "[Circular]"
+      },
+      {
+        "id": "hidden-5",
+        "type": "edge",
+        "description": "隐藏 5",
+        "input": "[2, 1, 3]",
+        "displayTarget": "[2, 1, 3]",
+        "displayArgs": undefined,
+        "expected": "[Circular]"
       }
     ],
     "isComponent": false,
@@ -3337,8 +5470,10 @@ export const problems: ProblemRecord[] = [
     "testCases": {
       "examples": [
         {
+          "id": "example-1",
+          "hidden": false,
           "input": {
-            "args": "{ val: 1, left: { val: 2, left: null, right: null }, right: { val: 3, left: null, right: null } }"
+            "target": "[1, null, 2, 3]"
           },
           "expected": [
             1,
@@ -3347,117 +5482,193 @@ export const problems: ProblemRecord[] = [
           ]
         },
         {
+          "id": "example-2",
+          "hidden": false,
           "input": {
-            "args": "null"
+            "target": "[]"
           },
           "expected": []
         },
         {
+          "id": "example-3",
+          "hidden": false,
           "input": {
-            "args": "{ val: 9, left: null, right: null }"
+            "target": "[1]"
           },
           "expected": [
-            9
+            1
           ]
         }
       ],
       "hidden": [
         {
+          "id": "hidden-1",
+          "hidden": true,
           "input": {
-            "args": "{ val: 1, left: { val: 2, left: { val: 4, left: null, right: null }, right: null }, right: { val: 3, left: null, right: { val: 5, left: null, right: null } } }"
+            "target": "[1, 2, 3]"
+          },
+          "expected": [
+            1,
+            2,
+            3
+          ]
+        },
+        {
+          "id": "hidden-2",
+          "hidden": true,
+          "input": {
+            "target": "[1, 2, 3, 4, 5, 6, 7]"
           },
           "expected": [
             1,
             2,
             4,
+            5,
             3,
-            5
+            6,
+            7
           ]
         },
         {
+          "id": "hidden-3",
+          "hidden": true,
           "input": {
-            "args": "let index = 1; index <= 80; index += 1) { current.right = { val: index, left: null, right: null }; current = current.right } return preorderTraversal(root).length })("
+            "target": "[1, null, 2, null, 3]"
           },
-          "expected": 81
+          "expected": [
+            1,
+            2,
+            3
+          ]
+        },
+        {
+          "id": "hidden-4",
+          "hidden": true,
+          "input": {
+            "target": "[3, 9, 20, null, null, 15, 7]"
+          },
+          "expected": [
+            3,
+            9,
+            20,
+            15,
+            7
+          ]
+        },
+        {
+          "id": "hidden-5",
+          "hidden": true,
+          "input": {
+            "target": "[1, 2]"
+          },
+          "expected": [
+            1,
+            2
+          ]
         }
       ]
     },
     "basicCases": [
       {
-        "id": "case-1",
+        "id": "example-1",
         "type": "basic",
         "description": "示例 1",
-        "input": "{\"args\":\"{ val: 1, left: { val: 2, left: null, right: null }, right: { val: 3, left: null, right: null } }\"}",
-        "expected": [
-          1,
-          2,
-          3
-        ]
+        "input": "[1, null, 2, 3]",
+        "displayTarget": "[1, null, 2, 3]",
+        "displayArgs": undefined,
+        "expected": "[Circular]"
       },
       {
-        "id": "case-2",
+        "id": "example-2",
         "type": "basic",
         "description": "示例 2",
-        "input": "{\"args\":\"null\"}",
-        "expected": []
+        "input": "[]",
+        "displayTarget": "[]",
+        "displayArgs": undefined,
+        "expected": "[Circular]"
       },
       {
-        "id": "case-3",
+        "id": "example-3",
         "type": "basic",
         "description": "示例 3",
-        "input": "{\"args\":\"{ val: 9, left: null, right: null }\"}",
-        "expected": [
-          9
-        ]
+        "input": "[1]",
+        "displayTarget": "[1]",
+        "displayArgs": undefined,
+        "expected": "[Circular]"
       }
     ],
     "fullCases": [
       {
-        "id": "case-1",
+        "id": "example-1",
         "type": "basic",
         "description": "示例 1",
-        "input": "{\"args\":\"{ val: 1, left: { val: 2, left: null, right: null }, right: { val: 3, left: null, right: null } }\"}",
-        "expected": [
-          1,
-          2,
-          3
-        ]
+        "input": "[1, null, 2, 3]",
+        "displayTarget": "[1, null, 2, 3]",
+        "displayArgs": undefined,
+        "expected": "[Circular]"
       },
       {
-        "id": "case-2",
+        "id": "example-2",
         "type": "basic",
         "description": "示例 2",
-        "input": "{\"args\":\"null\"}",
-        "expected": []
+        "input": "[]",
+        "displayTarget": "[]",
+        "displayArgs": undefined,
+        "expected": "[Circular]"
       },
       {
-        "id": "case-3",
+        "id": "example-3",
         "type": "basic",
         "description": "示例 3",
-        "input": "{\"args\":\"{ val: 9, left: null, right: null }\"}",
-        "expected": [
-          9
-        ]
+        "input": "[1]",
+        "displayTarget": "[1]",
+        "displayArgs": undefined,
+        "expected": "[Circular]"
       },
       {
         "id": "hidden-1",
         "type": "edge",
         "description": "隐藏 1",
-        "input": "{\"args\":\"{ val: 1, left: { val: 2, left: { val: 4, left: null, right: null }, right: null }, right: { val: 3, left: null, right: { val: 5, left: null, right: null } } }\"}",
-        "expected": [
-          1,
-          2,
-          4,
-          3,
-          5
-        ]
+        "input": "[1, 2, 3]",
+        "displayTarget": "[1, 2, 3]",
+        "displayArgs": undefined,
+        "expected": "[Circular]"
       },
       {
         "id": "hidden-2",
         "type": "edge",
         "description": "隐藏 2",
-        "input": "{\"args\":\"let index = 1; index <= 80; index += 1) { current.right = { val: index, left: null, right: null }; current = current.right } return preorderTraversal(root).length })(\"}",
-        "expected": 81
+        "input": "[1, 2, 3, 4, 5, 6, 7]",
+        "displayTarget": "[1, 2, 3, 4, 5, 6, 7]",
+        "displayArgs": undefined,
+        "expected": "[Circular]"
+      },
+      {
+        "id": "hidden-3",
+        "type": "edge",
+        "description": "隐藏 3",
+        "input": "[1, null, 2, null, 3]",
+        "displayTarget": "[1, null, 2, null, 3]",
+        "displayArgs": undefined,
+        "expected": "[Circular]"
+      },
+      {
+        "id": "hidden-4",
+        "type": "edge",
+        "description": "隐藏 4",
+        "input": "[3, 9, 20, null, null, 15, 7]",
+        "displayTarget": "[3, 9, 20, null, null, 15, 7]",
+        "displayArgs": undefined,
+        "expected": "[Circular]"
+      },
+      {
+        "id": "hidden-5",
+        "type": "edge",
+        "description": "隐藏 5",
+        "input": "[1, 2]",
+        "displayTarget": "[1, 2]",
+        "displayArgs": undefined,
+        "expected": "[Circular]"
       }
     ],
     "isComponent": false,
@@ -3483,97 +5694,246 @@ export const problems: ProblemRecord[] = [
     "testCases": {
       "examples": [
         {
+          "id": "example-1",
+          "hidden": false,
           "input": {
-            "args": "(a, b, c) => a + b + c)(1)(2)(3"
+            "target": "(a, b, c) => a + b + c",
+            "args": [
+              "1",
+              "2",
+              "3"
+            ]
           },
           "expected": 6
         },
         {
+          "id": "example-2",
+          "hidden": false,
           "input": {
-            "args": "(a, b, c) => a + b + c)(1, 2)(3"
+            "target": "(x, y) => x * y",
+            "args": [
+              "2",
+              "5"
+            ]
           },
-          "expected": 6
+          "expected": 10
         },
         {
+          "id": "example-3",
+          "hidden": false,
           "input": {
-            "args": "(a, b, c) => a + b + c)(1)(2, 3"
+            "target": "(a) => a",
+            "args": [
+              "42"
+            ]
           },
-          "expected": 6
+          "expected": 42
         }
       ],
       "hidden": [
         {
+          "id": "hidden-1",
+          "hidden": true,
           "input": {
-            "args": "(a, b, c) => a * b * c)(2)(3)(4"
+            "target": "(a, b, c, d) => a + b + c + d",
+            "args": [
+              "1",
+              "2",
+              "3",
+              "4"
+            ]
           },
-          "expected": 24
+          "expected": 10
         },
         {
+          "id": "hidden-2",
+          "hidden": true,
           "input": {
-            "args": "(a, b) => a - b)(10, 3"
+            "target": "() => 42",
+            "args": []
           },
-          "expected": 7
+          "expected": 42
+        },
+        {
+          "id": "hidden-3",
+          "hidden": true,
+          "input": {
+            "target": "(a, b) => ({ a, b })",
+            "args": [
+              "1",
+              "2"
+            ]
+          },
+          "expected": {
+            "a": 1,
+            "b": 2
+          }
+        },
+        {
+          "id": "hidden-4",
+          "hidden": true,
+          "input": {
+            "target": "(str, prefix, suffix) => prefix + str + suffix",
+            "args": [
+              "\"hello\"",
+              "\"<\"",
+              "\">\""
+            ]
+          },
+          "expected": "<hello>"
+        },
+        {
+          "id": "hidden-5",
+          "hidden": true,
+          "input": {
+            "target": "(arr, fn) => arr.map(fn)",
+            "args": [
+              "[1, 2, 3]",
+              "x => x * 2"
+            ]
+          },
+          "expected": [
+            2,
+            4,
+            6
+          ]
         }
       ]
     },
     "basicCases": [
       {
-        "id": "case-1",
+        "id": "example-1",
         "type": "basic",
         "description": "示例 1",
-        "input": "{\"args\":\"(a, b, c) => a + b + c)(1)(2)(3\"}",
+        "input": "(a, b, c) => a + b + c(1, 2, 3)",
+        "displayTarget": "(a, b, c) => a + b + c",
+        "displayArgs": [
+          "1",
+          "2",
+          "3"
+        ],
         "expected": 6
       },
       {
-        "id": "case-2",
+        "id": "example-2",
         "type": "basic",
         "description": "示例 2",
-        "input": "{\"args\":\"(a, b, c) => a + b + c)(1, 2)(3\"}",
-        "expected": 6
+        "input": "(x, y) => x * y(2, 5)",
+        "displayTarget": "(x, y) => x * y",
+        "displayArgs": [
+          "2",
+          "5"
+        ],
+        "expected": 10
       },
       {
-        "id": "case-3",
+        "id": "example-3",
         "type": "basic",
         "description": "示例 3",
-        "input": "{\"args\":\"(a, b, c) => a + b + c)(1)(2, 3\"}",
-        "expected": 6
+        "input": "(a) => a(42)",
+        "displayTarget": "(a) => a",
+        "displayArgs": [
+          "42"
+        ],
+        "expected": 42
       }
     ],
     "fullCases": [
       {
-        "id": "case-1",
+        "id": "example-1",
         "type": "basic",
         "description": "示例 1",
-        "input": "{\"args\":\"(a, b, c) => a + b + c)(1)(2)(3\"}",
+        "input": "(a, b, c) => a + b + c(1, 2, 3)",
+        "displayTarget": "(a, b, c) => a + b + c",
+        "displayArgs": [
+          "1",
+          "2",
+          "3"
+        ],
         "expected": 6
       },
       {
-        "id": "case-2",
+        "id": "example-2",
         "type": "basic",
         "description": "示例 2",
-        "input": "{\"args\":\"(a, b, c) => a + b + c)(1, 2)(3\"}",
-        "expected": 6
+        "input": "(x, y) => x * y(2, 5)",
+        "displayTarget": "(x, y) => x * y",
+        "displayArgs": [
+          "2",
+          "5"
+        ],
+        "expected": 10
       },
       {
-        "id": "case-3",
+        "id": "example-3",
         "type": "basic",
         "description": "示例 3",
-        "input": "{\"args\":\"(a, b, c) => a + b + c)(1)(2, 3\"}",
-        "expected": 6
+        "input": "(a) => a(42)",
+        "displayTarget": "(a) => a",
+        "displayArgs": [
+          "42"
+        ],
+        "expected": 42
       },
       {
         "id": "hidden-1",
         "type": "edge",
         "description": "隐藏 1",
-        "input": "{\"args\":\"(a, b, c) => a * b * c)(2)(3)(4\"}",
-        "expected": 24
+        "input": "(a, b, c, d) => a + b + c + d(1, 2, 3, 4)",
+        "displayTarget": "(a, b, c, d) => a + b + c + d",
+        "displayArgs": [
+          "1",
+          "2",
+          "3",
+          "4"
+        ],
+        "expected": 10
       },
       {
         "id": "hidden-2",
         "type": "edge",
         "description": "隐藏 2",
-        "input": "{\"args\":\"(a, b) => a - b)(10, 3\"}",
-        "expected": 7
+        "input": "() => 42",
+        "displayTarget": "() => 42",
+        "displayArgs": [],
+        "expected": 42
+      },
+      {
+        "id": "hidden-3",
+        "type": "edge",
+        "description": "隐藏 3",
+        "input": "(a, b) => ({ a, b })(1, 2)",
+        "displayTarget": "(a, b) => ({ a, b })",
+        "displayArgs": [
+          "1",
+          "2"
+        ],
+        "expected": "[Circular]"
+      },
+      {
+        "id": "hidden-4",
+        "type": "edge",
+        "description": "隐藏 4",
+        "input": "(str, prefix, suffix) => prefix + str + suffix(\"hello\", \"<\", \">\")",
+        "displayTarget": "(str, prefix, suffix) => prefix + str + suffix",
+        "displayArgs": [
+          "\"hello\"",
+          "\"<\"",
+          "\">\""
+        ],
+        "expected": "<hello>"
+      },
+      {
+        "id": "hidden-5",
+        "type": "edge",
+        "description": "隐藏 5",
+        "input": "(arr, fn) => arr.map(fn)([1, 2, 3], x => x * 2)",
+        "displayTarget": "(arr, fn) => arr.map(fn)",
+        "displayArgs": [
+          "[1, 2, 3]",
+          "x => x * 2"
+        ],
+        "expected": "[Circular]"
       }
     ],
     "isComponent": false,
@@ -3599,97 +5959,320 @@ export const problems: ProblemRecord[] = [
     "testCases": {
       "examples": [
         {
+          "id": "example-1",
+          "hidden": false,
           "input": {
-            "args": ") => { let count = 0; const fn = debounce(() => { count += 1 }, 30); fn(); fn(); fn(); await new Promise((resolve) => setTimeout(resolve, 60)); return count })("
+            "target": "200",
+            "steps": [
+              {
+                "type": "call",
+                "args": []
+              },
+              {
+                "type": "call",
+                "args": []
+              },
+              {
+                "type": "tick",
+                "ms": 200
+              }
+            ]
           },
-          "expected": 1
+          "expected": {
+            "callCount": 1
+          }
         },
         {
+          "id": "example-2",
+          "hidden": false,
           "input": {
-            "args": ") => { let value = 0; const fn = debounce((next) => { value = next }, 20); fn(1); fn(2); await new Promise((resolve) => setTimeout(resolve, 50)); return value })("
+            "target": "100",
+            "steps": [
+              {
+                "type": "call",
+                "args": [
+                  "\"a\""
+                ]
+              },
+              {
+                "type": "tick",
+                "ms": 50
+              },
+              {
+                "type": "call",
+                "args": [
+                  "\"b\""
+                ]
+              },
+              {
+                "type": "tick",
+                "ms": 100
+              }
+            ]
           },
-          "expected": 2
+          "expected": {
+            "callCount": 1
+          }
         },
         {
+          "id": "example-3",
+          "hidden": false,
           "input": {
-            "args": ") => { let count = 0; const fn = debounce(() => { count += 1 }, 10); fn(); await new Promise((resolve) => setTimeout(resolve, 20)); fn(); await new Promise((resolve) => setTimeout(resolve, 20)); return count })("
+            "target": "100",
+            "steps": [
+              {
+                "type": "call",
+                "args": []
+              },
+              {
+                "type": "tick",
+                "ms": 150
+              },
+              {
+                "type": "call",
+                "args": []
+              },
+              {
+                "type": "tick",
+                "ms": 150
+              }
+            ]
           },
-          "expected": 2
+          "expected": {
+            "callCount": 2
+          }
         }
       ],
       "hidden": [
         {
+          "id": "hidden-1",
+          "hidden": true,
           "input": {
-            "args": ") => { let scopeValue = 0; const context = { set(value) { scopeValue = value } }; const fn = debounce(function(value) { this.set(value) }, 10).bind(context); fn(5); await new Promise((resolve) => setTimeout(resolve, 30)); return scopeValue })("
+            "target": "100",
+            "steps": [
+              {
+                "type": "call",
+                "args": [
+                  "1"
+                ]
+              },
+              {
+                "type": "tick",
+                "ms": 100
+              }
+            ]
           },
-          "expected": 5
+          "expected": {
+            "callCount": 1
+          }
         },
         {
+          "id": "hidden-2",
+          "hidden": true,
           "input": {
-            "args": ") => { let count = 0; const fn = debounce(() => { count += 1 }, 5); for (let index = 0; index < 100; index += 1) fn(); await new Promise((resolve) => setTimeout(resolve, 20)); return count })("
+            "target": "50",
+            "steps": [
+              {
+                "type": "call",
+                "args": []
+              },
+              {
+                "type": "tick",
+                "ms": 25
+              },
+              {
+                "type": "call",
+                "args": []
+              },
+              {
+                "type": "tick",
+                "ms": 25
+              },
+              {
+                "type": "call",
+                "args": []
+              },
+              {
+                "type": "tick",
+                "ms": 50
+              }
+            ]
           },
-          "expected": 1
+          "expected": {
+            "callCount": 1
+          }
+        },
+        {
+          "id": "hidden-3",
+          "hidden": true,
+          "input": {
+            "target": "100",
+            "steps": [
+              {
+                "type": "call",
+                "args": [
+                  "\"first\""
+                ]
+              },
+              {
+                "type": "tick",
+                "ms": 50
+              },
+              {
+                "type": "call",
+                "args": [
+                  "\"second\""
+                ]
+              },
+              {
+                "type": "tick",
+                "ms": 50
+              },
+              {
+                "type": "call",
+                "args": [
+                  "\"third\""
+                ]
+              },
+              {
+                "type": "tick",
+                "ms": 100
+              }
+            ]
+          },
+          "expected": {
+            "callCount": 1
+          }
+        },
+        {
+          "id": "hidden-4",
+          "hidden": true,
+          "input": {
+            "target": "0",
+            "steps": [
+              {
+                "type": "call",
+                "args": []
+              },
+              {
+                "type": "call",
+                "args": []
+              },
+              {
+                "type": "tick",
+                "ms": 0
+              }
+            ]
+          },
+          "expected": {
+            "callCount": 1
+          }
+        },
+        {
+          "id": "hidden-5",
+          "hidden": true,
+          "input": {
+            "target": "100",
+            "steps": [
+              {
+                "type": "call",
+                "args": [
+                  "1",
+                  "2",
+                  "3"
+                ]
+              },
+              {
+                "type": "tick",
+                "ms": 100
+              }
+            ]
+          },
+          "expected": {
+            "callCount": 1
+          }
         }
       ]
     },
     "basicCases": [
       {
-        "id": "case-1",
+        "id": "example-1",
         "type": "basic",
         "description": "示例 1",
-        "input": "{\"args\":\") => { let count = 0; const fn = debounce(() => { count += 1 }, 30); fn(); fn(); fn(); await new Promise((resolve) => setTimeout(resolve, 60)); return count })(\"}",
-        "expected": 1
+        "input": "[3 steps]",
+        "expected": "[Circular]"
       },
       {
-        "id": "case-2",
+        "id": "example-2",
         "type": "basic",
         "description": "示例 2",
-        "input": "{\"args\":\") => { let value = 0; const fn = debounce((next) => { value = next }, 20); fn(1); fn(2); await new Promise((resolve) => setTimeout(resolve, 50)); return value })(\"}",
-        "expected": 2
+        "input": "[4 steps]",
+        "expected": "[Circular]"
       },
       {
-        "id": "case-3",
+        "id": "example-3",
         "type": "basic",
         "description": "示例 3",
-        "input": "{\"args\":\") => { let count = 0; const fn = debounce(() => { count += 1 }, 10); fn(); await new Promise((resolve) => setTimeout(resolve, 20)); fn(); await new Promise((resolve) => setTimeout(resolve, 20)); return count })(\"}",
-        "expected": 2
+        "input": "[4 steps]",
+        "expected": "[Circular]"
       }
     ],
     "fullCases": [
       {
-        "id": "case-1",
+        "id": "example-1",
         "type": "basic",
         "description": "示例 1",
-        "input": "{\"args\":\") => { let count = 0; const fn = debounce(() => { count += 1 }, 30); fn(); fn(); fn(); await new Promise((resolve) => setTimeout(resolve, 60)); return count })(\"}",
-        "expected": 1
+        "input": "[3 steps]",
+        "expected": "[Circular]"
       },
       {
-        "id": "case-2",
+        "id": "example-2",
         "type": "basic",
         "description": "示例 2",
-        "input": "{\"args\":\") => { let value = 0; const fn = debounce((next) => { value = next }, 20); fn(1); fn(2); await new Promise((resolve) => setTimeout(resolve, 50)); return value })(\"}",
-        "expected": 2
+        "input": "[4 steps]",
+        "expected": "[Circular]"
       },
       {
-        "id": "case-3",
+        "id": "example-3",
         "type": "basic",
         "description": "示例 3",
-        "input": "{\"args\":\") => { let count = 0; const fn = debounce(() => { count += 1 }, 10); fn(); await new Promise((resolve) => setTimeout(resolve, 20)); fn(); await new Promise((resolve) => setTimeout(resolve, 20)); return count })(\"}",
-        "expected": 2
+        "input": "[4 steps]",
+        "expected": "[Circular]"
       },
       {
         "id": "hidden-1",
         "type": "edge",
         "description": "隐藏 1",
-        "input": "{\"args\":\") => { let scopeValue = 0; const context = { set(value) { scopeValue = value } }; const fn = debounce(function(value) { this.set(value) }, 10).bind(context); fn(5); await new Promise((resolve) => setTimeout(resolve, 30)); return scopeValue })(\"}",
-        "expected": 5
+        "input": "[2 steps]",
+        "expected": "[Circular]"
       },
       {
         "id": "hidden-2",
         "type": "edge",
         "description": "隐藏 2",
-        "input": "{\"args\":\") => { let count = 0; const fn = debounce(() => { count += 1 }, 5); for (let index = 0; index < 100; index += 1) fn(); await new Promise((resolve) => setTimeout(resolve, 20)); return count })(\"}",
-        "expected": 1
+        "input": "[6 steps]",
+        "expected": "[Circular]"
+      },
+      {
+        "id": "hidden-3",
+        "type": "edge",
+        "description": "隐藏 3",
+        "input": "[6 steps]",
+        "expected": "[Circular]"
+      },
+      {
+        "id": "hidden-4",
+        "type": "edge",
+        "description": "隐藏 4",
+        "input": "[3 steps]",
+        "expected": "[Circular]"
+      },
+      {
+        "id": "hidden-5",
+        "type": "edge",
+        "description": "隐藏 5",
+        "input": "[2 steps]",
+        "expected": "[Circular]"
       }
     ],
     "isComponent": false,
@@ -3715,137 +6298,217 @@ export const problems: ProblemRecord[] = [
     "testCases": {
       "examples": [
         {
+          "id": "example-1",
+          "hidden": false,
           "input": {
-            "args": "source); cloned.nested.value = 2; return [source.nested.value, cloned.nested.value] })("
+            "target": "{ a: 1, b: 2 }",
+            "args": []
           },
-          "expected": [
-            1,
-            2
-          ]
+          "expected": {
+            "a": 1,
+            "b": 2
+          }
         },
         {
+          "id": "example-2",
+          "hidden": false,
           "input": {
-            "args": "source); cloned[1][0] = 9; return [source[1][0], cloned[1][0]] })("
+            "target": "{ nested: { x: 1 } }",
+            "args": []
           },
-          "expected": [
-            2,
-            9
-          ]
+          "expected": {
+            "nested": {
+              "x": 1
+            }
+          }
         },
         {
+          "id": "example-3",
+          "hidden": false,
           "input": {
-            "args": "source); return cloned !== source && cloned.self === cloned })("
-          },
-          "expected": true
-        }
-      ],
-      "hidden": [
-        {
-          "input": {
-            "args": "[[{ id: 1 }, new Set([1, 2])]]); const cloned = deepClone(source); const [[key, value]] = cloned.entries(); return [key.id, Array.from(value)] })("
+            "target": "[1, [2, 3]]",
+            "args": []
           },
           "expected": [
             1,
             [
-              1,
-              2
+              2,
+              3
             ]
           ]
+        }
+      ],
+      "hidden": [
+        {
+          "id": "hidden-1",
+          "hidden": true,
+          "input": {
+            "target": "[]",
+            "args": []
+          },
+          "expected": []
         },
         {
+          "id": "hidden-2",
+          "hidden": true,
           "input": {
-            "args": "'2024-01-01T00:00:00.000Z'), pattern: /abc/gi }; const cloned = deepClone(source); return [cloned.date instanceof Date, cloned.date.getTime() === source.date.getTime(), cloned.pattern.source, cloned.pattern.flags] })("
+            "target": "{ a: { b: { c: { d: 1 } } } }",
+            "args": []
           },
-          "expected": [
-            true,
-            true,
-            "abc",
-            "gi"
-          ]
+          "expected": {
+            "a": {
+              "b": {
+                "c": {
+                  "d": 1
+                }
+              }
+            }
+          }
+        },
+        {
+          "id": "hidden-3",
+          "hidden": true,
+          "input": {
+            "target": "{ arr: [1, 2, { x: 3 }] }",
+            "args": []
+          },
+          "expected": {
+            "arr": [
+              1,
+              2,
+              {
+                "x": 3
+              }
+            ]
+          }
+        },
+        {
+          "id": "hidden-4",
+          "hidden": true,
+          "input": {
+            "target": "{ a: null, b: undefined, c: NaN }",
+            "args": []
+          },
+          "expected": {
+            "a": null,
+            "b": undefined,
+            "c": null
+          }
+        },
+        {
+          "id": "hidden-5",
+          "hidden": true,
+          "input": {
+            "target": "{ d: new Date(2024, 0, 1) }",
+            "args": []
+          },
+          "expected": {
+            "d": "2023-12-31T16:00:00.000Z"
+          }
         }
       ]
     },
     "basicCases": [
       {
-        "id": "case-1",
+        "id": "example-1",
         "type": "basic",
         "description": "示例 1",
-        "input": "{\"args\":\"source); cloned.nested.value = 2; return [source.nested.value, cloned.nested.value] })(\"}",
-        "expected": [
-          1,
-          2
-        ]
+        "input": "{ a: 1, b: 2 }",
+        "displayTarget": "{ a: 1, b: 2 }",
+        "displayArgs": [],
+        "expected": "[Circular]"
       },
       {
-        "id": "case-2",
+        "id": "example-2",
         "type": "basic",
         "description": "示例 2",
-        "input": "{\"args\":\"source); cloned[1][0] = 9; return [source[1][0], cloned[1][0]] })(\"}",
-        "expected": [
-          2,
-          9
-        ]
+        "input": "{ nested: { x: 1 } }",
+        "displayTarget": "{ nested: { x: 1 } }",
+        "displayArgs": [],
+        "expected": "[Circular]"
       },
       {
-        "id": "case-3",
+        "id": "example-3",
         "type": "basic",
         "description": "示例 3",
-        "input": "{\"args\":\"source); return cloned !== source && cloned.self === cloned })(\"}",
-        "expected": true
+        "input": "[1, [2, 3]]",
+        "displayTarget": "[1, [2, 3]]",
+        "displayArgs": [],
+        "expected": "[Circular]"
       }
     ],
     "fullCases": [
       {
-        "id": "case-1",
+        "id": "example-1",
         "type": "basic",
         "description": "示例 1",
-        "input": "{\"args\":\"source); cloned.nested.value = 2; return [source.nested.value, cloned.nested.value] })(\"}",
-        "expected": [
-          1,
-          2
-        ]
+        "input": "{ a: 1, b: 2 }",
+        "displayTarget": "{ a: 1, b: 2 }",
+        "displayArgs": [],
+        "expected": "[Circular]"
       },
       {
-        "id": "case-2",
+        "id": "example-2",
         "type": "basic",
         "description": "示例 2",
-        "input": "{\"args\":\"source); cloned[1][0] = 9; return [source[1][0], cloned[1][0]] })(\"}",
-        "expected": [
-          2,
-          9
-        ]
+        "input": "{ nested: { x: 1 } }",
+        "displayTarget": "{ nested: { x: 1 } }",
+        "displayArgs": [],
+        "expected": "[Circular]"
       },
       {
-        "id": "case-3",
+        "id": "example-3",
         "type": "basic",
         "description": "示例 3",
-        "input": "{\"args\":\"source); return cloned !== source && cloned.self === cloned })(\"}",
-        "expected": true
+        "input": "[1, [2, 3]]",
+        "displayTarget": "[1, [2, 3]]",
+        "displayArgs": [],
+        "expected": "[Circular]"
       },
       {
         "id": "hidden-1",
         "type": "edge",
         "description": "隐藏 1",
-        "input": "{\"args\":\"[[{ id: 1 }, new Set([1, 2])]]); const cloned = deepClone(source); const [[key, value]] = cloned.entries(); return [key.id, Array.from(value)] })(\"}",
-        "expected": [
-          1,
-          [
-            1,
-            2
-          ]
-        ]
+        "input": "[]",
+        "displayTarget": "[]",
+        "displayArgs": [],
+        "expected": "[Circular]"
       },
       {
         "id": "hidden-2",
         "type": "edge",
         "description": "隐藏 2",
-        "input": "{\"args\":\"'2024-01-01T00:00:00.000Z'), pattern: /abc/gi }; const cloned = deepClone(source); return [cloned.date instanceof Date, cloned.date.getTime() === source.date.getTime(), cloned.pattern.source, cloned.pattern.flags] })(\"}",
-        "expected": [
-          true,
-          true,
-          "abc",
-          "gi"
-        ]
+        "input": "{ a: { b: { c: { d: 1 } } } }",
+        "displayTarget": "{ a: { b: { c: { d: 1 } } } }",
+        "displayArgs": [],
+        "expected": "[Circular]"
+      },
+      {
+        "id": "hidden-3",
+        "type": "edge",
+        "description": "隐藏 3",
+        "input": "{ arr: [1, 2, { x: 3 }] }",
+        "displayTarget": "{ arr: [1, 2, { x: 3 }] }",
+        "displayArgs": [],
+        "expected": "[Circular]"
+      },
+      {
+        "id": "hidden-4",
+        "type": "edge",
+        "description": "隐藏 4",
+        "input": "{ a: null, b: undefined, c: NaN }",
+        "displayTarget": "{ a: null, b: undefined, c: NaN }",
+        "displayArgs": [],
+        "expected": "[Circular]"
+      },
+      {
+        "id": "hidden-5",
+        "type": "edge",
+        "description": "隐藏 5",
+        "input": "{ d: new Date(2024, 0, 1) }",
+        "displayTarget": "{ d: new Date(2024, 0, 1) }",
+        "displayArgs": [],
+        "expected": "[Circular]"
       }
     ],
     "isComponent": false,
@@ -3871,18 +6534,29 @@ export const problems: ProblemRecord[] = [
     "testCases": {
       "examples": [
         {
+          "id": "example-1",
+          "hidden": false,
           "input": {
-            "args": "[1, [2, 3]]"
+            "target": "[1, [2, 3], 4]",
+            "args": [
+              "1"
+            ]
           },
           "expected": [
             1,
             2,
-            3
+            3,
+            4
           ]
         },
         {
+          "id": "example-2",
+          "hidden": false,
           "input": {
-            "args": "[1, [2, [3, [4]]]], 2"
+            "target": "[1, [2, [3, [4]]]]",
+            "args": [
+              "2"
+            ]
           },
           "expected": [
             1,
@@ -3894,128 +6568,229 @@ export const problems: ProblemRecord[] = [
           ]
         },
         {
+          "id": "example-3",
+          "hidden": false,
           "input": {
-            "args": "source, 0); return [JSON.stringify(result), result !== source] })("
+            "target": "[]",
+            "args": [
+              "1"
+            ]
           },
-          "expected": [
-            "[1,[2]]",
-            true
-          ]
+          "expected": []
         }
       ],
       "hidden": [
         {
+          "id": "hidden-1",
+          "hidden": true,
           "input": {
-            "args": "[], Infinity"
-          },
-          "expected": []
-        },
-        {
-          "input": {
-            "args": "[1, [2, [3, [4, [5]]]]], Infinity"
+            "target": "[1, [2, [3, [4]]]]",
+            "args": [
+              "Infinity"
+            ]
           },
           "expected": [
             1,
             2,
             3,
-            4,
-            5
+            4
+          ]
+        },
+        {
+          "id": "hidden-2",
+          "hidden": true,
+          "input": {
+            "target": "[1, 2, 3]",
+            "args": [
+              "1"
+            ]
+          },
+          "expected": [
+            1,
+            2,
+            3
+          ]
+        },
+        {
+          "id": "hidden-3",
+          "hidden": true,
+          "input": {
+            "target": "[[[[1]]]]",
+            "args": [
+              "3"
+            ]
+          },
+          "expected": [
+            [
+              1
+            ]
+          ]
+        },
+        {
+          "id": "hidden-4",
+          "hidden": true,
+          "input": {
+            "target": "[1, [], 2, [3, []]]",
+            "args": [
+              "1"
+            ]
+          },
+          "expected": [
+            1,
+            2,
+            3
+          ]
+        },
+        {
+          "id": "hidden-5",
+          "hidden": true,
+          "input": {
+            "target": "[1, [2, [3, [4, [5]]]]]",
+            "args": [
+              "0"
+            ]
+          },
+          "expected": [
+            1,
+            [
+              2,
+              [
+                3,
+                [
+                  4,
+                  [
+                    5
+                  ]
+                ]
+              ]
+            ]
           ]
         }
       ]
     },
     "basicCases": [
       {
-        "id": "case-1",
+        "id": "example-1",
         "type": "basic",
         "description": "示例 1",
-        "input": "{\"args\":\"[1, [2, 3]]\"}",
-        "expected": [
-          1,
-          2,
-          3
-        ]
+        "input": "[1, [2, 3], 4](1)",
+        "displayTarget": "[1, [2, 3], 4]",
+        "displayArgs": [
+          "1"
+        ],
+        "expected": "[Circular]"
       },
       {
-        "id": "case-2",
+        "id": "example-2",
         "type": "basic",
         "description": "示例 2",
-        "input": "{\"args\":\"[1, [2, [3, [4]]]], 2\"}",
-        "expected": [
-          1,
-          2,
-          3,
-          [
-            4
-          ]
-        ]
+        "input": "[1, [2, [3, [4]]]](2)",
+        "displayTarget": "[1, [2, [3, [4]]]]",
+        "displayArgs": [
+          "2"
+        ],
+        "expected": "[Circular]"
       },
       {
-        "id": "case-3",
+        "id": "example-3",
         "type": "basic",
         "description": "示例 3",
-        "input": "{\"args\":\"source, 0); return [JSON.stringify(result), result !== source] })(\"}",
-        "expected": [
-          "[1,[2]]",
-          true
-        ]
+        "input": "[](1)",
+        "displayTarget": "[]",
+        "displayArgs": [
+          "1"
+        ],
+        "expected": "[Circular]"
       }
     ],
     "fullCases": [
       {
-        "id": "case-1",
+        "id": "example-1",
         "type": "basic",
         "description": "示例 1",
-        "input": "{\"args\":\"[1, [2, 3]]\"}",
-        "expected": [
-          1,
-          2,
-          3
-        ]
+        "input": "[1, [2, 3], 4](1)",
+        "displayTarget": "[1, [2, 3], 4]",
+        "displayArgs": [
+          "1"
+        ],
+        "expected": "[Circular]"
       },
       {
-        "id": "case-2",
+        "id": "example-2",
         "type": "basic",
         "description": "示例 2",
-        "input": "{\"args\":\"[1, [2, [3, [4]]]], 2\"}",
-        "expected": [
-          1,
-          2,
-          3,
-          [
-            4
-          ]
-        ]
+        "input": "[1, [2, [3, [4]]]](2)",
+        "displayTarget": "[1, [2, [3, [4]]]]",
+        "displayArgs": [
+          "2"
+        ],
+        "expected": "[Circular]"
       },
       {
-        "id": "case-3",
+        "id": "example-3",
         "type": "basic",
         "description": "示例 3",
-        "input": "{\"args\":\"source, 0); return [JSON.stringify(result), result !== source] })(\"}",
-        "expected": [
-          "[1,[2]]",
-          true
-        ]
+        "input": "[](1)",
+        "displayTarget": "[]",
+        "displayArgs": [
+          "1"
+        ],
+        "expected": "[Circular]"
       },
       {
         "id": "hidden-1",
         "type": "edge",
         "description": "隐藏 1",
-        "input": "{\"args\":\"[], Infinity\"}",
-        "expected": []
+        "input": "[1, [2, [3, [4]]]](Infinity)",
+        "displayTarget": "[1, [2, [3, [4]]]]",
+        "displayArgs": [
+          "Infinity"
+        ],
+        "expected": "[Circular]"
       },
       {
         "id": "hidden-2",
         "type": "edge",
         "description": "隐藏 2",
-        "input": "{\"args\":\"[1, [2, [3, [4, [5]]]]], Infinity\"}",
-        "expected": [
-          1,
-          2,
-          3,
-          4,
-          5
-        ]
+        "input": "[1, 2, 3](1)",
+        "displayTarget": "[1, 2, 3]",
+        "displayArgs": [
+          "1"
+        ],
+        "expected": "[Circular]"
+      },
+      {
+        "id": "hidden-3",
+        "type": "edge",
+        "description": "隐藏 3",
+        "input": "[[[[1]]]](3)",
+        "displayTarget": "[[[[1]]]]",
+        "displayArgs": [
+          "3"
+        ],
+        "expected": "[Circular]"
+      },
+      {
+        "id": "hidden-4",
+        "type": "edge",
+        "description": "隐藏 4",
+        "input": "[1, [], 2, [3, []]](1)",
+        "displayTarget": "[1, [], 2, [3, []]]",
+        "displayArgs": [
+          "1"
+        ],
+        "expected": "[Circular]"
+      },
+      {
+        "id": "hidden-5",
+        "type": "edge",
+        "description": "隐藏 5",
+        "input": "[1, [2, [3, [4, [5]]]]](0)",
+        "displayTarget": "[1, [2, [3, [4, [5]]]]]",
+        "displayArgs": [
+          "0"
+        ],
+        "expected": "[Circular]"
       }
     ],
     "isComponent": false,
@@ -4041,97 +6816,355 @@ export const problems: ProblemRecord[] = [
     "testCases": {
       "examples": [
         {
+          "id": "example-1",
+          "hidden": false,
           "input": {
-            "args": ") => { const scheduler = new Scheduler(2); const result = []; const createTask = (value, delay) => () => new Promise((resolve) => setTimeout(() => { result.push(value); resolve(value) }, delay)); await Promise.all([scheduler.add(createTask(\"A\", 20)), scheduler.add(createTask(\"B\", 10)), scheduler.add(createTask(\"C\", 5))]); return result.includes(\"A\") && result.includes(\"B\") && result.includes(\"C\") })("
+            "target": "2",
+            "steps": [
+              {
+                "type": "call",
+                "args": [
+                  "() => Promise.resolve()"
+                ]
+              },
+              {
+                "type": "call",
+                "args": [
+                  "() => Promise.resolve()"
+                ]
+              },
+              {
+                "type": "call",
+                "args": [
+                  "() => Promise.resolve()"
+                ]
+              },
+              {
+                "type": "await"
+              }
+            ]
           },
-          "expected": true
+          "expected": {
+            "callCount": 3
+          }
         },
         {
+          "id": "example-2",
+          "hidden": false,
           "input": {
-            "args": ") => { const scheduler = new Scheduler(1); const timeline = []; const createTask = (label, delay) => () => new Promise((resolve) => setTimeout(() => { timeline.push(label); resolve(label) }, delay)); await Promise.all([scheduler.add(createTask(\"first\", 10)), scheduler.add(createTask(\"second\", 5))]); return timeline.join(\",\") })("
+            "target": "1",
+            "steps": [
+              {
+                "type": "call",
+                "args": [
+                  "() => Promise.resolve()"
+                ]
+              },
+              {
+                "type": "call",
+                "args": [
+                  "() => Promise.resolve()"
+                ]
+              },
+              {
+                "type": "await"
+              }
+            ]
           },
-          "expected": "first,second"
+          "expected": {
+            "callCount": 2,
+            "maxConcurrent": 1
+          }
         },
         {
+          "id": "example-3",
+          "hidden": false,
           "input": {
-            "args": ") => { const scheduler = new Scheduler(2); const value = await scheduler.add(() => Promise.resolve(\"ok\")); return value })("
+            "target": "3",
+            "steps": [
+              {
+                "type": "call",
+                "args": [
+                  "() => Promise.resolve()"
+                ]
+              },
+              {
+                "type": "call",
+                "args": [
+                  "() => Promise.resolve()"
+                ]
+              },
+              {
+                "type": "await"
+              }
+            ]
           },
-          "expected": "ok"
+          "expected": {
+            "callCount": 2,
+            "maxConcurrent": 2
+          }
         }
       ],
       "hidden": [
         {
+          "id": "hidden-1",
+          "hidden": true,
           "input": {
-            "args": ") => { const scheduler = new Scheduler(2); try { await scheduler.add(() => Promise.reject(new Error(\"fail\"))) } catch (error) { return error.message } })("
+            "target": "2",
+            "steps": [
+              {
+                "type": "call",
+                "args": [
+                  "() => Promise.resolve(1)"
+                ]
+              },
+              {
+                "type": "call",
+                "args": [
+                  "() => Promise.resolve(2)"
+                ]
+              },
+              {
+                "type": "call",
+                "args": [
+                  "() => Promise.resolve(3)"
+                ]
+              },
+              {
+                "type": "call",
+                "args": [
+                  "() => Promise.resolve(4)"
+                ]
+              },
+              {
+                "type": "await"
+              }
+            ]
           },
-          "expected": "fail"
+          "expected": {
+            "callCount": 4,
+            "maxConcurrent": 2
+          }
         },
         {
+          "id": "hidden-2",
+          "hidden": true,
           "input": {
-            "args": ") => { const scheduler = new Scheduler(5); const results = await Promise.all(Array.from({ length: 30 }, (_, index) => scheduler.add(() => Promise.resolve(index)))); return results.length })("
+            "target": "1",
+            "steps": [
+              {
+                "type": "call",
+                "args": [
+                  "() => Promise.resolve()"
+                ]
+              },
+              {
+                "type": "call",
+                "args": [
+                  "() => Promise.resolve()"
+                ]
+              },
+              {
+                "type": "call",
+                "args": [
+                  "() => Promise.resolve()"
+                ]
+              },
+              {
+                "type": "call",
+                "args": [
+                  "() => Promise.resolve()"
+                ]
+              },
+              {
+                "type": "await"
+              }
+            ]
           },
-          "expected": 30
+          "expected": {
+            "callCount": 4,
+            "maxConcurrent": 1
+          }
+        },
+        {
+          "id": "hidden-3",
+          "hidden": true,
+          "input": {
+            "target": "5",
+            "steps": [
+              {
+                "type": "call",
+                "args": [
+                  "() => Promise.resolve()"
+                ]
+              },
+              {
+                "type": "call",
+                "args": [
+                  "() => Promise.resolve()"
+                ]
+              },
+              {
+                "type": "call",
+                "args": [
+                  "() => Promise.resolve()"
+                ]
+              },
+              {
+                "type": "await"
+              }
+            ]
+          },
+          "expected": {
+            "callCount": 3,
+            "maxConcurrent": 3
+          }
+        },
+        {
+          "id": "hidden-4",
+          "hidden": true,
+          "input": {
+            "target": "2",
+            "steps": [
+              {
+                "type": "call",
+                "args": [
+                  "() => Promise.reject(new Error(\"err\"))"
+                ]
+              },
+              {
+                "type": "call",
+                "args": [
+                  "() => Promise.resolve()"
+                ]
+              },
+              {
+                "type": "await"
+              }
+            ]
+          },
+          "expected": {
+            "callCount": 2,
+            "hasError": true
+          }
+        },
+        {
+          "id": "hidden-5",
+          "hidden": true,
+          "input": {
+            "target": "2",
+            "steps": [
+              {
+                "type": "call",
+                "args": [
+                  "() => new Promise(r => setTimeout(r, 100))"
+                ]
+              },
+              {
+                "type": "tick",
+                "ms": 50
+              },
+              {
+                "type": "call",
+                "args": [
+                  "() => Promise.resolve()"
+                ]
+              },
+              {
+                "type": "tick",
+                "ms": 100
+              },
+              {
+                "type": "await"
+              }
+            ]
+          },
+          "expected": {
+            "callCount": 2,
+            "maxConcurrent": 2
+          }
         }
       ]
     },
     "basicCases": [
       {
-        "id": "case-1",
+        "id": "example-1",
         "type": "basic",
         "description": "示例 1",
-        "input": "{\"args\":\") => { const scheduler = new Scheduler(2); const result = []; const createTask = (value, delay) => () => new Promise((resolve) => setTimeout(() => { result.push(value); resolve(value) }, delay)); await Promise.all([scheduler.add(createTask(\\\"A\\\", 20)), scheduler.add(createTask(\\\"B\\\", 10)), scheduler.add(createTask(\\\"C\\\", 5))]); return result.includes(\\\"A\\\") && result.includes(\\\"B\\\") && result.includes(\\\"C\\\") })(\"}",
-        "expected": true
+        "input": "[4 steps]",
+        "expected": "[Circular]"
       },
       {
-        "id": "case-2",
+        "id": "example-2",
         "type": "basic",
         "description": "示例 2",
-        "input": "{\"args\":\") => { const scheduler = new Scheduler(1); const timeline = []; const createTask = (label, delay) => () => new Promise((resolve) => setTimeout(() => { timeline.push(label); resolve(label) }, delay)); await Promise.all([scheduler.add(createTask(\\\"first\\\", 10)), scheduler.add(createTask(\\\"second\\\", 5))]); return timeline.join(\\\",\\\") })(\"}",
-        "expected": "first,second"
+        "input": "[3 steps]",
+        "expected": "[Circular]"
       },
       {
-        "id": "case-3",
+        "id": "example-3",
         "type": "basic",
         "description": "示例 3",
-        "input": "{\"args\":\") => { const scheduler = new Scheduler(2); const value = await scheduler.add(() => Promise.resolve(\\\"ok\\\")); return value })(\"}",
-        "expected": "ok"
+        "input": "[3 steps]",
+        "expected": "[Circular]"
       }
     ],
     "fullCases": [
       {
-        "id": "case-1",
+        "id": "example-1",
         "type": "basic",
         "description": "示例 1",
-        "input": "{\"args\":\") => { const scheduler = new Scheduler(2); const result = []; const createTask = (value, delay) => () => new Promise((resolve) => setTimeout(() => { result.push(value); resolve(value) }, delay)); await Promise.all([scheduler.add(createTask(\\\"A\\\", 20)), scheduler.add(createTask(\\\"B\\\", 10)), scheduler.add(createTask(\\\"C\\\", 5))]); return result.includes(\\\"A\\\") && result.includes(\\\"B\\\") && result.includes(\\\"C\\\") })(\"}",
-        "expected": true
+        "input": "[4 steps]",
+        "expected": "[Circular]"
       },
       {
-        "id": "case-2",
+        "id": "example-2",
         "type": "basic",
         "description": "示例 2",
-        "input": "{\"args\":\") => { const scheduler = new Scheduler(1); const timeline = []; const createTask = (label, delay) => () => new Promise((resolve) => setTimeout(() => { timeline.push(label); resolve(label) }, delay)); await Promise.all([scheduler.add(createTask(\\\"first\\\", 10)), scheduler.add(createTask(\\\"second\\\", 5))]); return timeline.join(\\\",\\\") })(\"}",
-        "expected": "first,second"
+        "input": "[3 steps]",
+        "expected": "[Circular]"
       },
       {
-        "id": "case-3",
+        "id": "example-3",
         "type": "basic",
         "description": "示例 3",
-        "input": "{\"args\":\") => { const scheduler = new Scheduler(2); const value = await scheduler.add(() => Promise.resolve(\\\"ok\\\")); return value })(\"}",
-        "expected": "ok"
+        "input": "[3 steps]",
+        "expected": "[Circular]"
       },
       {
         "id": "hidden-1",
         "type": "edge",
         "description": "隐藏 1",
-        "input": "{\"args\":\") => { const scheduler = new Scheduler(2); try { await scheduler.add(() => Promise.reject(new Error(\\\"fail\\\"))) } catch (error) { return error.message } })(\"}",
-        "expected": "fail"
+        "input": "[5 steps]",
+        "expected": "[Circular]"
       },
       {
         "id": "hidden-2",
         "type": "edge",
         "description": "隐藏 2",
-        "input": "{\"args\":\") => { const scheduler = new Scheduler(5); const results = await Promise.all(Array.from({ length: 30 }, (_, index) => scheduler.add(() => Promise.resolve(index)))); return results.length })(\"}",
-        "expected": 30
+        "input": "[5 steps]",
+        "expected": "[Circular]"
+      },
+      {
+        "id": "hidden-3",
+        "type": "edge",
+        "description": "隐藏 3",
+        "input": "[4 steps]",
+        "expected": "[Circular]"
+      },
+      {
+        "id": "hidden-4",
+        "type": "edge",
+        "description": "隐藏 4",
+        "input": "[3 steps]",
+        "expected": "[Circular]"
+      },
+      {
+        "id": "hidden-5",
+        "type": "edge",
+        "description": "隐藏 5",
+        "input": "[5 steps]",
+        "expected": "[Circular]"
       }
     ],
     "isComponent": false,
@@ -4157,106 +7190,276 @@ export const problems: ProblemRecord[] = [
     "testCases": {
       "examples": [
         {
+          "id": "example-1",
+          "hidden": false,
           "input": {
-            "args": ") => { const result = []; await execute([() => Promise.resolve(result.push(1)), () => Promise.resolve(result.push(2))], 100, 1); return result })("
+            "target": "",
+            "steps": [
+              {
+                "type": "call",
+                "args": [
+                  "[]"
+                ]
+              },
+              {
+                "type": "await"
+              }
+            ]
           },
-          "expected": [
-            1,
-            2
-          ]
+          "expected": {
+            "callCount": 0
+          }
         },
         {
+          "id": "example-2",
+          "hidden": false,
           "input": {
-            "args": ") => { const value = await runTask(() => Promise.resolve(\"ok\"), 0, 100, 1); return value })("
+            "target": "",
+            "steps": [
+              {
+                "type": "call",
+                "args": [
+                  "[() => Promise.resolve()]"
+                ]
+              },
+              {
+                "type": "await"
+              }
+            ]
           },
-          "expected": "ok"
+          "expected": {
+            "callCount": 1
+          }
         },
         {
+          "id": "example-3",
+          "hidden": false,
           "input": {
-            "args": ") => { let count = 0; const value = await runTask(() => { count += 1; return count < 2 ? Promise.reject(new Error(\"retry\")) : Promise.resolve(\"done\") }, 0, 100, 2); return value })("
+            "target": "",
+            "steps": [
+              {
+                "type": "call",
+                "args": [
+                  "[() => Promise.resolve(), () => Promise.resolve()]"
+                ]
+              },
+              {
+                "type": "await"
+              }
+            ]
           },
-          "expected": "done"
+          "expected": {
+            "callCount": 2
+          }
         }
       ],
       "hidden": [
         {
+          "id": "hidden-1",
+          "hidden": true,
           "input": {
-            "args": ") => { try { await execute([123], 100, 1) } catch (error) { return error instanceof TypeError } })("
+            "target": "",
+            "steps": [
+              {
+                "type": "call",
+                "args": [
+                  "[() => Promise.resolve(1), () => Promise.resolve(2), () => Promise.resolve(3)]"
+                ]
+              },
+              {
+                "type": "await"
+              }
+            ]
           },
-          "expected": true
+          "expected": {
+            "callCount": 3
+          }
         },
         {
+          "id": "hidden-2",
+          "hidden": true,
           "input": {
-            "args": ") => { const tasks = Array.from({ length: 20 }, (_, index) => () => Promise.resolve(index)); await execute(tasks, 100, 1); return tasks.length })("
+            "target": "",
+            "steps": [
+              {
+                "type": "call",
+                "args": [
+                  "[() => Promise.reject(new Error(\"err\"))]"
+                ]
+              },
+              {
+                "type": "await"
+              }
+            ]
           },
-          "expected": 20
+          "expected": {
+            "callCount": 1,
+            "hasError": true
+          }
+        },
+        {
+          "id": "hidden-3",
+          "hidden": true,
+          "input": {
+            "target": "",
+            "steps": [
+              {
+                "type": "call",
+                "args": [
+                  "[() => new Promise(r => setTimeout(r, 100))]"
+                ]
+              },
+              {
+                "type": "tick",
+                "ms": 100
+              },
+              {
+                "type": "await"
+              }
+            ]
+          },
+          "expected": {
+            "callCount": 1
+          }
+        },
+        {
+          "id": "hidden-4",
+          "hidden": true,
+          "input": {
+            "target": "",
+            "steps": [
+              {
+                "type": "call",
+                "args": [
+                  "[() => Promise.resolve(), () => Promise.resolve()]"
+                ]
+              },
+              {
+                "type": "call",
+                "args": [
+                  "[() => Promise.resolve()]"
+                ]
+              },
+              {
+                "type": "await"
+              }
+            ]
+          },
+          "expected": {
+            "callCount": 3
+          }
+        },
+        {
+          "id": "hidden-5",
+          "hidden": true,
+          "input": {
+            "target": "",
+            "steps": [
+              {
+                "type": "call",
+                "args": [
+                  "[() => Promise.resolve(1)]"
+                ]
+              },
+              {
+                "type": "await"
+              },
+              {
+                "type": "call",
+                "args": [
+                  "[() => Promise.resolve(2)]"
+                ]
+              },
+              {
+                "type": "await"
+              }
+            ]
+          },
+          "expected": {
+            "callCount": 2
+          }
         }
       ]
     },
     "basicCases": [
       {
-        "id": "case-1",
+        "id": "example-1",
         "type": "basic",
         "description": "示例 1",
-        "input": "{\"args\":\") => { const result = []; await execute([() => Promise.resolve(result.push(1)), () => Promise.resolve(result.push(2))], 100, 1); return result })(\"}",
-        "expected": [
-          1,
-          2
-        ]
+        "input": "[2 steps]",
+        "expected": "[Circular]"
       },
       {
-        "id": "case-2",
+        "id": "example-2",
         "type": "basic",
         "description": "示例 2",
-        "input": "{\"args\":\") => { const value = await runTask(() => Promise.resolve(\\\"ok\\\"), 0, 100, 1); return value })(\"}",
-        "expected": "ok"
+        "input": "[2 steps]",
+        "expected": "[Circular]"
       },
       {
-        "id": "case-3",
+        "id": "example-3",
         "type": "basic",
         "description": "示例 3",
-        "input": "{\"args\":\") => { let count = 0; const value = await runTask(() => { count += 1; return count < 2 ? Promise.reject(new Error(\\\"retry\\\")) : Promise.resolve(\\\"done\\\") }, 0, 100, 2); return value })(\"}",
-        "expected": "done"
+        "input": "[2 steps]",
+        "expected": "[Circular]"
       }
     ],
     "fullCases": [
       {
-        "id": "case-1",
+        "id": "example-1",
         "type": "basic",
         "description": "示例 1",
-        "input": "{\"args\":\") => { const result = []; await execute([() => Promise.resolve(result.push(1)), () => Promise.resolve(result.push(2))], 100, 1); return result })(\"}",
-        "expected": [
-          1,
-          2
-        ]
+        "input": "[2 steps]",
+        "expected": "[Circular]"
       },
       {
-        "id": "case-2",
+        "id": "example-2",
         "type": "basic",
         "description": "示例 2",
-        "input": "{\"args\":\") => { const value = await runTask(() => Promise.resolve(\\\"ok\\\"), 0, 100, 1); return value })(\"}",
-        "expected": "ok"
+        "input": "[2 steps]",
+        "expected": "[Circular]"
       },
       {
-        "id": "case-3",
+        "id": "example-3",
         "type": "basic",
         "description": "示例 3",
-        "input": "{\"args\":\") => { let count = 0; const value = await runTask(() => { count += 1; return count < 2 ? Promise.reject(new Error(\\\"retry\\\")) : Promise.resolve(\\\"done\\\") }, 0, 100, 2); return value })(\"}",
-        "expected": "done"
+        "input": "[2 steps]",
+        "expected": "[Circular]"
       },
       {
         "id": "hidden-1",
         "type": "edge",
         "description": "隐藏 1",
-        "input": "{\"args\":\") => { try { await execute([123], 100, 1) } catch (error) { return error instanceof TypeError } })(\"}",
-        "expected": true
+        "input": "[2 steps]",
+        "expected": "[Circular]"
       },
       {
         "id": "hidden-2",
         "type": "edge",
         "description": "隐藏 2",
-        "input": "{\"args\":\") => { const tasks = Array.from({ length: 20 }, (_, index) => () => Promise.resolve(index)); await execute(tasks, 100, 1); return tasks.length })(\"}",
-        "expected": 20
+        "input": "[2 steps]",
+        "expected": "[Circular]"
+      },
+      {
+        "id": "hidden-3",
+        "type": "edge",
+        "description": "隐藏 3",
+        "input": "[3 steps]",
+        "expected": "[Circular]"
+      },
+      {
+        "id": "hidden-4",
+        "type": "edge",
+        "description": "隐藏 4",
+        "input": "[3 steps]",
+        "expected": "[Circular]"
+      },
+      {
+        "id": "hidden-5",
+        "type": "edge",
+        "description": "隐藏 5",
+        "input": "[4 steps]",
+        "expected": "[Circular]"
       }
     ],
     "isComponent": false,
@@ -4282,97 +7485,350 @@ export const problems: ProblemRecord[] = [
     "testCases": {
       "examples": [
         {
+          "id": "example-1",
+          "hidden": false,
           "input": {
-            "args": ") => { let count = 0; const fn = throttle(() => { count += 1 }, 30); fn(); fn(); fn(); await new Promise((resolve) => setTimeout(resolve, 40)); return count })("
+            "target": "100",
+            "steps": [
+              {
+                "type": "call",
+                "args": []
+              },
+              {
+                "type": "call",
+                "args": []
+              },
+              {
+                "type": "tick",
+                "ms": 100
+              }
+            ]
           },
-          "expected": 1
+          "expected": {
+            "callCount": 1
+          }
         },
         {
+          "id": "example-2",
+          "hidden": false,
           "input": {
-            "args": ") => { let count = 0; const fn = throttle(() => { count += 1 }, 20); fn(); await new Promise((resolve) => setTimeout(resolve, 30)); fn(); return count })("
+            "target": "100",
+            "steps": [
+              {
+                "type": "call",
+                "args": []
+              },
+              {
+                "type": "tick",
+                "ms": 100
+              },
+              {
+                "type": "call",
+                "args": []
+              },
+              {
+                "type": "tick",
+                "ms": 100
+              },
+              {
+                "type": "call",
+                "args": []
+              }
+            ]
           },
-          "expected": 2
+          "expected": {
+            "callCount": 3
+          }
         },
         {
+          "id": "example-3",
+          "hidden": false,
           "input": {
-            "args": ") => { let value = 0; const fn = throttle((next) => { value = next }, 20); fn(1); fn(2); await new Promise((resolve) => setTimeout(resolve, 30)); return value })("
+            "target": "50",
+            "steps": [
+              {
+                "type": "call",
+                "args": []
+              },
+              {
+                "type": "tick",
+                "ms": 25
+              },
+              {
+                "type": "call",
+                "args": []
+              },
+              {
+                "type": "tick",
+                "ms": 25
+              },
+              {
+                "type": "call",
+                "args": []
+              }
+            ]
           },
-          "expected": 1
+          "expected": {
+            "callCount": 2
+          }
         }
       ],
       "hidden": [
         {
+          "id": "hidden-1",
+          "hidden": true,
           "input": {
-            "args": ") => { let count = 0; const context = { increase() { count += 1 } }; const fn = throttle(function() { this.increase() }.bind(context), 10); fn(); await new Promise((resolve) => setTimeout(resolve, 20)); return count })("
+            "target": "100",
+            "steps": [
+              {
+                "type": "call",
+                "args": []
+              },
+              {
+                "type": "tick",
+                "ms": 50
+              },
+              {
+                "type": "call",
+                "args": []
+              },
+              {
+                "type": "tick",
+                "ms": 50
+              },
+              {
+                "type": "call",
+                "args": []
+              },
+              {
+                "type": "tick",
+                "ms": 50
+              },
+              {
+                "type": "call",
+                "args": []
+              }
+            ]
           },
-          "expected": 1
+          "expected": {
+            "callCount": 3
+          }
         },
         {
+          "id": "hidden-2",
+          "hidden": true,
           "input": {
-            "args": ") => { let count = 0; const fn = throttle(() => { count += 1 }, 5); for (let index = 0; index < 50; index += 1) fn(); await new Promise((resolve) => setTimeout(resolve, 15)); return count })("
+            "target": "200",
+            "steps": [
+              {
+                "type": "call",
+                "args": []
+              },
+              {
+                "type": "tick",
+                "ms": 100
+              },
+              {
+                "type": "call",
+                "args": []
+              },
+              {
+                "type": "tick",
+                "ms": 100
+              },
+              {
+                "type": "call",
+                "args": []
+              }
+            ]
           },
-          "expected": 1
+          "expected": {
+            "callCount": 2
+          }
+        },
+        {
+          "id": "hidden-3",
+          "hidden": true,
+          "input": {
+            "target": "100",
+            "steps": [
+              {
+                "type": "call",
+                "args": []
+              },
+              {
+                "type": "call",
+                "args": []
+              },
+              {
+                "type": "call",
+                "args": []
+              },
+              {
+                "type": "tick",
+                "ms": 100
+              },
+              {
+                "type": "call",
+                "args": []
+              }
+            ]
+          },
+          "expected": {
+            "callCount": 2
+          }
+        },
+        {
+          "id": "hidden-4",
+          "hidden": true,
+          "input": {
+            "target": "50",
+            "steps": [
+              {
+                "type": "call",
+                "args": [
+                  "1"
+                ]
+              },
+              {
+                "type": "tick",
+                "ms": 50
+              },
+              {
+                "type": "call",
+                "args": [
+                  "2"
+                ]
+              },
+              {
+                "type": "tick",
+                "ms": 50
+              },
+              {
+                "type": "call",
+                "args": [
+                  "3"
+                ]
+              }
+            ]
+          },
+          "expected": {
+            "callCount": 3
+          }
+        },
+        {
+          "id": "hidden-5",
+          "hidden": true,
+          "input": {
+            "target": "100",
+            "steps": [
+              {
+                "type": "call",
+                "args": []
+              },
+              {
+                "type": "tick",
+                "ms": 300
+              },
+              {
+                "type": "call",
+                "args": []
+              },
+              {
+                "type": "tick",
+                "ms": 300
+              },
+              {
+                "type": "call",
+                "args": []
+              }
+            ]
+          },
+          "expected": {
+            "callCount": 3
+          }
         }
       ]
     },
     "basicCases": [
       {
-        "id": "case-1",
+        "id": "example-1",
         "type": "basic",
         "description": "示例 1",
-        "input": "{\"args\":\") => { let count = 0; const fn = throttle(() => { count += 1 }, 30); fn(); fn(); fn(); await new Promise((resolve) => setTimeout(resolve, 40)); return count })(\"}",
-        "expected": 1
+        "input": "[3 steps]",
+        "expected": "[Circular]"
       },
       {
-        "id": "case-2",
+        "id": "example-2",
         "type": "basic",
         "description": "示例 2",
-        "input": "{\"args\":\") => { let count = 0; const fn = throttle(() => { count += 1 }, 20); fn(); await new Promise((resolve) => setTimeout(resolve, 30)); fn(); return count })(\"}",
-        "expected": 2
+        "input": "[5 steps]",
+        "expected": "[Circular]"
       },
       {
-        "id": "case-3",
+        "id": "example-3",
         "type": "basic",
         "description": "示例 3",
-        "input": "{\"args\":\") => { let value = 0; const fn = throttle((next) => { value = next }, 20); fn(1); fn(2); await new Promise((resolve) => setTimeout(resolve, 30)); return value })(\"}",
-        "expected": 1
+        "input": "[5 steps]",
+        "expected": "[Circular]"
       }
     ],
     "fullCases": [
       {
-        "id": "case-1",
+        "id": "example-1",
         "type": "basic",
         "description": "示例 1",
-        "input": "{\"args\":\") => { let count = 0; const fn = throttle(() => { count += 1 }, 30); fn(); fn(); fn(); await new Promise((resolve) => setTimeout(resolve, 40)); return count })(\"}",
-        "expected": 1
+        "input": "[3 steps]",
+        "expected": "[Circular]"
       },
       {
-        "id": "case-2",
+        "id": "example-2",
         "type": "basic",
         "description": "示例 2",
-        "input": "{\"args\":\") => { let count = 0; const fn = throttle(() => { count += 1 }, 20); fn(); await new Promise((resolve) => setTimeout(resolve, 30)); fn(); return count })(\"}",
-        "expected": 2
+        "input": "[5 steps]",
+        "expected": "[Circular]"
       },
       {
-        "id": "case-3",
+        "id": "example-3",
         "type": "basic",
         "description": "示例 3",
-        "input": "{\"args\":\") => { let value = 0; const fn = throttle((next) => { value = next }, 20); fn(1); fn(2); await new Promise((resolve) => setTimeout(resolve, 30)); return value })(\"}",
-        "expected": 1
+        "input": "[5 steps]",
+        "expected": "[Circular]"
       },
       {
         "id": "hidden-1",
         "type": "edge",
         "description": "隐藏 1",
-        "input": "{\"args\":\") => { let count = 0; const context = { increase() { count += 1 } }; const fn = throttle(function() { this.increase() }.bind(context), 10); fn(); await new Promise((resolve) => setTimeout(resolve, 20)); return count })(\"}",
-        "expected": 1
+        "input": "[7 steps]",
+        "expected": "[Circular]"
       },
       {
         "id": "hidden-2",
         "type": "edge",
         "description": "隐藏 2",
-        "input": "{\"args\":\") => { let count = 0; const fn = throttle(() => { count += 1 }, 5); for (let index = 0; index < 50; index += 1) fn(); await new Promise((resolve) => setTimeout(resolve, 15)); return count })(\"}",
-        "expected": 1
+        "input": "[5 steps]",
+        "expected": "[Circular]"
+      },
+      {
+        "id": "hidden-3",
+        "type": "edge",
+        "description": "隐藏 3",
+        "input": "[5 steps]",
+        "expected": "[Circular]"
+      },
+      {
+        "id": "hidden-4",
+        "type": "edge",
+        "description": "隐藏 4",
+        "input": "[5 steps]",
+        "expected": "[Circular]"
+      },
+      {
+        "id": "hidden-5",
+        "type": "edge",
+        "description": "隐藏 5",
+        "input": "[5 steps]",
+        "expected": "[Circular]"
       }
     ],
     "isComponent": false,

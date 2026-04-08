@@ -1,41 +1,126 @@
-/**
- * throttle 测试用例
- */
-
 module.exports = {
   examples: [
     {
+      id: 'example-1',
+      hidden: false,
       input: {
-        args: ") => { let count = 0; const fn = throttle(() => { count += 1 }, 30); fn(); fn(); fn(); await new Promise((resolve) => setTimeout(resolve, 40)); return count })(",
+        target: '100',
+        steps: [
+          { type: 'call', args: [] },
+          { type: 'call', args: [] },
+          { type: 'tick', ms: 100 }
+        ]
       },
-      expected: 1,
+      expected: { callCount: 1 }
     },
     {
+      id: 'example-2',
+      hidden: false,
       input: {
-        args: ") => { let count = 0; const fn = throttle(() => { count += 1 }, 20); fn(); await new Promise((resolve) => setTimeout(resolve, 30)); fn(); return count })(",
+        target: '100',
+        steps: [
+          { type: 'call', args: [] },
+          { type: 'tick', ms: 100 },
+          { type: 'call', args: [] },
+          { type: 'tick', ms: 100 },
+          { type: 'call', args: [] }
+        ]
       },
-      expected: 2,
+      expected: { callCount: 3 }
     },
     {
+      id: 'example-3',
+      hidden: false,
       input: {
-        args: ") => { let value = 0; const fn = throttle((next) => { value = next }, 20); fn(1); fn(2); await new Promise((resolve) => setTimeout(resolve, 30)); return value })(",
+        target: '50',
+        steps: [
+          { type: 'call', args: [] },
+          { type: 'tick', ms: 25 },
+          { type: 'call', args: [] },
+          { type: 'tick', ms: 25 },
+          { type: 'call', args: [] }
+        ]
       },
-      expected: 1,
-    },
+      expected: { callCount: 2 }
+    }
   ],
-
   hidden: [
     {
+      id: 'hidden-1',
+      hidden: true,
       input: {
-        args: ") => { let count = 0; const context = { increase() { count += 1 } }; const fn = throttle(function() { this.increase() }.bind(context), 10); fn(); await new Promise((resolve) => setTimeout(resolve, 20)); return count })(",
+        target: '100',
+        steps: [
+          { type: 'call', args: [] },
+          { type: 'tick', ms: 50 },
+          { type: 'call', args: [] },
+          { type: 'tick', ms: 50 },
+          { type: 'call', args: [] },
+          { type: 'tick', ms: 50 },
+          { type: 'call', args: [] }
+        ]
       },
-      expected: 1,
+      expected: { callCount: 3 }
     },
     {
+      id: 'hidden-2',
+      hidden: true,
       input: {
-        args: ") => { let count = 0; const fn = throttle(() => { count += 1 }, 5); for (let index = 0; index < 50; index += 1) fn(); await new Promise((resolve) => setTimeout(resolve, 15)); return count })(",
+        target: '200',
+        steps: [
+          { type: 'call', args: [] },
+          { type: 'tick', ms: 100 },
+          { type: 'call', args: [] },
+          { type: 'tick', ms: 100 },
+          { type: 'call', args: [] }
+        ]
       },
-      expected: 1,
+      expected: { callCount: 2 }
     },
-  ],
-};
+    {
+      id: 'hidden-3',
+      hidden: true,
+      input: {
+        target: '100',
+        steps: [
+          { type: 'call', args: [] },
+          { type: 'call', args: [] },
+          { type: 'call', args: [] },
+          { type: 'tick', ms: 100 },
+          { type: 'call', args: [] }
+        ]
+      },
+      expected: { callCount: 2 }
+    },
+    {
+      id: 'hidden-4',
+      hidden: true,
+      input: {
+        target: '50',
+        steps: [
+          { type: 'call', args: ['1'] },
+          { type: 'tick', ms: 50 },
+          { type: 'call', args: ['2'] },
+          { type: 'tick', ms: 50 },
+          { type: 'call', args: ['3'] }
+        ]
+      },
+      expected: { callCount: 3 }
+    },
+    {
+      id: 'hidden-5',
+      hidden: true,
+      input: {
+        target: '100',
+        steps: [
+          { type: 'call', args: [] },
+          { type: 'tick', ms: 300 },
+          { type: 'call', args: [] },
+          { type: 'tick', ms: 300 },
+          { type: 'call', args: [] }
+        ]
+      },
+      expected: { callCount: 3 }
+    }
+  ]
+}

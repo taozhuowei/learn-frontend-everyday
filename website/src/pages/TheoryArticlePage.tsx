@@ -39,7 +39,7 @@ export function TheoryArticlePage() {
   }
 
   return (
-    <AppShell title={article.title} showPageHeader={false}>
+    <AppShell title={article.title} showPageHeader={false} backTo="/theory" backLabel="知识库">
       <div className="h-full flex flex-col bg-white">
         {/* Top Action Bar */}
         <div className="h-12 flex items-center justify-between px-4 border-b border-[var(--color-border)] bg-white shrink-0">

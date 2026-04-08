@@ -1,41 +1,79 @@
-/**
- * promise_race 测试用例
- */
-
 module.exports = {
+  noCustomCase: true,
   examples: [
     {
+      id: 'example-1',
+      hidden: false,
       input: {
-        args: ") => Promise.myRace([new Promise((resolve) => setTimeout(() => resolve('slow'), 20)), Promise.resolve('fast')]))(",
+        target: 'promiseRace([MyPromise.resolve(1), MyPromise.resolve(2)])',
+        args: []
       },
-      expected: "fast",
+      expected: 1
     },
     {
+      id: 'example-2',
+      hidden: false,
       input: {
-        args: ") => { try { await Promise.myRace([new Promise((_, reject) => setTimeout(() => reject(new Error('boom')), 10)), new Promise((resolve) => setTimeout(() => resolve('ok'), 20))]) } catch (error) { return error.message } })(",
+        target: 'promiseRace([])',
+        args: []
       },
-      expected: "boom",
+      expected: { error: '' }
     },
     {
+      id: 'example-3',
+      hidden: false,
       input: {
-        args: ") => Promise.myRace([3, Promise.resolve(4)]))(",
+        target: 'promiseRace([MyPromise.reject(new Error("err")), MyPromise.resolve(1)])',
+        args: []
       },
-      expected: 3,
-    },
+      expected: { error: 'err' }
+    }
   ],
-
   hidden: [
     {
+      id: 'hidden-1',
+      hidden: true,
       input: {
-        args: ") => { const pending = Promise.myRace([]); let settled = false; pending.then(() => { settled = true }, () => { settled = true }); await new Promise((resolve) => setTimeout(resolve, 20)); return settled })(",
+        target: 'promiseRace([1, 2, 3])',
+        args: []
       },
-      expected: false,
+      expected: 1
     },
     {
+      id: 'hidden-2',
+      hidden: true,
       input: {
-        args: ") => Promise.myRace([new Promise((resolve) => setTimeout(() => resolve('first'), 5)), new Promise((resolve) => setTimeout(() => resolve('second'), 15))]))(",
+        target: 'promiseRace([MyPromise.resolve("first"), MyPromise.resolve("second")])',
+        args: []
       },
-      expected: "first",
+      expected: 'first'
     },
-  ],
-};
+    {
+      id: 'hidden-3',
+      hidden: true,
+      input: {
+        target: 'promiseRace([new MyPromise(r => setTimeout(() => r(1), 100)), MyPromise.resolve(2)])',
+        args: []
+      },
+      expected: 2
+    },
+    {
+      id: 'hidden-4',
+      hidden: true,
+      input: {
+        target: 'promiseRace([MyPromise.resolve({ a: 1 })])',
+        args: []
+      },
+      expected: { a: 1 }
+    },
+    {
+      id: 'hidden-5',
+      hidden: true,
+      input: {
+        target: 'promiseRace([MyPromise.reject("fail"), MyPromise.reject("error")])',
+        args: []
+      },
+      expected: { error: 'fail' }
+    }
+  ]
+}

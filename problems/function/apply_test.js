@@ -1,41 +1,54 @@
-/**
- * apply 测试用例
- */
-
 module.exports = {
   examples: [
     {
-      input: {
-        args: "a, b) { return this.base + a + b } return add.myApply({ base: 1 }, [2, 3]) })(",
-      },
-      expected: 6,
+      id: 'example-1',
+      hidden: false,
+      input: { target: 'function(a, b) { return this.x + a + b; }', args: ['{ x: 10 }', '[1, 2]'] },
+      expected: 13
     },
     {
-      input: {
-        args: "extra) { return this.base + extra } const result = read.myApply(null, [2]); delete globalThis.base; return result })(",
-      },
-      expected: 6,
+      id: 'example-2',
+      hidden: false,
+      input: { target: 'function() { return this.name; }', args: ['{ name: "test" }', '[]'] },
+      expected: 'test'
     },
     {
-      input: {
-        args: ") { return Object.prototype.toString.call(this) } return tag.myApply('hi') })(",
-      },
-      expected: "[object String]",
-    },
+      id: 'example-3',
+      hidden: false,
+      input: { target: 'Math.max', args: ['null', '[1, 5, 3]'] },
+      expected: 5
+    }
   ],
-
   hidden: [
     {
-      input: {
-        args: "a, b) { return [a, b].join('-') } return join.myApply({}, { 0: 'x', 1: 'y', length: 2 }) })(",
-      },
-      expected: "x-y",
+      id: 'hidden-1',
+      hidden: true,
+      input: { target: 'function() { return this; }', args: ['null', '[]'] },
+      expected: null
     },
     {
-      input: {
-        args: "{}, null, []) } catch (error) { return error instanceof TypeError } })(",
-      },
-      expected: true,
+      id: 'hidden-2',
+      hidden: true,
+      input: { target: 'function() { return arguments.length; }', args: ['{}', '[1, 2, 3, 4]'] },
+      expected: 4
     },
-  ],
-};
+    {
+      id: 'hidden-3',
+      hidden: true,
+      input: { target: 'Array.prototype.concat', args: ['[1, 2]', '[3, 4]'] },
+      expected: [1, 2, 3, 4]
+    },
+    {
+      id: 'hidden-4',
+      hidden: true,
+      input: { target: 'function(a, b, c) { return a + b + c; }', args: ['{}', '[1, 2, 3]'] },
+      expected: 6
+    },
+    {
+      id: 'hidden-5',
+      hidden: true,
+      input: { target: 'String.prototype.slice', args: ['"hello"', '[1, 4]'] },
+      expected: 'ell'
+    }
+  ]
+}

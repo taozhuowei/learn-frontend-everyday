@@ -1,47 +1,54 @@
-/**
- * deep_copy 测试用例
- */
-
 module.exports = {
   examples: [
     {
-      input: {
-        obj: { a: 1, b: { c: 2 } },
-      },
-      expected: { a: 1, b: { c: 2 } },
+      id: 'example-1',
+      hidden: false,
+      input: { target: '{ a: 1, b: 2 }', args: [] },
+      expected: { a: 1, b: 2 }
     },
     {
-      input: {
-        obj: [1, [2, 3], { a: 4 }],
-      },
-      expected: [1, [2, 3], { a: 4 }],
+      id: 'example-2',
+      hidden: false,
+      input: { target: '{ arr: [1, 2, 3] }', args: [] },
+      expected: { arr: [1, 2, 3] }
     },
     {
-      input: {
-        obj: { date: "new Date()" },
-      },
-      expected: { date: "[Date]" },
-    },
+      id: 'example-3',
+      hidden: false,
+      input: { target: '{ nested: { a: 1 } }', args: [] },
+      expected: { nested: { a: 1 } }
+    }
   ],
-
   hidden: [
     {
-      input: {
-        obj: { a: 1, self: null },
-      },
-      expected: { a: 1, self: null },
+      id: 'hidden-1',
+      hidden: true,
+      input: { target: '[]', args: [] },
+      expected: []
     },
     {
-      input: {
-        obj: "{ list: Array(100).fill(0).map((_, i) => ({ index: i })) }",
-      },
-      expected: { list: "Array(100).fill(0).map((_, i) => ({ index: i }))" },
+      id: 'hidden-2',
+      hidden: true,
+      input: { target: '{ a: { b: { c: 1 } } }', args: [] },
+      expected: { a: { b: { c: 1 } } }
     },
     {
-      input: {
-        obj: { regex: "/abc/gi" },
-      },
-      expected: { regex: "/abc/gi" },
+      id: 'hidden-3',
+      hidden: true,
+      input: { target: '[1, [2, [3]]]', args: [] },
+      expected: [1, [2, [3]]]
     },
-  ],
-};
+    {
+      id: 'hidden-4',
+      hidden: true,
+      input: { target: '{ a: null, b: undefined }', args: [] },
+      expected: { a: null, b: undefined }
+    },
+    {
+      id: 'hidden-5',
+      hidden: true,
+      input: { target: '{ date: new Date(2024, 0, 1) }', args: [] },
+      expected: { date: new Date(2024, 0, 1) }
+    }
+  ]
+}

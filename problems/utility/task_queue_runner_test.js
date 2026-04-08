@@ -1,41 +1,106 @@
-/**
- * task_queue_runner 测试用例
- */
-
 module.exports = {
   examples: [
     {
+      id: 'example-1',
+      hidden: false,
       input: {
-        args: ") => { const result = []; await execute([() => Promise.resolve(result.push(1)), () => Promise.resolve(result.push(2))], 100, 1); return result })(",
+        target: '',
+        steps: [
+          { type: 'call', args: ['[]'] },
+          { type: 'await' }
+        ]
       },
-      expected: [1, 2],
+      expected: { callCount: 0 }
     },
     {
+      id: 'example-2',
+      hidden: false,
       input: {
-        args: ') => { const value = await runTask(() => Promise.resolve("ok"), 0, 100, 1); return value })(',
+        target: '',
+        steps: [
+          { type: 'call', args: ['[() => Promise.resolve()]'] },
+          { type: 'await' }
+        ]
       },
-      expected: "ok",
+      expected: { callCount: 1 }
     },
     {
+      id: 'example-3',
+      hidden: false,
       input: {
-        args: ') => { let count = 0; const value = await runTask(() => { count += 1; return count < 2 ? Promise.reject(new Error("retry")) : Promise.resolve("done") }, 0, 100, 2); return value })(',
+        target: '',
+        steps: [
+          { type: 'call', args: ['[() => Promise.resolve(), () => Promise.resolve()]'] },
+          { type: 'await' }
+        ]
       },
-      expected: "done",
-    },
+      expected: { callCount: 2 }
+    }
   ],
-
   hidden: [
     {
+      id: 'hidden-1',
+      hidden: true,
       input: {
-        args: ") => { try { await execute([123], 100, 1) } catch (error) { return error instanceof TypeError } })(",
+        target: '',
+        steps: [
+          { type: 'call', args: ['[() => Promise.resolve(1), () => Promise.resolve(2), () => Promise.resolve(3)]'] },
+          { type: 'await' }
+        ]
       },
-      expected: true,
+      expected: { callCount: 3 }
     },
     {
+      id: 'hidden-2',
+      hidden: true,
       input: {
-        args: ") => { const tasks = Array.from({ length: 20 }, (_, index) => () => Promise.resolve(index)); await execute(tasks, 100, 1); return tasks.length })(",
+        target: '',
+        steps: [
+          { type: 'call', args: ['[() => Promise.reject(new Error("err"))]'] },
+          { type: 'await' }
+        ]
       },
-      expected: 20,
+      expected: { callCount: 1, hasError: true }
     },
-  ],
-};
+    {
+      id: 'hidden-3',
+      hidden: true,
+      input: {
+        target: '',
+        steps: [
+          { type: 'call', args: ['[() => new Promise(r => setTimeout(r, 100))]'] },
+          { type: 'tick', ms: 100 },
+          { type: 'await' }
+        ]
+      },
+      expected: { callCount: 1 }
+    },
+    {
+      id: 'hidden-4',
+      hidden: true,
+      input: {
+        target: '',
+        steps: [
+          { type: 'call', args: ['[() => Promise.resolve(), () => Promise.resolve()]'] },
+          { type: 'call', args: ['[() => Promise.resolve()]'] },
+          { type: 'await' }
+        ]
+      },
+      expected: { callCount: 3 }
+    },
+    {
+      id: 'hidden-5',
+      hidden: true,
+      input: {
+        target: '',
+        steps: [
+          { type: 'call', args: ['[() => Promise.resolve(1)]'] },
+          { type: 'await' },
+          { type: 'call', args: ['[() => Promise.resolve(2)]'] },
+          { type: 'await' }
+        ]
+      },
+      expected: { callCount: 2 }
+    }
+  ]
+}

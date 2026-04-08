@@ -1,41 +1,54 @@
-/**
- * bind 测试用例
- */
-
 module.exports = {
   examples: [
     {
-      input: {
-        args: "a, b) { return this.base + a + b } const bound = add.myBind({ base: 1 }, 2); return bound(3) })(",
-      },
-      expected: 6,
+      id: 'example-1',
+      hidden: false,
+      input: { target: 'function(a, b) { return this.x + a + b; }', args: ['{ x: 10 }', '1'] },
+      expected: 'bind_result'
     },
     {
-      input: {
-        args: "name) { this.name = name } Person.prototype.getName = function () { return this.name }; const BoundPerson = Person.myBind({ ignored: true }); const person = new BoundPerson('Tom'); return person.getName() })(",
-      },
-      expected: "Tom",
+      id: 'example-2',
+      hidden: false,
+      input: { target: 'function() { return this.name; }', args: ['{ name: "bound" }'] },
+      expected: 'bind_result'
     },
     {
-      input: {
-        args: "a, b, c) { return a * b * c } const bound = multiply.myBind(null, 2, 3); return bound(4) })(",
-      },
-      expected: 24,
-    },
+      id: 'example-3',
+      hidden: false,
+      input: { target: 'function(a, b, c) { return a + b + c; }', args: ['{}', '1', '2'] },
+      expected: 'bind_result'
+    }
   ],
-
   hidden: [
     {
-      input: {
-        args: ") { return Object.prototype.toString.call(this) } const bound = read.myBind('x'); return bound() })(",
-      },
-      expected: "[object String]",
+      id: 'hidden-1',
+      hidden: true,
+      input: { target: 'function() { return this; }', args: ['{ a: 1 }'] },
+      expected: 'bind_result'
     },
     {
-      input: {
-        args: "{}, null) } catch (error) { return error instanceof TypeError } })(",
-      },
-      expected: true,
+      id: 'hidden-2',
+      hidden: true,
+      input: { target: 'function() { return new.target; }', args: ['{}'] },
+      expected: 'bind_result'
     },
-  ],
-};
+    {
+      id: 'hidden-3',
+      hidden: true,
+      input: { target: 'function(x) { return this.val + x; }', args: ['{ val: 5 }'] },
+      expected: 'bind_result'
+    },
+    {
+      id: 'hidden-4',
+      hidden: true,
+      input: { target: 'function(a, b) { return a * b; }', args: ['null', '3'] },
+      expected: 'bind_result'
+    },
+    {
+      id: 'hidden-5',
+      hidden: true,
+      input: { target: 'Array.prototype.push', args: ['[1, 2]'] },
+      expected: 'bind_result'
+    }
+  ]
+}

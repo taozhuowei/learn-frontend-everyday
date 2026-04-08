@@ -26,6 +26,7 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
+      '@judge': path.resolve(__dirname, '../judge/src'),
     },
   },
   server: {

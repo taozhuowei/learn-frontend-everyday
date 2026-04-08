@@ -1,41 +1,54 @@
-/**
- * levelorder 测试用例
- */
-
 module.exports = {
   examples: [
     {
-      input: {
-        args: "{ val: 1, left: { val: 2, left: null, right: null }, right: { val: 3, left: null, right: null } }",
-      },
-      expected: [[1], [2, 3]],
+      id: 'example-1',
+      hidden: false,
+      input: { target: '[3, 9, 20, null, null, 15, 7]' },
+      expected: [[3], [9, 20], [15, 7]]
     },
     {
-      input: {
-        args: "null",
-      },
-      expected: [],
+      id: 'example-2',
+      hidden: false,
+      input: { target: '[1]' },
+      expected: [[1]]
     },
     {
-      input: {
-        args: "{ val: 9, left: null, right: null }",
-      },
-      expected: [[9]],
-    },
+      id: 'example-3',
+      hidden: false,
+      input: { target: '[]' },
+      expected: []
+    }
   ],
-
   hidden: [
     {
-      input: {
-        args: "{ val: 1, left: { val: 2, left: { val: 4, left: null, right: null }, right: null }, right: { val: 3, left: null, right: { val: 5, left: null, right: null } } }",
-      },
-      expected: [[1], [2, 3], [4, 5]],
+      id: 'hidden-1',
+      hidden: true,
+      input: { target: '[1, 2, 3, 4, 5]' },
+      expected: [[1], [2, 3], [4, 5]]
     },
     {
-      input: {
-        args: "let index = 1; index <= 80; index += 1) { current.right = { val: index, left: null, right: null }; current = current.right } return levelOrder(root).length })(",
-      },
-      expected: 81,
+      id: 'hidden-2',
+      hidden: true,
+      input: { target: '[1, 2, 3, null, null, 4, 5]' },
+      expected: [[1], [2, 3], [4, 5]]
     },
-  ],
-};
+    {
+      id: 'hidden-3',
+      hidden: true,
+      input: { target: '[1, 2]' },
+      expected: [[1], [2]]
+    },
+    {
+      id: 'hidden-4',
+      hidden: true,
+      input: { target: '[1, null, 2]' },
+      expected: [[1], [2]]
+    },
+    {
+      id: 'hidden-5',
+      hidden: true,
+      input: { target: '[1, 2, 3, 4, null, null, 5]' },
+      expected: [[1], [2, 3], [4, 5]]
+    }
+  ]
+}

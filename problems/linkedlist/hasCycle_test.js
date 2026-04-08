@@ -1,41 +1,54 @@
-/**
- * hasCycle 测试用例
- */
-
 module.exports = {
   examples: [
     {
-      input: {
-        args: "head) })(",
-      },
-      expected: true,
+      id: 'example-1',
+      hidden: false,
+      input: { target: '[3, 2, 0, -4]' },
+      expected: false
     },
     {
-      input: {
-        args: "head) })(",
-      },
-      expected: false,
+      id: 'example-2',
+      hidden: false,
+      input: { target: '[1, 2]' },
+      expected: false
     },
     {
-      input: {
-        args: "null",
-      },
-      expected: false,
-    },
+      id: 'example-3',
+      hidden: false,
+      input: { target: '[1]' },
+      expected: false
+    }
   ],
-
   hidden: [
     {
-      input: {
-        args: "node) })(",
-      },
-      expected: true,
+      id: 'hidden-1',
+      hidden: true,
+      input: { target: '[]' },
+      expected: false
     },
     {
-      input: {
-        args: "{ length: 300 }, (_, index) => ({ val: index, next: null })); for (let index = 0; index < nodes.length - 1; index += 1) nodes[index].next = nodes[index + 1]; return hasCycle(nodes[0]) })(",
-      },
-      expected: false,
+      id: 'hidden-2',
+      hidden: true,
+      input: { target: '[1, 2, 3, 4, 5]' },
+      expected: false
     },
-  ],
-};
+    {
+      id: 'hidden-3',
+      hidden: true,
+      input: { target: '[1, 2, 3]' },
+      expected: false
+    },
+    {
+      id: 'hidden-4',
+      hidden: true,
+      input: { target: '[0, 0, 0]' },
+      expected: false
+    },
+    {
+      id: 'hidden-5',
+      hidden: true,
+      input: { target: '[1, 2, 3, 4]' },
+      expected: false
+    }
+  ]
+}

@@ -68,6 +68,13 @@ export interface ExecutionResponse {
 export interface ExecutionRequest {
   source: string
   cases: JudgeCase[]
+  /** problem ID for JudgeCore routing */
+  problemId?: string
+  /** test file in judge format, passed when problemId is provided */
+  testFile?: {
+    examples: unknown[]
+    hidden: unknown[]
+  }
   /** 标准答案代码，用于为自定义用例自动生成期望输出 */
   solutionCode?: string
 }

@@ -6,7 +6,7 @@ export const generatedTestManifest = [
     "categoryName": "数组方法",
     "executionMode": "browser",
     "basicCaseCount": 3,
-    "fullCaseCount": 14
+    "fullCaseCount": 8
   },
   {
     "problemId": "flat",
@@ -15,7 +15,7 @@ export const generatedTestManifest = [
     "categoryName": "数组方法",
     "executionMode": "browser",
     "basicCaseCount": 3,
-    "fullCaseCount": 5
+    "fullCaseCount": 8
   },
   {
     "problemId": "forEach",
@@ -24,7 +24,7 @@ export const generatedTestManifest = [
     "categoryName": "数组方法",
     "executionMode": "browser",
     "basicCaseCount": 3,
-    "fullCaseCount": 5
+    "fullCaseCount": 8
   },
   {
     "problemId": "map",
@@ -33,7 +33,7 @@ export const generatedTestManifest = [
     "categoryName": "数组方法",
     "executionMode": "browser",
     "basicCaseCount": 3,
-    "fullCaseCount": 5
+    "fullCaseCount": 8
   },
   {
     "problemId": "reduce",
@@ -42,7 +42,7 @@ export const generatedTestManifest = [
     "categoryName": "数组方法",
     "executionMode": "browser",
     "basicCaseCount": 3,
-    "fullCaseCount": 5
+    "fullCaseCount": 8
   },
   {
     "problemId": "apply",
@@ -51,7 +51,7 @@ export const generatedTestManifest = [
     "categoryName": "函数方法",
     "executionMode": "browser",
     "basicCaseCount": 3,
-    "fullCaseCount": 5
+    "fullCaseCount": 8
   },
   {
     "problemId": "bind",
@@ -60,7 +60,7 @@ export const generatedTestManifest = [
     "categoryName": "函数方法",
     "executionMode": "browser",
     "basicCaseCount": 3,
-    "fullCaseCount": 5
+    "fullCaseCount": 8
   },
   {
     "problemId": "call",
@@ -69,7 +69,7 @@ export const generatedTestManifest = [
     "categoryName": "函数方法",
     "executionMode": "browser",
     "basicCaseCount": 3,
-    "fullCaseCount": 5
+    "fullCaseCount": 8
   },
   {
     "problemId": "findCycleEntry",
@@ -78,7 +78,7 @@ export const generatedTestManifest = [
     "categoryName": "链表",
     "executionMode": "browser",
     "basicCaseCount": 3,
-    "fullCaseCount": 5
+    "fullCaseCount": 8
   },
   {
     "problemId": "hasCycle",
@@ -87,7 +87,7 @@ export const generatedTestManifest = [
     "categoryName": "链表",
     "executionMode": "browser",
     "basicCaseCount": 3,
-    "fullCaseCount": 5
+    "fullCaseCount": 8
   },
   {
     "problemId": "mergeTwoLists",
@@ -96,7 +96,7 @@ export const generatedTestManifest = [
     "categoryName": "链表",
     "executionMode": "browser",
     "basicCaseCount": 3,
-    "fullCaseCount": 5
+    "fullCaseCount": 8
   },
   {
     "problemId": "reverseList",
@@ -105,7 +105,7 @@ export const generatedTestManifest = [
     "categoryName": "链表",
     "executionMode": "browser",
     "basicCaseCount": 3,
-    "fullCaseCount": 5
+    "fullCaseCount": 8
   },
   {
     "problemId": "deep_copy",
@@ -114,7 +114,7 @@ export const generatedTestManifest = [
     "categoryName": "对象方法",
     "executionMode": "browser",
     "basicCaseCount": 3,
-    "fullCaseCount": 6
+    "fullCaseCount": 8
   },
   {
     "problemId": "instanceof",
@@ -123,7 +123,7 @@ export const generatedTestManifest = [
     "categoryName": "对象方法",
     "executionMode": "browser",
     "basicCaseCount": 3,
-    "fullCaseCount": 5
+    "fullCaseCount": 8
   },
   {
     "problemId": "new",
@@ -132,7 +132,7 @@ export const generatedTestManifest = [
     "categoryName": "对象方法",
     "executionMode": "browser",
     "basicCaseCount": 3,
-    "fullCaseCount": 5
+    "fullCaseCount": 8
   },
   {
     "problemId": "promise",
@@ -141,7 +141,7 @@ export const generatedTestManifest = [
     "categoryName": "Promise 实现",
     "executionMode": "browser",
     "basicCaseCount": 3,
-    "fullCaseCount": 5
+    "fullCaseCount": 8
   },
   {
     "problemId": "promise_all",
@@ -150,7 +150,7 @@ export const generatedTestManifest = [
     "categoryName": "Promise 实现",
     "executionMode": "browser",
     "basicCaseCount": 3,
-    "fullCaseCount": 5
+    "fullCaseCount": 8
   },
   {
     "problemId": "promise_race",
@@ -159,7 +159,7 @@ export const generatedTestManifest = [
     "categoryName": "Promise 实现",
     "executionMode": "browser",
     "basicCaseCount": 3,
-    "fullCaseCount": 5
+    "fullCaseCount": 8
   },
   {
     "problemId": "inorder",
@@ -168,7 +168,7 @@ export const generatedTestManifest = [
     "categoryName": "树结构",
     "executionMode": "browser",
     "basicCaseCount": 3,
-    "fullCaseCount": 5
+    "fullCaseCount": 8
   },
   {
     "problemId": "isValidBST",
@@ -177,7 +177,7 @@ export const generatedTestManifest = [
     "categoryName": "树结构",
     "executionMode": "browser",
     "basicCaseCount": 3,
-    "fullCaseCount": 5
+    "fullCaseCount": 8
   },
   {
     "problemId": "levelorder",
@@ -186,7 +186,7 @@ export const generatedTestManifest = [
     "categoryName": "树结构",
     "executionMode": "browser",
     "basicCaseCount": 3,
-    "fullCaseCount": 5
+    "fullCaseCount": 8
   },
   {
     "problemId": "maxDepth",
@@ -195,7 +195,7 @@ export const generatedTestManifest = [
     "categoryName": "树结构",
     "executionMode": "browser",
     "basicCaseCount": 3,
-    "fullCaseCount": 5
+    "fullCaseCount": 8
   },
   {
     "problemId": "postorder",
@@ -204,7 +204,7 @@ export const generatedTestManifest = [
     "categoryName": "树结构",
     "executionMode": "browser",
     "basicCaseCount": 3,
-    "fullCaseCount": 5
+    "fullCaseCount": 8
   },
   {
     "problemId": "preorder",
@@ -213,7 +213,7 @@ export const generatedTestManifest = [
     "categoryName": "树结构",
     "executionMode": "browser",
     "basicCaseCount": 3,
-    "fullCaseCount": 5
+    "fullCaseCount": 8
   },
   {
     "problemId": "curry",
@@ -222,7 +222,7 @@ export const generatedTestManifest = [
     "categoryName": "工具函数",
     "executionMode": "browser",
     "basicCaseCount": 3,
-    "fullCaseCount": 5
+    "fullCaseCount": 8
   },
   {
     "problemId": "debounce",
@@ -231,7 +231,7 @@ export const generatedTestManifest = [
     "categoryName": "工具函数",
     "executionMode": "browser",
     "basicCaseCount": 3,
-    "fullCaseCount": 5
+    "fullCaseCount": 8
   },
   {
     "problemId": "deepClone",
@@ -240,7 +240,7 @@ export const generatedTestManifest = [
     "categoryName": "工具函数",
     "executionMode": "browser",
     "basicCaseCount": 3,
-    "fullCaseCount": 5
+    "fullCaseCount": 8
   },
   {
     "problemId": "flatten",
@@ -249,7 +249,7 @@ export const generatedTestManifest = [
     "categoryName": "工具函数",
     "executionMode": "browser",
     "basicCaseCount": 3,
-    "fullCaseCount": 5
+    "fullCaseCount": 8
   },
   {
     "problemId": "scheduler",
@@ -258,7 +258,7 @@ export const generatedTestManifest = [
     "categoryName": "工具函数",
     "executionMode": "browser",
     "basicCaseCount": 3,
-    "fullCaseCount": 5
+    "fullCaseCount": 8
   },
   {
     "problemId": "task_queue_runner",
@@ -267,7 +267,7 @@ export const generatedTestManifest = [
     "categoryName": "工具函数",
     "executionMode": "browser",
     "basicCaseCount": 3,
-    "fullCaseCount": 5
+    "fullCaseCount": 8
   },
   {
     "problemId": "throttle",
@@ -276,7 +276,7 @@ export const generatedTestManifest = [
     "categoryName": "工具函数",
     "executionMode": "browser",
     "basicCaseCount": 3,
-    "fullCaseCount": 5
+    "fullCaseCount": 8
   },
   {
     "problemId": "cascader",
