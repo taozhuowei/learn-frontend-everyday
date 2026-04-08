@@ -4,7 +4,8 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "start": "node ./scripts/start.mjs"
+    "start": "node ./scripts/start.mjs",
+    "build": "node ./scripts/start.mjs --build-only"
   },
   "dependencies": {
     "@fontsource/jetbrains-mono": "^5.2.8",
