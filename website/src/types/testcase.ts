@@ -4,7 +4,7 @@
 
 export interface TestCase {
   /** 输入参数 */
-  input: Record<string, unknown>
+  input: Record<string, unknown> & { thisArg?: string }
   /** 期望输出 */
   expected: unknown
 }
