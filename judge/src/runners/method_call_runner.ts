@@ -49,7 +49,7 @@ export async function methodCallRunner(
     })
 
     // 6. Call the method
-    const result = target[contract.entry.name](...args)
+    const result = (target as Record<string, (...args: unknown[]) => unknown>)[contract.entry.name](...args)
 
     return result
   } finally {

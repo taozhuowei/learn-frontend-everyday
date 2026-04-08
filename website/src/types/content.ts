@@ -15,6 +15,7 @@ export interface NewTestCase {
     args?: string[]
     steps?: unknown[]
     props?: Record<string, unknown>
+    thisArg?: string
   }
   expected: unknown
 }

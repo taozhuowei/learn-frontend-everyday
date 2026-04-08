@@ -12,7 +12,7 @@ interface BehavioralResult {
 }
 
 export async function behavioralRunner(
-  contract: ProblemContract,
+  _contract: ProblemContract,
   testCase: TestCase,
   userCode: string
 ): Promise<BehavioralResult> {
@@ -21,7 +21,7 @@ export async function behavioralRunner(
   const clock = new VirtualClock()
 
   let max_concurrent = 0
-  let current_concurrent = 0
+  let _current_concurrent = 0
 
   // Wrap mock to track concurrent calls
   const tracking_mock = function (this: unknown, ...args: unknown[]): void {
