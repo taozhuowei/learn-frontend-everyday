@@ -21,7 +21,6 @@ export async function behavioralRunner(
   const clock = new VirtualClock()
 
   let max_concurrent = 0
-  let _current_concurrent = 0
 
   // Wrap mock to track concurrent calls
   const tracking_mock = function (this: unknown, ...args: unknown[]): void {
