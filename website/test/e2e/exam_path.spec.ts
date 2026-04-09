@@ -6,7 +6,7 @@ const SIMPLE_SOLUTION_CODE = `function solution() {
 
 test.describe('Exam Path', () => {
   test('exam entry page loads', async ({ page }) => {
-    await page.goto('/exam')
+    await page.goto('/#/exam')
     
     // Verify exam entry page elements
     await expect(page.locator('text=模拟考试').first()).toBeVisible({ timeout: 10000 })
@@ -20,7 +20,7 @@ test.describe('Exam Path', () => {
   })
 
   test('start exam and verify session loads', async ({ page }) => {
-    await page.goto('/exam')
+    await page.goto('/#/exam')
     
     // Click start exam button
     await page.locator('button:has-text("开始考试")').click()
@@ -35,7 +35,7 @@ test.describe('Exam Path', () => {
   })
 
   test('run code in exam session', async ({ page }) => {
-    await page.goto('/exam')
+    await page.goto('/#/exam')
     
     // Click start exam button
     await page.locator('button:has-text("开始考试")').click()
@@ -59,7 +59,7 @@ test.describe('Exam Path', () => {
   })
 
   test('submit problem and navigate between problems', async ({ page }) => {
-    await page.goto('/exam')
+    await page.goto('/#/exam')
     
     // Click start exam button
     await page.locator('button:has-text("开始考试")').click()
@@ -94,7 +94,7 @@ test.describe('Exam Path', () => {
   })
 
   test('start exam and verify timer', async ({ page }) => {
-    await page.goto('/exam')
+    await page.goto('/#/exam')
     
     // Click start exam button
     await page.locator('button:has-text("开始考试")').click()
