@@ -263,8 +263,7 @@ function LearnProblemView({ problem }: { problem: ProblemRecord }) {
         })
         finalResponse = {
           summary: {
-            passedCount:
-              judgeResponse.summary.passedCount + customResponse.summary.passedCount,
+            passedCount: judgeResponse.summary.passedCount + customResponse.summary.passedCount,
             totalCount: judgeResponse.summary.totalCount + customResponse.summary.totalCount,
           },
           results: [...judgeResponse.results, ...customResponse.results],
@@ -310,7 +309,13 @@ function LearnProblemView({ problem }: { problem: ProblemRecord }) {
         : undefined
 
   return (
-    <AppShell eyebrow="学习模式" title={problem.title} showPageHeader={false} backTo="/learn" backLabel="题目列表">
+    <AppShell
+      eyebrow="学习模式"
+      title={problem.title}
+      showPageHeader={false}
+      backTo="/learn"
+      backLabel="题目列表"
+    >
       <div className="h-full p-2">
         <SplitPane
           className="h-full"

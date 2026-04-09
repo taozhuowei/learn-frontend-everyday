@@ -166,16 +166,24 @@ async function executeWithJudgeCore(request: ExecutionRequest): Promise<Executio
   try {
     const judgeResult = await judge.run(request.problemId!, request.source, testFile)
 
-    const results: ExecutionCaseResult[] = judgeResult.cases.map((caseResult: { id: string; passed: boolean; expected: unknown; actual: unknown; error?: string }) => ({
-      caseId: caseResult.id,
-      description: getCaseDescription(caseResult.id, testFile),
-      passed: caseResult.passed,
-      expected: caseResult.expected,
-      actual: caseResult.actual,
-      logs: [],
-      error: caseResult.error,
-      durationMs: judgeResult.duration,
-    }))
+    const results: ExecutionCaseResult[] = judgeResult.cases.map(
+      (caseResult: {
+        id: string
+        passed: boolean
+        expected: unknown
+        actual: unknown
+        error?: string
+      }) => ({
+        caseId: caseResult.id,
+        description: getCaseDescription(caseResult.id, testFile),
+        passed: caseResult.passed,
+        expected: caseResult.expected,
+        actual: caseResult.actual,
+        logs: [],
+        error: caseResult.error,
+        durationMs: judgeResult.duration,
+      }),
+    )
 
     return {
       summary: {
