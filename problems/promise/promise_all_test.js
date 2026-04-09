@@ -2,78 +2,82 @@ module.exports = {
   noCustomCase: true,
   examples: [
     {
-      id: 'example-1',
+      id: "example-1",
       hidden: false,
       input: {
-        target: 'promiseAll([MyPromise.resolve(1), MyPromise.resolve(2), MyPromise.resolve(3)])',
-        args: []
+        target:
+          "promiseAll([MyPromise.resolve(1), MyPromise.resolve(2), MyPromise.resolve(3)])",
+        args: [],
       },
-      expected: [1, 2, 3]
+      expected: [1, 2, 3],
     },
     {
-      id: 'example-2',
+      id: "example-2",
       hidden: false,
       input: {
-        target: 'promiseAll([])',
-        args: []
+        target: "promiseAll([])",
+        args: [],
       },
-      expected: []
+      expected: [],
     },
     {
-      id: 'example-3',
+      id: "example-3",
       hidden: false,
       input: {
         target: 'promiseAll([MyPromise.resolve("a"), MyPromise.resolve("b")])',
-        args: []
+        args: [],
       },
-      expected: ['a', 'b']
-    }
+      expected: ["a", "b"],
+    },
   ],
   hidden: [
     {
-      id: 'hidden-1',
+      id: "hidden-1",
       hidden: true,
       input: {
-        target: 'promiseAll([1, 2, 3])',
-        args: []
+        target: "promiseAll([1, 2, 3])",
+        args: [],
       },
-      expected: [1, 2, 3]
+      expected: [1, 2, 3],
     },
     {
-      id: 'hidden-2',
+      id: "hidden-2",
       hidden: true,
       input: {
-        target: 'promiseAll([MyPromise.resolve(1), MyPromise.reject(new Error("err"))])',
-        args: []
+        target:
+          'promiseAll([MyPromise.resolve(1), MyPromise.reject(new Error("err"))])',
+        args: [],
       },
-      expected: { error: 'err' }
+      expected: { error: "err" },
     },
     {
-      id: 'hidden-3',
+      id: "hidden-3",
       hidden: true,
       input: {
-        target: 'promiseAll([new MyPromise(r => setTimeout(() => r(1), 10)), MyPromise.resolve(2)])',
-        args: []
+        target:
+          "promiseAll([new MyPromise(r => setTimeout(() => r(1), 10)), MyPromise.resolve(2)])",
+        args: [],
       },
-      expected: [1, 2]
+      expected: [1, 2],
     },
     {
-      id: 'hidden-4',
+      id: "hidden-4",
       hidden: true,
       input: {
-        target: 'promiseAll([MyPromise.resolve({ x: 1 }), MyPromise.resolve({ y: 2 })])',
-        args: []
+        target:
+          "promiseAll([MyPromise.resolve({ x: 1 }), MyPromise.resolve({ y: 2 })])",
+        args: [],
       },
-      expected: [{ x: 1 }, { y: 2 }]
+      expected: [{ x: 1 }, { y: 2 }],
     },
     {
-      id: 'hidden-5',
+      id: "hidden-5",
       hidden: true,
       input: {
         target: 'promiseAll([MyPromise.reject("fail"), MyPromise.resolve(1)])',
-        args: []
+        args: [],
       },
-      expected: { error: 'fail' }
-    }
-  ]
-}
+      expected: { error: "fail" },
+    },
+  ],
+};

@@ -1,106 +1,117 @@
 module.exports = {
   examples: [
     {
-      id: 'example-1',
+      id: "example-1",
       hidden: false,
       input: {
-        target: '',
-        steps: [
-          { type: 'call', args: ['[]'] },
-          { type: 'await' }
-        ]
+        target: "",
+        steps: [{ type: "call", args: ["[]"] }, { type: "await" }],
       },
-      expected: { callCount: 0 }
+      expected: { callCount: 0 },
     },
     {
-      id: 'example-2',
+      id: "example-2",
       hidden: false,
       input: {
-        target: '',
+        target: "",
         steps: [
-          { type: 'call', args: ['[() => Promise.resolve()]'] },
-          { type: 'await' }
-        ]
+          { type: "call", args: ["[() => Promise.resolve()]"] },
+          { type: "await" },
+        ],
       },
-      expected: { callCount: 1 }
+      expected: { callCount: 1 },
     },
     {
-      id: 'example-3',
+      id: "example-3",
       hidden: false,
       input: {
-        target: '',
+        target: "",
         steps: [
-          { type: 'call', args: ['[() => Promise.resolve(), () => Promise.resolve()]'] },
-          { type: 'await' }
-        ]
+          {
+            type: "call",
+            args: ["[() => Promise.resolve(), () => Promise.resolve()]"],
+          },
+          { type: "await" },
+        ],
       },
-      expected: { callCount: 2 }
-    }
+      expected: { callCount: 2 },
+    },
   ],
   hidden: [
     {
-      id: 'hidden-1',
+      id: "hidden-1",
       hidden: true,
       input: {
-        target: '',
+        target: "",
         steps: [
-          { type: 'call', args: ['[() => Promise.resolve(1), () => Promise.resolve(2), () => Promise.resolve(3)]'] },
-          { type: 'await' }
-        ]
+          {
+            type: "call",
+            args: [
+              "[() => Promise.resolve(1), () => Promise.resolve(2), () => Promise.resolve(3)]",
+            ],
+          },
+          { type: "await" },
+        ],
       },
-      expected: { callCount: 3 }
+      expected: { callCount: 3 },
     },
     {
-      id: 'hidden-2',
+      id: "hidden-2",
       hidden: true,
       input: {
-        target: '',
+        target: "",
         steps: [
-          { type: 'call', args: ['[() => Promise.reject(new Error("err"))]'] },
-          { type: 'await' }
-        ]
+          { type: "call", args: ['[() => Promise.reject(new Error("err"))]'] },
+          { type: "await" },
+        ],
       },
-      expected: { callCount: 1, hasError: true }
+      expected: { callCount: 1, hasError: true },
     },
     {
-      id: 'hidden-3',
+      id: "hidden-3",
       hidden: true,
       input: {
-        target: '',
+        target: "",
         steps: [
-          { type: 'call', args: ['[() => new Promise(r => setTimeout(r, 100))]'] },
-          { type: 'tick', ms: 100 },
-          { type: 'await' }
-        ]
+          {
+            type: "call",
+            args: ["[() => new Promise(r => setTimeout(r, 100))]"],
+          },
+          { type: "tick", ms: 100 },
+          { type: "await" },
+        ],
       },
-      expected: { callCount: 1 }
+      expected: { callCount: 1 },
     },
     {
-      id: 'hidden-4',
+      id: "hidden-4",
       hidden: true,
       input: {
-        target: '',
+        target: "",
         steps: [
-          { type: 'call', args: ['[() => Promise.resolve(), () => Promise.resolve()]'] },
-          { type: 'call', args: ['[() => Promise.resolve()]'] },
-          { type: 'await' }
-        ]
+          {
+            type: "call",
+            args: ["[() => Promise.resolve(), () => Promise.resolve()]"],
+          },
+          { type: "call", args: ["[() => Promise.resolve()]"] },
+          { type: "await" },
+        ],
       },
-      expected: { callCount: 3 }
+      expected: { callCount: 3 },
     },
     {
-      id: 'hidden-5',
+      id: "hidden-5",
       hidden: true,
       input: {
-        target: '',
+        target: "",
         steps: [
-          { type: 'call', args: ['[() => Promise.resolve(1)]'] },
-          { type: 'await' },
-          { type: 'call', args: ['[() => Promise.resolve(2)]'] },
-          { type: 'await' }
-        ]
+          { type: "call", args: ["[() => Promise.resolve(1)]"] },
+          { type: "await" },
+          { type: "call", args: ["[() => Promise.resolve(2)]"] },
+          { type: "await" },
+        ],
       },
-      expected: { callCount: 2 }
-    }
-  ]
-}
+      expected: { callCount: 2 },
+    },
+  ],
+};
