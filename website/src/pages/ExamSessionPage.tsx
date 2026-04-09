@@ -134,9 +134,7 @@ export function ExamSessionPage() {
 
     // Build testFile for JudgeCore - only for submit (full judging)
     const testFile =
-      kind === 'submit' && activeProblem.testCases
-        ? activeProblem.testCases
-        : undefined
+      kind === 'submit' && activeProblem.testCases ? activeProblem.testCases : undefined
 
     try {
       const response = await runCode({

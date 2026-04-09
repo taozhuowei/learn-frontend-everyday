@@ -165,7 +165,10 @@ export function CasePanel({
   }
 
   return (
-    <aside className="flex flex-col h-full bg-white border border-[var(--color-border)] rounded-[var(--radius-lg)] overflow-hidden" data-testid="case-panel">
+    <aside
+      className="flex flex-col h-full bg-white border border-[var(--color-border)] rounded-[var(--radius-lg)] overflow-hidden"
+      data-testid="case-panel"
+    >
       {/* Panel header */}
       <div className="flex items-center justify-between px-4 h-11 border-b border-[var(--color-border)] shrink-0">
         <span className="text-sm font-bold text-[var(--color-ink)]">{title}</span>
@@ -246,12 +249,16 @@ export function CasePanel({
                     <div className="flex flex-col gap-1">
                       <div>
                         <span className="text-[var(--color-ink-muted)] mr-1">调用对象</span>
-                        <span className="break-all text-[var(--color-ink)]">{testCase.displayTarget}</span>
+                        <span className="break-all text-[var(--color-ink)]">
+                          {testCase.displayTarget}
+                        </span>
                       </div>
                       {testCase.displayArgs && testCase.displayArgs.length > 0 && (
                         <div>
                           <span className="text-[var(--color-ink-muted)] mr-1">入参</span>
-                          <span className="break-all text-[var(--color-ink)]">{testCase.displayArgs.join(', ')}</span>
+                          <span className="break-all text-[var(--color-ink)]">
+                            {testCase.displayArgs.join(', ')}
+                          </span>
                         </div>
                       )}
                     </div>
@@ -316,7 +323,9 @@ export function CasePanel({
                       <span className="text-[var(--color-ink-muted)] block mb-1">调用对象</span>
                       <input
                         className="w-full px-2.5 py-1.5 rounded-md border border-[var(--color-border)] text-xs font-mono bg-white focus:border-[var(--color-primary)] outline-none transition-colors"
-                        onChange={(e) => handleUpdateCustomCaseTarget(customCase.id, e.target.value)}
+                        onChange={(e) =>
+                          handleUpdateCustomCaseTarget(customCase.id, e.target.value)
+                        }
                         placeholder="例：[1, 2, 3, 4]"
                         type="text"
                         value={customCase.target}

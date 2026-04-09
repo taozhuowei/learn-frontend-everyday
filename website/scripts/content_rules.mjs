@@ -120,8 +120,7 @@ export function validateTestCases(testCases, relativePath) {
       if (!c.execute || typeof c.execute !== 'object') {
         throw new Error(`${relativePath} ${type}[${i}] 必须有 execute 对象。`)
       }
-    }
-    else {
+    } else {
       throw new Error(
         `${relativePath} ${type}[${i}] 必须有 input 对象或 target+args 或 display+execute。`,
       )
