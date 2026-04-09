@@ -21,13 +21,13 @@ test.describe('Learn Path', () => {
   })
 
   test('learn problem list displays problems', async ({ page }) => {
-    await page.goto('/learn')
+    await page.goto('/#/learn')
     // Verify problems are listed
     await expect(page.locator('text=filter').first()).toBeVisible({ timeout: 10000 })
   })
 
   test('filter problem page loads with editor and case panel', async ({ page }) => {
-    await page.goto('/learn/filter')
+    await page.goto('/#/learn/filter')
     
     // Verify problem description is visible
     await expect(page.locator('text=filter').first()).toBeVisible({ timeout: 10000 })
@@ -40,7 +40,7 @@ test.describe('Learn Path', () => {
   })
 
   test('run and submit filter problem with correct solution', async ({ page }) => {
-    await page.goto('/learn/filter')
+    await page.goto('/#/learn/filter')
     
     // Wait for editor to be ready
     await page.locator('.monaco-editor').first().waitFor({ state: 'visible', timeout: 15000 })
@@ -68,7 +68,7 @@ test.describe('Learn Path', () => {
 
   test('navigate to map problem and editor resets', async ({ page }) => {
     // First go to filter problem
-    await page.goto('/learn/filter')
+    await page.goto('/#/learn/filter')
     await page.locator('.monaco-editor').first().waitFor({ state: 'visible', timeout: 15000 })
     
     // Set some code in the editor
@@ -80,7 +80,7 @@ test.describe('Learn Path', () => {
     }, '')
     
     // Navigate to map problem
-    await page.goto('/learn/map')
+    await page.goto('/#/learn/map')
     await page.locator('.monaco-editor').first().waitFor({ state: 'visible', timeout: 15000 })
     
     // Verify editor has different content (template for map)
