@@ -1,15 +1,15 @@
 import { defineConfig, devices } from '@playwright/test'
 
 export default defineConfig({
-  testDir: './e2e',
+  testDir: './test/e2e',
   fullyParallel: false,
-  forbidOnly: false,
-  retries: 0,
+  forbidOnly: !!process.env.CI,
+  retries: process.env.CI ? 2 : 0,
   workers: 1,
-  reporter: 'list',
+  reporter: process.env.CI ? 'github' : 'list',
   use: {
     baseURL: 'http://127.0.0.1:5173',
-    headless: false,
+    headless: !!process.env.CI || !process.env.PLAYWRIGHT_HEADED,
     channel: 'chrome',
     viewport: { width: 1280, height: 800 },
     actionTimeout: 15000,
@@ -24,7 +24,7 @@ export default defineConfig({
   webServer: {
     command: 'npx vite --port 5173 --host 127.0.0.1',
     url: 'http://127.0.0.1:5173',
-    reuseExistingServer: true,
+    reuseExistingServer: !process.env.CI,
     timeout: 60000,
     cwd: '.',
   },

@@ -55,7 +55,7 @@ test.describe('Exam Path', () => {
     await page.locator('[data-testid="run-button"]').click()
     
     // Wait for results to appear
-    await page.waitForTimeout(3000)
+    await expect(page.locator('[data-testid="case-panel"]')).toBeVisible({ timeout: 15000 })
   })
 
   test('submit problem and navigate between problems', async ({ page }) => {
@@ -79,14 +79,14 @@ test.describe('Exam Path', () => {
     await page.locator('[data-testid="submit-button"]').click()
     
     // Wait for submission to complete
-    await page.waitForTimeout(3000)
+    await expect(page.locator('[data-testid="case-panel"]')).toBeVisible({ timeout: 15000 })
     
     // Try to navigate to next problem if available
     const nextButton = page.locator('button:has-text("下一题")')
     const isEnabled = await nextButton.isEnabled().catch(() => false)
     if (isEnabled) {
       await nextButton.click()
-      await page.waitForTimeout(1000)
+      await page.locator('.monaco-editor').first().waitFor({ state: 'visible', timeout: 15000 })
       
       // Verify we're on a different problem
       await expect(page.locator('.monaco-editor').first()).toBeVisible({ timeout: 15000 })
@@ -124,6 +124,6 @@ test.describe('Exam Path', () => {
     await page.locator('[data-testid="submit-button"]').click()
     
     // Wait a moment for submission
-    await page.waitForTimeout(3000)
+    await expect(page.locator('[data-testid="case-panel"]')).toBeVisible({ timeout: 15000 })
   })
 })
