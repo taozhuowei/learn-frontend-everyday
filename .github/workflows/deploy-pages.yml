@@ -41,6 +41,10 @@ jobs:
         working-directory: website
         run: npx vitest run --coverage
 
+      - name: Generate content for E2E
+        working-directory: website
+        run: npx tsx scripts/build-content.ts
+
       - name: Install Playwright browsers
         working-directory: website
         run: npx playwright install --with-deps chromium
