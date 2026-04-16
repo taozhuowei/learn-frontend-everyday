@@ -32,11 +32,12 @@ function createInitialSource(problem: ProblemRecord) {
 }
 
 export function ComponentLearnPage({ problem }: ComponentLearnPageProps) {
-  const { state: { isMobile } } = useAppState()
+  const {
+    state: { isMobile },
+  } = useAppState()
   const editorRef = useRef<CodeEditorHandle>(null)
   const [source, setSource] = useState(() => createInitialSource(problem))
   const [activeTab, setActiveTab] = useState<LeftTab>('description')
-  const [mobileActiveTab, setMobileActiveTab] = useState<'info' | 'code' | 'preview'>('info')
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [showConfirm, setShowConfirm] = useState(false)
   const [isCompleted, setIsCompleted] = useState(false)
@@ -167,11 +168,7 @@ export function ComponentLearnPage({ problem }: ComponentLearnPageProps) {
 
       <div className="flex-1 bg-[var(--color-surface-secondary)] relative">
         {previewUrl ? (
-          <iframe
-            className="w-full h-full border-0"
-            src={previewUrl}
-            title="Component Preview"
-          />
+          <iframe className="w-full h-full border-0" src={previewUrl} title="Component Preview" />
         ) : (
           <div className="absolute inset-0 flex items-center justify-center text-[var(--color-ink-muted)] text-sm">
             预览加载失败
@@ -183,71 +180,28 @@ export function ComponentLearnPage({ problem }: ComponentLearnPageProps) {
 
   if (isMobile) {
     return (
-      <AppShell eyebrow="组件实践" title={problem.title} showPageHeader={false} backTo="/learn" backLabel="列表">
-        <div className="h-full flex flex-col bg-[var(--color-canvas)]">
-          <div className="flex-1 min-h-0 overflow-hidden p-2">
-            {mobileActiveTab === 'info' && renderInfoPanel()}
-            {mobileActiveTab === 'code' && renderCodeWorkspace()}
-            {mobileActiveTab === 'preview' && renderPreviewPanel()}
+      <AppShell
+        eyebrow="组件实践"
+        title={problem.title}
+        showPageHeader={false}
+        backTo="/learn"
+        backLabel="列表"
+      >
+        <div className="h-full flex flex-col items-center justify-center bg-white p-8 text-center">
+          <div className="w-16 h-16 rounded-full bg-[var(--color-surface-secondary)] flex items-center justify-center mb-4">
+            <Code size={32} className="text-[var(--color-ink-muted)]" />
           </div>
-          
-          <div className="h-14 shrink-0 bg-white border-t border-[var(--color-border)] flex items-stretch">
-            {[
-              { id: 'info' as const, label: '需求', icon: FileText },
-              { id: 'code' as const, label: '代码', icon: Code },
-              { id: 'preview' as const, label: '预览', icon: Eye },
-            ].map((tab) => {
-              const Icon = tab.icon
-              const isActive = mobileActiveTab === tab.id
-              return (
-                <button
-                  key={tab.id}
-                  onClick={() => setMobileActiveTab(tab.id)}
-                  className={`flex-1 flex flex-col items-center justify-center gap-1 transition-colors ${
-                    isActive ? 'text-[var(--color-primary)]' : 'text-[var(--color-ink-tertiary)]'
-                  }`}
-                >
-                  <Icon size={18} />
-                  <span className="text-[10px] font-bold">{tab.label}</span>
-                </button>
-              )
-            })}
-          </div>
+          <h2 className="text-lg font-bold text-[var(--color-ink)] mb-2">组件实践暂不支持移动端</h2>
+          <p className="text-sm text-[var(--color-ink-tertiary)] leading-relaxed max-w-xs">
+            由于移动端屏幕尺寸限制及预览环境需求，请在 PC 端浏览器中打开此页面进行组件开发。
+          </p>
+          <button
+            onClick={() => (window.location.hash = '#/learn')}
+            className="mt-6 px-6 py-2 rounded-md bg-[var(--color-primary)] text-white text-sm font-semibold"
+          >
+            返回题目列表
+          </button>
         </div>
-        {/* 确认完成弹窗 */}
-        {showConfirm && (
-          <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/50">
-            <div className="bg-white rounded-lg shadow-xl max-w-md w-full mx-4 overflow-hidden">
-              <div className="px-6 py-4 border-b border-[var(--color-border)]">
-                <h3 className="text-lg font-bold text-[var(--color-ink)]">确认完成</h3>
-              </div>
-              <div className="px-6 py-4">
-                <p className="text-sm text-[var(--color-ink-secondary)] mb-4">
-                  请确认你的组件已实现所有需求：
-                </p>
-                <div className="bg-[var(--color-surface-secondary)] rounded-md p-3 text-sm text-[var(--color-ink)] mb-4">
-                  <p className="font-medium mb-1">{problem.title}</p>
-                </div>
-              </div>
-              <div className="px-6 py-4 border-t border-[var(--color-border)] flex gap-3 justify-end">
-                <button
-                  className="px-4 py-2 rounded-md text-sm font-medium text-[var(--color-ink-secondary)] hover:bg-[var(--color-surface-secondary)] transition-colors"
-                  onClick={() => setShowConfirm(false)}
-                  type="button"
-                >
-                  继续完善
-                </button>
-                <button
-                  className="px-4 py-2 rounded-md text-sm font-medium bg-[var(--color-success)] text-white hover:bg-[var(--color-success-strong)] transition-colors"
-                  onClick={handleConfirmComplete}
-                  type="button"
-                >
-                  确认完成
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
       </AppShell>
     )
   }
@@ -259,11 +213,7 @@ export function ComponentLearnPage({ problem }: ComponentLearnPageProps) {
           className="h-full"
           defaultSize={280}
           direction="horizontal"
-          first={
-            <div className="h-full pr-1">
-              {renderInfoPanel()}
-            </div>
-          }
+          first={<div className="h-full pr-1">{renderInfoPanel()}</div>}
           firstClassName="h-full"
           minFirstSize={240}
           minSecondSize={400}
@@ -273,19 +223,11 @@ export function ComponentLearnPage({ problem }: ComponentLearnPageProps) {
                 className="h-full"
                 defaultSizeRatio={0.5}
                 direction="horizontal"
-                first={
-                  <div className="h-full pr-1">
-                    {renderCodeWorkspace()}
-                  </div>
-                }
+                first={<div className="h-full pr-1">{renderCodeWorkspace()}</div>}
                 firstClassName="h-full"
                 minFirstSize={300}
                 minSecondSize={300}
-                second={
-                  <div className="h-full pl-1">
-                    {renderPreviewPanel()}
-                  </div>
-                }
+                second={<div className="h-full pl-1">{renderPreviewPanel()}</div>}
                 secondClassName="h-full"
               />
             </div>

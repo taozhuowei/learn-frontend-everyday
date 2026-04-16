@@ -143,19 +143,25 @@ export function ExamResultPage() {
               <div className="text-2xl sm:text-3xl font-bold text-[var(--color-ink)]">
                 {state.result.totalScore}
               </div>
-              <div className="text-[10px] sm:text-xs text-[var(--color-ink-tertiary)] mt-0.5 uppercase tracking-wider font-bold">总分</div>
+              <div className="text-[10px] sm:text-xs text-[var(--color-ink-tertiary)] mt-0.5 uppercase tracking-wider font-bold">
+                总分
+              </div>
             </div>
             <div className="text-center sm:text-left border-l border-[var(--color-border)] pl-4 sm:border-0 sm:pl-0">
               <div className="text-2xl sm:text-3xl font-bold text-[var(--color-ink)]">
                 {state.result.passingScore}
               </div>
-              <div className="text-[10px] sm:text-xs text-[var(--color-ink-tertiary)] mt-0.5 uppercase tracking-wider font-bold">及格线</div>
+              <div className="text-[10px] sm:text-xs text-[var(--color-ink-tertiary)] mt-0.5 uppercase tracking-wider font-bold">
+                及格线
+              </div>
             </div>
             <div className="text-center sm:text-left border-l border-[var(--color-border)] pl-4 sm:border-0 sm:pl-0">
               <div className="text-2xl sm:text-3xl font-bold text-[var(--color-ink)]">
                 {state.result.perProblem.length}
               </div>
-              <div className="text-[10px] sm:text-xs text-[var(--color-ink-tertiary)] mt-0.5 uppercase tracking-wider font-bold">评题数</div>
+              <div className="text-[10px] sm:text-xs text-[var(--color-ink-tertiary)] mt-0.5 uppercase tracking-wider font-bold">
+                评题数
+              </div>
             </div>
           </div>
         </div>

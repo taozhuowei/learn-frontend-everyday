@@ -67,7 +67,10 @@ export function AppShell({
               </button>
             ) : null}
 
-            <nav aria-label="主导航" className="flex items-center gap-0 sm:gap-1 overflow-x-auto no-scrollbar mask-image-fade">
+            <nav
+              aria-label="主导航"
+              className="flex items-center gap-0 sm:gap-1 overflow-x-auto no-scrollbar mask-image-fade"
+            >
               {[
                 { to: '/', label: '首页', end: true },
                 { to: '/learn', label: '学习' },
