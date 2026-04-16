@@ -34,6 +34,7 @@ Array.prototype.myFilter = function (callback, thisArg) {
 ```
 
 Rules:
+
 - Pure `.js` files must NOT contain `export` / `module.exports` (the judge extracts code directly).
 - Add `@skip` tag to exclude a file from the website build.
 - First-level directory name = `categoryId` (maps to display name via `content_rules.mjs`).
@@ -45,23 +46,33 @@ Named `<problem>_test.js`, same directory as the problem file.
 ```js
 module.exports = {
   examples: [
-    { id: 'example-1', hidden: false, input: { target: '[1,2,3]', args: ['x => x > 1'] }, expected: [2, 3] },
+    {
+      id: "example-1",
+      hidden: false,
+      input: { target: "[1,2,3]", args: ["x => x > 1"] },
+      expected: [2, 3],
+    },
   ],
   hidden: [
-    { id: 'hidden-1', hidden: true, input: { target: '[]', args: ['x => true'] }, expected: [] },
+    {
+      id: "hidden-1",
+      hidden: true,
+      input: { target: "[]", args: ["x => true"] },
+      expected: [],
+    },
   ],
-}
+};
 ```
 
-| Field | Purpose |
-|-------|---------|
-| `examples` | Visible to user during practice, used for "Run" |
-| `hidden` | Only used for "Submit", not shown in advance |
-| `input.target` | JS expression string, evaluated in sandbox |
-| `input.args` | Array of JS expression strings, evaluated as function arguments |
-| `input.steps` | Behavioral sequence for debounce/throttle (call, tick, await, assert) |
-| `expected` | Expected return value, or `{ error: 'message' }` for error cases |
-| `noCustomCase` | Set `true` to disable user-defined custom test cases (e.g., Promise) |
+| Field          | Purpose                                                               |
+| -------------- | --------------------------------------------------------------------- |
+| `examples`     | Visible to user during practice, used for "Run"                       |
+| `hidden`       | Only used for "Submit", not shown in advance                          |
+| `input.target` | JS expression string, evaluated in sandbox                            |
+| `input.args`   | Array of JS expression strings, evaluated as function arguments       |
+| `input.steps`  | Behavioral sequence for debounce/throttle (call, tick, await, assert) |
+| `expected`     | Expected return value, or `{ error: 'message' }` for error cases      |
+| `noCustomCase` | Set `true` to disable user-defined custom test cases (e.g., Promise)  |
 
 ## Adding a New Problem
 

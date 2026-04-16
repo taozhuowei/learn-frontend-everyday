@@ -111,22 +111,22 @@ export function ExamResultPage() {
   }
 
   const actions = (
-    <>
+    <div className="flex gap-2">
       <button
-        className="px-4 h-9 rounded-md bg-[var(--color-primary)] text-white text-sm font-semibold hover:bg-[var(--color-primary-strong)] transition-colors"
+        className="px-3 sm:px-4 h-9 rounded-md bg-[var(--color-primary)] text-white text-xs sm:text-sm font-semibold hover:bg-[var(--color-primary-strong)] transition-colors"
         onClick={handleRestart}
         type="button"
       >
         再来一轮
       </button>
       <button
-        className="px-4 h-9 rounded-md border border-[var(--color-border)] bg-white text-[var(--color-ink)] text-sm font-semibold hover:bg-[var(--color-surface-secondary)] transition-colors"
+        className="px-3 sm:px-4 h-9 rounded-md border border-[var(--color-border)] bg-white text-[var(--color-ink)] text-xs sm:text-sm font-semibold hover:bg-[var(--color-surface-secondary)] transition-colors"
         onClick={() => navigate('/learn')}
         type="button"
       >
         返回学习
       </button>
-    </>
+    </div>
   )
 
   return (
@@ -137,31 +137,31 @@ export function ExamResultPage() {
     >
       <div className="h-full flex flex-col bg-[var(--color-canvas)]">
         {/* Metrics Row */}
-        <div className="px-5 py-4 bg-white border-b border-[var(--color-border)]">
-          <div className="flex items-center gap-8">
-            <div>
-              <div className="text-3xl font-bold text-[var(--color-ink)]">
+        <div className="px-4 sm:px-5 py-4 bg-white border-b border-[var(--color-border)]">
+          <div className="flex items-center justify-around sm:justify-start gap-4 sm:gap-8">
+            <div className="text-center sm:text-left">
+              <div className="text-2xl sm:text-3xl font-bold text-[var(--color-ink)]">
                 {state.result.totalScore}
               </div>
-              <div className="text-xs text-[var(--color-ink-tertiary)] mt-0.5">总分</div>
+              <div className="text-[10px] sm:text-xs text-[var(--color-ink-tertiary)] mt-0.5 uppercase tracking-wider font-bold">总分</div>
             </div>
-            <div>
-              <div className="text-3xl font-bold text-[var(--color-ink)]">
+            <div className="text-center sm:text-left border-l border-[var(--color-border)] pl-4 sm:border-0 sm:pl-0">
+              <div className="text-2xl sm:text-3xl font-bold text-[var(--color-ink)]">
                 {state.result.passingScore}
               </div>
-              <div className="text-xs text-[var(--color-ink-tertiary)] mt-0.5">及格线</div>
+              <div className="text-[10px] sm:text-xs text-[var(--color-ink-tertiary)] mt-0.5 uppercase tracking-wider font-bold">及格线</div>
             </div>
-            <div>
-              <div className="text-3xl font-bold text-[var(--color-ink)]">
+            <div className="text-center sm:text-left border-l border-[var(--color-border)] pl-4 sm:border-0 sm:pl-0">
+              <div className="text-2xl sm:text-3xl font-bold text-[var(--color-ink)]">
                 {state.result.perProblem.length}
               </div>
-              <div className="text-xs text-[var(--color-ink-tertiary)] mt-0.5">已评题数</div>
+              <div className="text-[10px] sm:text-xs text-[var(--color-ink-tertiary)] mt-0.5 uppercase tracking-wider font-bold">评题数</div>
             </div>
           </div>
         </div>
 
         {/* Result Cards List */}
-        <div className="flex-1 overflow-y-auto p-5">
+        <div className="flex-1 overflow-y-auto p-4 sm:p-5">
           <div className="max-w-3xl mx-auto space-y-3">
             {state.result.perProblem.map((result) => {
               const problem = getProblemById(result.problemId)

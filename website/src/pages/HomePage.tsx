@@ -101,7 +101,7 @@ export function HomePage() {
             <div className="absolute top-10 right-10 w-48 h-48 rounded-full bg-amber-200/25 blur-2xl" />
           </div>
 
-          <div className="relative max-w-3xl mx-auto px-8 py-16 text-center">
+          <div className="relative max-w-3xl mx-auto px-5 sm:px-8 py-10 sm:py-16 text-center">
             <div className="flex items-center justify-center gap-2 mb-4">
               <span className="w-9 h-9 rounded-[9px] bg-[var(--color-primary)] text-white text-sm font-extrabold flex items-center justify-center">
                 CF
@@ -134,8 +134,8 @@ export function HomePage() {
         </div>
 
         {/* Feature cards */}
-        <div className="max-w-5xl mx-auto px-8 py-10">
-          <div className="grid grid-cols-2 gap-4">
+        <div className="max-w-5xl mx-auto px-5 sm:px-8 py-6 sm:py-10">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {featureCards.map((card) => {
               const a = accentMap[card.accent]
               const isExternal = card.href.startsWith('http')

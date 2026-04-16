@@ -4,15 +4,15 @@ React SPA that consumes `problems/` and `docs/` content, provides a browser-base
 
 ## Tech Stack
 
-| Layer | Choice |
-|-------|--------|
+| Layer     | Choice                                 |
+| --------- | -------------------------------------- |
 | Framework | React 19 + React Router 7 (HashRouter) |
-| Styling | Tailwind CSS 4 |
-| Editor | Monaco Editor |
-| Build | Vite 8 |
-| Unit Test | Vitest 4 + @vitest/coverage-v8 |
-| E2E Test | Playwright |
-| Language | TypeScript 5.9 |
+| Styling   | Tailwind CSS 4                         |
+| Editor    | Monaco Editor                          |
+| Build     | Vite 8                                 |
+| Unit Test | Vitest 4 + @vitest/coverage-v8         |
+| E2E Test  | Playwright                             |
+| Language  | TypeScript 5.9                         |
 
 ## Directory Structure
 
@@ -102,7 +102,7 @@ docs/**/*.md      ─┘                        ─→  src/generated/knowledge.
 
 ## Aliases
 
-| Alias | Target | Used by |
-|-------|--------|---------|
-| `@` | `./src` | All source files |
+| Alias    | Target         | Used by                           |
+| -------- | -------------- | --------------------------------- |
+| `@`      | `./src`        | All source files                  |
 | `@judge` | `../judge/src` | `codeRunnerWorker.ts`, test files |

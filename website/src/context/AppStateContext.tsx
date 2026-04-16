@@ -19,6 +19,7 @@ interface AppState {
   sessionDeadline: number | null
   result: ExamResult | null
   settingsDrawerOpen: boolean
+  isMobile: boolean
 }
 
 type AppAction =
@@ -31,6 +32,7 @@ type AppAction =
   | { type: 'clearExam' }
   | { type: 'syncRemainingSeconds'; payload: number }
   | { type: 'setSettingsDrawerOpen'; payload: boolean }
+  | { type: 'setIsMobile'; payload: boolean }
 
 interface AppContextValue {
   state: AppState
@@ -72,6 +74,7 @@ const initialState: AppState = {
   sessionDeadline: null,
   result: null,
   settingsDrawerOpen: false,
+  isMobile: false,
 }
 
 function reducer(state: AppState, action: AppAction): AppState {
@@ -165,6 +168,15 @@ function reducer(state: AppState, action: AppAction): AppState {
         ...state,
         settingsDrawerOpen: action.payload,
       }
+    case 'setIsMobile':
+      if (state.isMobile === action.payload) {
+        return state
+      }
+
+      return {
+        ...state,
+        isMobile: action.payload,
+      }
     default:
       return state
   }
@@ -173,8 +185,21 @@ function reducer(state: AppState, action: AppAction): AppState {
 const AppStateContext = createContext<AppContextValue | null>(null)
 
 export function AppStateProvider({ children }: { children: React.ReactNode }) {
-  const [state, dispatch] = useReducer(reducer, { ...initialState, ...loadPersistedExamState() })
+  const [state, dispatch] = useReducer(reducer, {
+    ...initialState,
+    ...loadPersistedExamState(),
+    isMobile: typeof window !== 'undefined' ? window.innerWidth < 768 : false,
+  })
   const stateRef = useRef(state)
+
+  useEffect(() => {
+    const handleResize = () => {
+      dispatch({ type: 'setIsMobile', payload: window.innerWidth < 768 })
+    }
+
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
 
   useEffect(() => {
     if (state.session && state.sessionDeadline) {

@@ -41,10 +41,10 @@ export function AppShell({
   return (
     <div className="h-screen flex flex-col overflow-hidden">
       {showTopbar ? (
-        <header className="h-12 flex items-center justify-between px-5 bg-white border-b border-[var(--color-border)] shrink-0 z-50">
-          <div className="flex items-center gap-6">
+        <header className="h-12 flex items-center justify-between px-3 sm:px-5 bg-white border-b border-[var(--color-border)] shrink-0 z-50">
+          <div className="flex items-center gap-3 sm:gap-6 min-w-0">
             <NavLink
-              className="flex items-center gap-2 font-extrabold text-[0.95rem] tracking-tight"
+              className="flex items-center gap-2 font-extrabold text-[0.95rem] tracking-tight shrink-0"
               to="/"
             >
               <span
@@ -53,21 +53,21 @@ export function AppShell({
               >
                 CF
               </span>
-              <span className="text-[var(--color-ink)]">CodeForge</span>
+              <span className="text-[var(--color-ink)] hidden sm:inline">CodeForge</span>
             </NavLink>
 
             {backTo && !showPageHeader ? (
               <button
-                className="flex items-center gap-0.5 px-2 h-7 rounded-md text-xs font-semibold text-[var(--color-ink-tertiary)] hover:text-[var(--color-ink)] hover:bg-[var(--color-surface-secondary)] transition-colors"
+                className="flex items-center gap-0.5 px-1 sm:px-2 h-7 rounded-md text-xs font-semibold text-[var(--color-ink-tertiary)] hover:text-[var(--color-ink)] hover:bg-[var(--color-surface-secondary)] transition-colors shrink-0"
                 onClick={() => navigate(backTo)}
                 type="button"
               >
                 <ChevronLeft size={14} />
-                {backLabel ?? '返回'}
+                <span className="hidden sm:inline">{backLabel ?? '返回'}</span>
               </button>
             ) : null}
 
-            <nav aria-label="主导航" className="flex items-center gap-1">
+            <nav aria-label="主导航" className="flex items-center gap-0 sm:gap-1 overflow-x-auto no-scrollbar mask-image-fade">
               {[
                 { to: '/', label: '首页', end: true },
                 { to: '/learn', label: '学习' },
@@ -77,7 +77,7 @@ export function AppShell({
                 <NavLink
                   key={to}
                   className={({ isActive }) =>
-                    `px-3 h-12 flex items-center text-sm font-semibold border-b-2 transition-colors ${
+                    `px-2 sm:px-3 h-12 flex items-center text-sm font-semibold border-b-2 transition-colors shrink-0 ${
                       isActive
                         ? 'border-[var(--color-primary)] text-[var(--color-ink)]'
                         : 'border-transparent text-[var(--color-ink-tertiary)] hover:text-[var(--color-ink)]'
@@ -92,7 +92,7 @@ export function AppShell({
             </nav>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1 sm:gap-2 shrink-0 ml-2">
             {headerRight ? <div className="flex items-center">{headerRight}</div> : null}
             <button
               aria-expanded={settingsDrawerOpen}

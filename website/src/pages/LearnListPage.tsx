@@ -67,9 +67,9 @@ export function LearnListPage() {
     <AppShell title="题库">
       <div className="h-full flex flex-col bg-[var(--color-surface-secondary)]">
         {/* Search and Filter Bar */}
-        <div className="px-5 py-4 bg-white border-b border-[var(--color-border)] shrink-0 space-y-3">
+        <div className="px-4 sm:px-5 py-3 sm:py-4 bg-white border-b border-[var(--color-border)] shrink-0 space-y-3">
           {/* Search Input */}
-          <div className="relative max-w-xl">
+          <div className="relative w-full max-w-xl">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
               <Search size={18} className="text-[var(--color-ink-tertiary)]" />
             </div>
@@ -78,7 +78,7 @@ export function LearnListPage() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="搜索题目标题..."
-              className="w-full pl-10 pr-4 py-2.5 bg-[var(--color-surface-secondary)] border border-[var(--color-border)] rounded-lg text-sm text-[var(--color-ink)] placeholder:text-[var(--color-ink-tertiary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20 focus:border-[var(--color-primary)] transition-colors"
+              className="w-full pl-10 pr-4 py-2 sm:py-2.5 bg-[var(--color-surface-secondary)] border border-[var(--color-border)] rounded-lg text-sm text-[var(--color-ink)] placeholder:text-[var(--color-ink-tertiary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20 focus:border-[var(--color-primary)] transition-colors"
             />
             {searchQuery && (
               <button
@@ -91,7 +91,7 @@ export function LearnListPage() {
           </div>
 
           {/* Category Chips */}
-          <div className="flex flex-wrap gap-2">
+          <div className="flex flex-wrap gap-2 overflow-x-auto no-scrollbar pb-1">
             <button
               onClick={() => setSelectedCategory(null)}
               className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${
