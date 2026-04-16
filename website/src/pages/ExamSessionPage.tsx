@@ -6,7 +6,7 @@
 
 import { Suspense, lazy, useCallback, useEffect, useRef, useState } from 'react'
 import { Navigate, useNavigate } from 'react-router-dom'
-import { Check, ChevronLeft, ChevronRight, Play, FileText, Code, Beaker } from 'lucide-react'
+import { Check, ChevronLeft, ChevronRight, Play, Trophy } from 'lucide-react'
 import { AppShell } from '../components/AppShell'
 import { CasePanel } from '../components/CasePanel'
 import { ExamProblemPanel } from '../components/ExamProblemPanel'
@@ -75,14 +75,15 @@ export function ExamSessionPage() {
     syncRemainingSeconds,
     updateAnswer,
   } = useAppState()
-  const { state: { isMobile } } = useAppState()
+  const {
+    state: { isMobile },
+  } = useAppState()
   const navigate = useNavigate()
   const editorRef = useRef<CodeEditorHandle>(null)
   const [sampleExecution, setSampleExecution] = useState<ExecutionResponse | null>(null)
   const [consoleExecution, setConsoleExecution] = useState<ExecutionResponse | null>(null)
   const [customCases, setCustomCases] = useState<CustomCase[]>([])
   const [running, setRunning] = useState<'run' | 'submit' | null>(null)
-  const [mobileActiveTab, setMobileActiveTab] = useState<'info' | 'code' | 'result'>('info')
   const latestCodeRef = useRef('')
 
   const session = state.session
@@ -283,12 +284,12 @@ export function ExamSessionPage() {
     setConsoleExecution(null)
     setCurrentIndex(activeSession.currentIndex + 1)
   }
-const timerClassName =
-  activeSession.remainingSeconds <= 300
-    ? 'text-[var(--color-danger)] font-extrabold tabular-nums'
-    : 'text-[var(--color-ink)] font-bold tabular-nums'
+  const timerClassName =
+    activeSession.remainingSeconds <= 300
+      ? 'text-[var(--color-danger)] font-extrabold tabular-nums'
+      : 'text-[var(--color-ink)] font-bold tabular-nums'
 
-const renderInfoPanel = () => (
+  const renderInfoPanel = () => (
     <ExamProblemPanel
       currentProblemId={activeProblem.id}
       items={sidebarItems}
@@ -349,9 +350,7 @@ const renderInfoPanel = () => (
             <button
               className="flex-1 flex items-center justify-center gap-1 px-2 py-1.5 rounded-md text-xs font-semibold border border-[var(--color-border)] text-[var(--color-ink-secondary)] hover:bg-[var(--color-surface-secondary)] disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
               disabled={activeSession.currentIndex === 0}
-              onClick={() =>
-                setCurrentIndex(Math.max(0, activeSession.currentIndex - 1))
-              }
+              onClick={() => setCurrentIndex(Math.max(0, activeSession.currentIndex - 1))}
               type="button"
             >
               <ChevronLeft size={12} />
@@ -362,10 +361,7 @@ const renderInfoPanel = () => (
               disabled={isLastProblem}
               onClick={() =>
                 setCurrentIndex(
-                  Math.min(
-                    activeSession.problemIds.length - 1,
-                    activeSession.currentIndex + 1,
-                  ),
+                  Math.min(activeSession.problemIds.length - 1, activeSession.currentIndex + 1),
                 )
               }
               type="button"
@@ -394,40 +390,28 @@ const renderInfoPanel = () => (
         title={activeProblem.title}
         showPageHeader={false}
       >
-        <div className="h-full flex flex-col bg-[var(--color-canvas)]">
-          <div className="flex-1 min-h-0 overflow-hidden p-2">
-            {mobileActiveTab === 'info' && renderInfoPanel()}
-            {mobileActiveTab === 'code' && renderCodeWorkspace()}
-            {mobileActiveTab === 'result' && renderCasePanel()}
+        <div className="h-full flex flex-col items-center justify-center bg-white p-8 text-center">
+          <div className="w-16 h-16 rounded-full bg-[var(--color-surface-secondary)] flex items-center justify-center mb-4">
+            <Trophy size={32} className="text-[var(--color-ink-muted)]" />
           </div>
-          
-          <div className="h-14 shrink-0 bg-white border-t border-[var(--color-border)] flex items-stretch">
-            {[
-              { id: 'info' as const, label: '题目', icon: FileText },
-              { id: 'code' as const, label: '代码', icon: Code },
-              { id: 'result' as const, label: '判题', icon: Beaker },
-            ].map((tab) => {
-              const Icon = tab.icon
-              const isActive = mobileActiveTab === tab.id
-              return (
-                <button
-                  key={tab.id}
-                  onClick={() => setMobileActiveTab(tab.id)}
-                  className={`flex-1 flex flex-col items-center justify-center gap-1 transition-colors ${
-                    isActive ? 'text-[var(--color-primary)]' : 'text-[var(--color-ink-tertiary)]'
-                  }`}
-                >
-                  <Icon size={18} />
-                  <span className="text-[10px] font-bold">{tab.label}</span>
-                </button>
-              )
-            })}
-          </div>
+          <h2 className="text-lg font-bold text-[var(--color-ink)] mb-2">考试模式暂不支持移动端</h2>
+          <p className="text-sm text-[var(--color-ink-tertiary)] leading-relaxed max-w-xs">
+            模拟考试包含完整的代码编写与判题流程，为了保证作答效率，请在 PC 端进行考试。
+          </p>
+          <button
+            onClick={() => {
+              if (window.confirm('退出考试？进度将不会保留。')) {
+                navigate('/exam')
+              }
+            }}
+            className="mt-6 px-6 py-2 rounded-md bg-[var(--color-danger)] text-white text-sm font-semibold"
+          >
+            退出考试
+          </button>
         </div>
       </AppShell>
     )
   }
-
   return (
     <AppShell
       headerRight={
@@ -441,11 +425,7 @@ const renderInfoPanel = () => (
           className="h-full"
           defaultSize={340}
           direction="horizontal"
-          first={
-            <div className="h-full pr-1">
-              {renderInfoPanel()}
-            </div>
-          }
+          first={<div className="h-full pr-1">{renderInfoPanel()}</div>}
           firstClassName="h-full"
           minFirstSize={280}
           minSecondSize={520}
@@ -455,20 +435,12 @@ const renderInfoPanel = () => (
                 className="h-full"
                 defaultSize={360}
                 direction="horizontal"
-                first={
-                  <div className="h-full pr-1">
-                    {renderCodeWorkspace()}
-                  </div>
-                }
+                first={<div className="h-full pr-1">{renderCodeWorkspace()}</div>}
                 firstClassName="h-full"
                 fixedPane="second"
                 minFirstSize={360}
                 minSecondSize={320}
-                second={
-                  <div className="h-full pl-1">
-                    {renderCasePanel()}
-                  </div>
-                }
+                second={<div className="h-full pl-1">{renderCasePanel()}</div>}
                 secondClassName="h-full"
               />
             </div>

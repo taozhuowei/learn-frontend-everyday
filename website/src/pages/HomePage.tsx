@@ -3,7 +3,7 @@
  * Purpose: 主页，展示 CodeForge Hero 区和四大功能入口卡片。
  */
 
-import { BookOpen, ChevronRight, GraduationCap, ExternalLink, Trophy } from 'lucide-react'
+import { BookOpen, ChevronRight, GraduationCap, Trophy } from 'lucide-react'
 import { Link } from 'react-router-dom'
 
 import { AppShell } from '../components/AppShell'
@@ -51,14 +51,6 @@ const featureCards: FeatureCard[] = [
     accent: 'emerald',
     stat: `${stats.articles} 篇文章`,
   },
-  {
-    title: 'GitHub 源码',
-    description: '查看本项目完整源码，包括题目文件、构建脚本与网站工程，欢迎 Star 或 PR。',
-    href: 'https://github.com/taozhuowei/Learn-Front-end-Everyday',
-    icon: <ExternalLink size={22} />,
-    accent: 'slate',
-    stat: '开源项目',
-  },
 ]
 
 const accentMap: Record<string, { bg: string; border: string; icon: string; badge: string }> = {
@@ -79,12 +71,6 @@ const accentMap: Record<string, { bg: string; border: string; icon: string; badg
     border: 'hover:border-emerald-400',
     icon: 'text-emerald-500',
     badge: 'bg-emerald-50 text-emerald-700',
-  },
-  slate: {
-    bg: 'hover:bg-[var(--color-surface-secondary)]',
-    border: 'hover:border-[var(--color-border-strong)]',
-    icon: 'text-[var(--color-ink-tertiary)]',
-    badge: 'bg-[var(--color-surface-secondary)] text-[var(--color-ink-tertiary)]',
   },
 }
 
@@ -135,18 +121,15 @@ export function HomePage() {
 
         {/* Feature cards */}
         <div className="max-w-5xl mx-auto px-5 sm:px-8 py-6 sm:py-10">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {featureCards.map((card) => {
               const a = accentMap[card.accent]
-              const isExternal = card.href.startsWith('http')
-              const linkProps = {
-                key: card.title,
-                target: isExternal ? '_blank' : undefined,
-                rel: isExternal ? 'noopener noreferrer' : undefined,
-                className: `group flex items-start gap-4 p-5 rounded-[var(--radius-lg)] bg-white border border-[var(--color-border)] ${a.border} ${a.bg} transition-all hover:-translate-y-0.5 hover:shadow-md cursor-pointer`,
-              }
-              const children = (
-                <>
+              return (
+                <Link
+                  key={card.title}
+                  className={`group flex items-start gap-4 p-5 rounded-[var(--radius-lg)] bg-white border border-[var(--color-border)] ${a.border} ${a.bg} transition-all hover:-translate-y-0.5 hover:shadow-md cursor-pointer`}
+                  to={card.href}
+                >
                   <div
                     className={`shrink-0 w-10 h-10 flex items-center justify-center rounded-[var(--radius-md)] bg-[var(--color-surface-secondary)] ${a.icon} mt-0.5`}
                   >
@@ -169,15 +152,6 @@ export function HomePage() {
                     className={`shrink-0 mt-2 ${a.icon} opacity-0 group-hover:opacity-100 transition-opacity`}
                     size={16}
                   />
-                </>
-              )
-              return isExternal ? (
-                <a href={card.href} {...linkProps}>
-                  {children}
-                </a>
-              ) : (
-                <Link to={card.href} {...linkProps}>
-                  {children}
                 </Link>
               )
             })}

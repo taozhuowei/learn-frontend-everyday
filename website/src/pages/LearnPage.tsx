@@ -6,8 +6,8 @@
  */
 
 import { Suspense, lazy, useEffect, useRef, useState } from 'react'
-import { Navigate, useParams } from 'react-router-dom'
-import { Check, Hand, MousePointer2, Play, FileText, Code, Beaker } from 'lucide-react'
+import { Navigate, useNavigate, useParams } from 'react-router-dom'
+import { Check, Hand, MousePointer2, Play, Code } from 'lucide-react'
 import { AppShell } from '../components/AppShell'
 import { CasePanel } from '../components/CasePanel'
 import { CodeBlock, type CodeBlockInteractionMode } from '../components/CodeBlock'
@@ -164,7 +164,10 @@ export function LearnPage() {
 }
 
 function LearnProblemView({ problem }: { problem: ProblemRecord }) {
-  const { state: { isMobile } } = useAppState()
+  const {
+    state: { isMobile },
+  } = useAppState()
+  const navigate = useNavigate()
   const editorRef = useRef<CodeEditorHandle>(null)
   const [source, setSource] = useState(() => createInitialSource(problem))
   const sourceRef = useRef(source)
@@ -173,7 +176,6 @@ function LearnProblemView({ problem }: { problem: ProblemRecord }) {
   const [busyAction, setBusyAction] = useState<'run' | 'submit' | null>(null)
   const [customCases, setCustomCases] = useState<CustomCase[]>([])
   const [activeTab, setActiveTab] = useState<DetailTab>('description')
-  const [mobileActiveTab, setMobileActiveTab] = useState<'info' | 'code' | 'result'>('info')
   const [solutionInteractionMode, setSolutionInteractionMode] = useState<CodeBlockInteractionMode>(
     () => readStoredSolutionInteractionMode(),
   )
@@ -380,40 +382,24 @@ function LearnProblemView({ problem }: { problem: ProblemRecord }) {
         backTo="/learn"
         backLabel="列表"
       >
-        <div className="h-full flex flex-col bg-[var(--color-canvas)]">
-          <div className="flex-1 min-h-0 overflow-hidden p-2">
-            {mobileActiveTab === 'info' && renderInfoPanel()}
-            {mobileActiveTab === 'code' && renderCodeWorkspace()}
-            {mobileActiveTab === 'result' && renderCasePanel()}
+        <div className="h-full flex flex-col items-center justify-center bg-white p-8 text-center">
+          <div className="w-16 h-16 rounded-full bg-[var(--color-surface-secondary)] flex items-center justify-center mb-4">
+            <Code size={32} className="text-[var(--color-ink-muted)]" />
           </div>
-          
-          <div className="h-14 shrink-0 bg-white border-t border-[var(--color-border)] flex items-stretch">
-            {[
-              { id: 'info' as const, label: '题目', icon: FileText },
-              { id: 'code' as const, label: '代码', icon: Code },
-              { id: 'result' as const, label: '测试', icon: Beaker },
-            ].map((tab) => {
-              const Icon = tab.icon
-              const isActive = mobileActiveTab === tab.id
-              return (
-                <button
-                  key={tab.id}
-                  onClick={() => setMobileActiveTab(tab.id)}
-                  className={`flex-1 flex flex-col items-center justify-center gap-1 transition-colors ${
-                    isActive ? 'text-[var(--color-primary)]' : 'text-[var(--color-ink-tertiary)]'
-                  }`}
-                >
-                  <Icon size={18} />
-                  <span className="text-[10px] font-bold">{tab.label}</span>
-                </button>
-              )
-            })}
-          </div>
+          <h2 className="text-lg font-bold text-[var(--color-ink)] mb-2">学习模式暂不支持移动端</h2>
+          <p className="text-sm text-[var(--color-ink-tertiary)] leading-relaxed max-w-xs">
+            为了获得最佳的代码编写与调试体验，请在 PC 端浏览器中打开此页面。
+          </p>
+          <button
+            onClick={() => navigate('/learn')}
+            className="mt-6 px-6 py-2 rounded-md bg-[var(--color-primary)] text-white text-sm font-semibold"
+          >
+            返回题目列表
+          </button>
         </div>
       </AppShell>
     )
   }
-
   return (
     <AppShell
       eyebrow="学习模式"
@@ -427,11 +413,7 @@ function LearnProblemView({ problem }: { problem: ProblemRecord }) {
           className="h-full"
           defaultSize={400}
           direction="horizontal"
-          first={
-            <div className="h-full pr-1">
-              {renderInfoPanel()}
-            </div>
-          }
+          first={<div className="h-full pr-1">{renderInfoPanel()}</div>}
           firstClassName="h-full"
           minFirstSize={260}
           minSecondSize={360}
@@ -441,19 +423,11 @@ function LearnProblemView({ problem }: { problem: ProblemRecord }) {
                 className="h-full"
                 defaultSizeRatio={0.6}
                 direction="vertical"
-                first={
-                  <div className="h-full pb-1">
-                    {renderCodeWorkspace()}
-                  </div>
-                }
+                first={<div className="h-full pb-1">{renderCodeWorkspace()}</div>}
                 firstClassName="h-full"
                 minFirstSize={160}
                 minSecondSize={120}
-                second={
-                  <div className="h-full pt-1">
-                    {renderCasePanel()}
-                  </div>
-                }
+                second={<div className="h-full pt-1">{renderCasePanel()}</div>}
                 secondClassName="h-full"
               />
             </div>
