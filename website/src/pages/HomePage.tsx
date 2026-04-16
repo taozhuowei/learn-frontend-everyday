@@ -4,6 +4,7 @@
  */
 
 import { BookOpen, ChevronRight, GraduationCap, ExternalLink, Trophy } from 'lucide-react'
+import { Link } from 'react-router-dom'
 
 import { AppShell } from '../components/AppShell'
 import { knowledgeArticles } from '../generated/knowledge'
@@ -138,14 +139,14 @@ export function HomePage() {
             {featureCards.map((card) => {
               const a = accentMap[card.accent]
               const isExternal = card.href.startsWith('http')
-              return (
-                <a
-                  key={card.title}
-                  href={card.href}
-                  target={isExternal ? '_blank' : undefined}
-                  rel={isExternal ? 'noopener noreferrer' : undefined}
-                  className={`group flex items-start gap-4 p-5 rounded-[var(--radius-lg)] bg-white border border-[var(--color-border)] ${a.border} ${a.bg} transition-all hover:-translate-y-0.5 hover:shadow-md cursor-pointer`}
-                >
+              const linkProps = {
+                key: card.title,
+                target: isExternal ? '_blank' : undefined,
+                rel: isExternal ? 'noopener noreferrer' : undefined,
+                className: `group flex items-start gap-4 p-5 rounded-[var(--radius-lg)] bg-white border border-[var(--color-border)] ${a.border} ${a.bg} transition-all hover:-translate-y-0.5 hover:shadow-md cursor-pointer`,
+              }
+              const children = (
+                <>
                   <div
                     className={`shrink-0 w-10 h-10 flex items-center justify-center rounded-[var(--radius-md)] bg-[var(--color-surface-secondary)] ${a.icon} mt-0.5`}
                   >
@@ -168,7 +169,16 @@ export function HomePage() {
                     className={`shrink-0 mt-2 ${a.icon} opacity-0 group-hover:opacity-100 transition-opacity`}
                     size={16}
                   />
+                </>
+              )
+              return isExternal ? (
+                <a href={card.href} {...linkProps}>
+                  {children}
                 </a>
+              ) : (
+                <Link to={card.href} {...linkProps}>
+                  {children}
+                </Link>
               )
             })}
           </div>
