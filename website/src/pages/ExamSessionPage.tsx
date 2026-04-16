@@ -6,7 +6,7 @@
 
 import { Suspense, lazy, useCallback, useEffect, useRef, useState } from 'react'
 import { Navigate, useNavigate } from 'react-router-dom'
-import { Check, ChevronLeft, ChevronRight, Play } from 'lucide-react'
+import { Check, ChevronLeft, ChevronRight, Play, FileText, Code, Beaker } from 'lucide-react'
 import { AppShell } from '../components/AppShell'
 import { CasePanel } from '../components/CasePanel'
 import { ExamProblemPanel } from '../components/ExamProblemPanel'
@@ -75,12 +75,14 @@ export function ExamSessionPage() {
     syncRemainingSeconds,
     updateAnswer,
   } = useAppState()
+  const { state: { isMobile } } = useAppState()
   const navigate = useNavigate()
   const editorRef = useRef<CodeEditorHandle>(null)
   const [sampleExecution, setSampleExecution] = useState<ExecutionResponse | null>(null)
   const [consoleExecution, setConsoleExecution] = useState<ExecutionResponse | null>(null)
   const [customCases, setCustomCases] = useState<CustomCase[]>([])
   const [running, setRunning] = useState<'run' | 'submit' | null>(null)
+  const [mobileActiveTab, setMobileActiveTab] = useState<'info' | 'code' | 'result'>('info')
   const latestCodeRef = useRef('')
 
   const session = state.session
@@ -281,11 +283,150 @@ export function ExamSessionPage() {
     setConsoleExecution(null)
     setCurrentIndex(activeSession.currentIndex + 1)
   }
+const timerClassName =
+  activeSession.remainingSeconds <= 300
+    ? 'text-[var(--color-danger)] font-extrabold tabular-nums'
+    : 'text-[var(--color-ink)] font-bold tabular-nums'
 
-  const timerClassName =
-    activeSession.remainingSeconds <= 300
-      ? 'text-[var(--color-danger)] font-extrabold tabular-nums'
-      : 'text-[var(--color-ink)] font-bold tabular-nums'
+const renderInfoPanel = () => (
+    <ExamProblemPanel
+      currentProblemId={activeProblem.id}
+      items={sidebarItems}
+      onSelect={(problemId) => {
+        const nextIndex = activeSession.problemIds.indexOf(problemId)
+        if (nextIndex < 0) return
+        setCurrentIndex(nextIndex)
+        setSampleExecution(null)
+        setConsoleExecution(null)
+      }}
+      problem={activeProblem}
+    />
+  )
+
+  const renderCodeWorkspace = () => (
+    <Suspense fallback={<LoadingPanel className="h-full" />}>
+      <CodeWorkspace
+        ref={editorRef}
+        description={activeProblem.description}
+        language={activeProblem.sourceType}
+        onChange={(value) => {
+          latestCodeRef.current = value
+          updateAnswer(activeProblem.id, value)
+        }}
+        title={`题目 #${String(activeProblem.sequence).padStart(2, '0')}`}
+        value={currentCode}
+      />
+    </Suspense>
+  )
+
+  const renderCasePanel = () => (
+    <CasePanel
+      actions={
+        <div className="flex flex-col gap-2 w-full">
+          <div className="flex gap-2">
+            <button
+              className="flex-1 flex items-center justify-center gap-1 px-3 py-1.5 rounded-md text-xs font-semibold bg-[var(--color-surface-secondary)] border border-[var(--color-border)] text-[var(--color-ink-secondary)] hover:border-[var(--color-primary)] disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+              data-testid="run-button"
+              disabled={running !== null}
+              onClick={handleRunCode}
+              type="button"
+            >
+              <Play size={12} />
+              {running === 'run' ? '运行中...' : '运行'}
+            </button>
+            <button
+              className="flex-1 flex items-center justify-center gap-1 px-3 py-1.5 rounded-md text-xs font-semibold bg-[var(--color-primary)] text-white hover:bg-[var(--color-primary-strong)] disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+              data-testid="submit-button"
+              disabled={running !== null}
+              onClick={handleSubmitCode}
+              type="button"
+            >
+              <Check size={12} />
+              {running === 'submit' ? '判题中...' : isLastProblem ? '交卷' : '提交'}
+            </button>
+          </div>
+          <div className="flex gap-2">
+            <button
+              className="flex-1 flex items-center justify-center gap-1 px-2 py-1.5 rounded-md text-xs font-semibold border border-[var(--color-border)] text-[var(--color-ink-secondary)] hover:bg-[var(--color-surface-secondary)] disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+              disabled={activeSession.currentIndex === 0}
+              onClick={() =>
+                setCurrentIndex(Math.max(0, activeSession.currentIndex - 1))
+              }
+              type="button"
+            >
+              <ChevronLeft size={12} />
+              上一题
+            </button>
+            <button
+              className="flex-1 flex items-center justify-center gap-1 px-2 py-1.5 rounded-md text-xs font-semibold border border-[var(--color-border)] text-[var(--color-ink-secondary)] hover:bg-[var(--color-surface-secondary)] disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+              disabled={isLastProblem}
+              onClick={() =>
+                setCurrentIndex(
+                  Math.min(
+                    activeSession.problemIds.length - 1,
+                    activeSession.currentIndex + 1,
+                  ),
+                )
+              }
+              type="button"
+            >
+              下一题
+              <ChevronRight size={12} />
+            </button>
+          </div>
+        </div>
+      }
+      cases={activeProblem.basicCases}
+      consoleExecution={consoleExecution}
+      customCases={customCases}
+      execution={sampleExecution}
+      onCustomCasesChange={setCustomCases}
+      title="样例与判题"
+    />
+  )
+
+  if (isMobile) {
+    return (
+      <AppShell
+        headerRight={
+          <span className={timerClassName}>{formatDuration(activeSession.remainingSeconds)}</span>
+        }
+        title={activeProblem.title}
+        showPageHeader={false}
+      >
+        <div className="h-full flex flex-col bg-[var(--color-canvas)]">
+          <div className="flex-1 min-h-0 overflow-hidden p-2">
+            {mobileActiveTab === 'info' && renderInfoPanel()}
+            {mobileActiveTab === 'code' && renderCodeWorkspace()}
+            {mobileActiveTab === 'result' && renderCasePanel()}
+          </div>
+          
+          <div className="h-14 shrink-0 bg-white border-t border-[var(--color-border)] flex items-stretch">
+            {[
+              { id: 'info' as const, label: '题目', icon: FileText },
+              { id: 'code' as const, label: '代码', icon: Code },
+              { id: 'result' as const, label: '判题', icon: Beaker },
+            ].map((tab) => {
+              const Icon = tab.icon
+              const isActive = mobileActiveTab === tab.id
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => setMobileActiveTab(tab.id)}
+                  className={`flex-1 flex flex-col items-center justify-center gap-1 transition-colors ${
+                    isActive ? 'text-[var(--color-primary)]' : 'text-[var(--color-ink-tertiary)]'
+                  }`}
+                >
+                  <Icon size={18} />
+                  <span className="text-[10px] font-bold">{tab.label}</span>
+                </button>
+              )
+            })}
+          </div>
+        </div>
+      </AppShell>
+    )
+  }
 
   return (
     <AppShell
@@ -302,18 +443,7 @@ export function ExamSessionPage() {
           direction="horizontal"
           first={
             <div className="h-full pr-1">
-              <ExamProblemPanel
-                currentProblemId={activeProblem.id}
-                items={sidebarItems}
-                onSelect={(problemId) => {
-                  const nextIndex = activeSession.problemIds.indexOf(problemId)
-                  if (nextIndex < 0) return
-                  setCurrentIndex(nextIndex)
-                  setSampleExecution(null)
-                  setConsoleExecution(null)
-                }}
-                problem={activeProblem}
-              />
+              {renderInfoPanel()}
             </div>
           }
           firstClassName="h-full"
@@ -327,19 +457,7 @@ export function ExamSessionPage() {
                 direction="horizontal"
                 first={
                   <div className="h-full pr-1">
-                    <Suspense fallback={<LoadingPanel className="h-full" />}>
-                      <CodeWorkspace
-                        ref={editorRef}
-                        description={activeProblem.description}
-                        language={activeProblem.sourceType}
-                        onChange={(value) => {
-                          latestCodeRef.current = value
-                          updateAnswer(activeProblem.id, value)
-                        }}
-                        title={`题目 #${String(activeProblem.sequence).padStart(2, '0')}`}
-                        value={currentCode}
-                      />
-                    </Suspense>
+                    {renderCodeWorkspace()}
                   </div>
                 }
                 firstClassName="h-full"
@@ -348,69 +466,7 @@ export function ExamSessionPage() {
                 minSecondSize={320}
                 second={
                   <div className="h-full pl-1">
-                    <CasePanel
-                      actions={
-                        <div className="flex flex-col gap-2 w-full">
-                          <div className="flex gap-2">
-                            <button
-                              className="flex items-center gap-1 px-3 py-1.5 rounded-md text-xs font-semibold bg-[var(--color-surface-secondary)] border border-[var(--color-border)] text-[var(--color-ink-secondary)] hover:border-[var(--color-primary)] disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-                              data-testid="run-button"
-                              disabled={running !== null}
-                              onClick={handleRunCode}
-                              type="button"
-                            >
-                              <Play size={12} />
-                              {running === 'run' ? '运行中...' : '运行'}
-                            </button>
-                            <button
-                              className="flex items-center gap-1 px-3 py-1.5 rounded-md text-xs font-semibold bg-[var(--color-primary)] text-white hover:bg-[var(--color-primary-strong)] disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-                              data-testid="submit-button"
-                              disabled={running !== null}
-                              onClick={handleSubmitCode}
-                              type="button"
-                            >
-                              <Check size={12} />
-                              {running === 'submit' ? '判题中...' : isLastProblem ? '交卷' : '提交'}
-                            </button>
-                          </div>
-                          <div className="flex gap-2">
-                            <button
-                              className="flex-1 flex items-center justify-center gap-1 px-2 py-1.5 rounded-md text-xs font-semibold border border-[var(--color-border)] text-[var(--color-ink-secondary)] hover:bg-[var(--color-surface-secondary)] disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-                              disabled={activeSession.currentIndex === 0}
-                              onClick={() =>
-                                setCurrentIndex(Math.max(0, activeSession.currentIndex - 1))
-                              }
-                              type="button"
-                            >
-                              <ChevronLeft size={12} />
-                              上一题
-                            </button>
-                            <button
-                              className="flex-1 flex items-center justify-center gap-1 px-2 py-1.5 rounded-md text-xs font-semibold border border-[var(--color-border)] text-[var(--color-ink-secondary)] hover:bg-[var(--color-surface-secondary)] disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-                              disabled={isLastProblem}
-                              onClick={() =>
-                                setCurrentIndex(
-                                  Math.min(
-                                    activeSession.problemIds.length - 1,
-                                    activeSession.currentIndex + 1,
-                                  ),
-                                )
-                              }
-                              type="button"
-                            >
-                              下一题
-                              <ChevronRight size={12} />
-                            </button>
-                          </div>
-                        </div>
-                      }
-                      cases={activeProblem.basicCases}
-                      consoleExecution={consoleExecution}
-                      customCases={customCases}
-                      execution={sampleExecution}
-                      onCustomCasesChange={setCustomCases}
-                      title="样例与判题"
-                    />
+                    {renderCasePanel()}
                   </div>
                 }
                 secondClassName="h-full"

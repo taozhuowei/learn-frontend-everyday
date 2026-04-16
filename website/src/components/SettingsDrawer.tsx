@@ -33,7 +33,7 @@ export function SettingsDrawer() {
       {/* 抽屉主体 */}
       <aside
         aria-label="配置抽屉"
-        className="fixed right-0 top-0 bottom-0 w-80 bg-white border-l border-[var(--color-border)] shadow-xl z-50 flex flex-col"
+        className="fixed right-0 top-0 bottom-0 w-full sm:w-80 bg-white border-l border-[var(--color-border)] shadow-xl z-50 flex flex-col transition-all duration-300"
       >
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-4 border-b border-[var(--color-border)] shrink-0">

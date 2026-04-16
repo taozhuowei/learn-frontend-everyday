@@ -86,7 +86,7 @@ export const knowledgeArticles: KnowledgeArticle[] = [
     "title": "Docs",
     "category": "README.md",
     "sourcePath": "docs/README.md",
-    "markdown": "# Docs\n\n`docs` 是仓库唯一的内容源目录。`website` 在构建时只读取这里的理论文章、题库源码和同级测试定义，再生成展示所需的 `src/generated/*` 文件。\n\n## 目录约定\n\n```text\ndocs/\n├─ README.md\n├─ **/*.md                              # 理论文章\n├─ 实践/\n│  ├─ <分类>/*.{js,jsx,tsx,vue}         # 题库源码\n│  ├─ <分类>/*_test.js                  # 与题目同级的测试文件\n│  ├─ with_react/launcher/              # React 本地联调工程，会自动扫描同级 .jsx/.tsx 组件\n│  └─ with_vue/launcher/                # Vue 本地联调工程，会自动扫描同级 .vue 组件\n└─ 其他分类目录\n```\n\n## 题库源码规范\n\n每个题目文件头部都必须包含统一注释块：\n\n```js\n/**\n * @description 详细描述题目要实现的功能、输入输出语义、边界条件和限制\n * @approach 只解释当前实现写法的思路\n * @params 入参说明\n * @return 返回值说明\n */\n```\n\n补充规则：\n\n- `@description` 必须把题目目标写完整，至少说明要实现什么、输入是什么、输出是什么、空值或非法值怎么处理、是否要保持原对象或原数组不变。\n- `@approach` 只解释当前紧邻实现的思路；如果一个文件里有多个实现，每个实现都要有自己独立的注释块，不能共用一段思路说明。\n- `@params`、`@return` 要直接面向学习者，避免占位文字、脏格式或“请在函数签名中补充”之类的提示语。\n- 纯 `.js` 题目不能包含 `export`、`export default`、`module.exports`。\n- 如果文件只用于讲解概念、不适合进入题库，可以在头部注释块中添加独立标签 `@skip`，该文件会被 `website` 构建流程忽略。\n\n## 测试文件规范\n\n每个题目的测试文件必须与源码同级，并使用 `<题目名>_test.js` 命名：\n\n- `实践/utility/scheduler.js`\n- `实践/utility/scheduler_test.js`\n\n测试文件只导出最小输入输出数组：\n\n```js\nmodule.exports = [\n  { input: \"...\" , expected: ... },\n  { input: \"...\" , expected: ... },\n]\n```\n\n测试约束：\n\n- 非 `@skip` 题目至少提供 5 条用例。\n- 前 3 条固定作为“基础用例”，构建后会自动映射到 `basicCases`。\n- 全部用例会作为“完整用例”，构建后会自动映射到 `fullCases`，并且完整用例天然包含基础用例。\n- 用例顺序必须渐进式组织，推荐顺序为：基础情况 -> 边界情况 -> 异常情况 -> 大数据量或补充情况。\n- 测试文件中不再写 `runner`、`launcherPath`、`visibility`、`timeoutMs` 等字段，这些信息由构建脚本自动补齐或推断。\n\n## 构建约束\n\n- `website` 构建时会扫描 `docs/**/*.md` 和 `docs/实践/**/*.{js,jsx,tsx,vue}`。\n- `website` 会缓存 docs 输入状态；如果 `docs` 未变更且已有 `src/generated/*`，会跳过 docs 格式化和内容生成。\n- 同级 `*_test.js` 变更、题目注释中的 `@skip` 增删、理论文章变更，都会让缓存失效并触发重新导入。\n\n## 协作规则\n\n- `docs` 只维护内容源，不维护镜像数据或手写生成结果。\n- React launcher 会自动导入同级目录中的 `.jsx`、`.tsx` 组件，并忽略 `_test` 文件。\n- Vue launcher 会自动导入同级目录中的 `.vue` 组件，并忽略 `_test` 文件。\n- React/Vue 联调逻辑只放在对应 `launcher` 目录，不混入通用题库源码。\n- 内容结构、测试协议或题库导入规则变化时，必须同步更新 [website/README.md](../website/README.md) 和 [website/PRD.md](../website/PRD.md)。\n",
+    "markdown": "# Docs\n\nKnowledge-base markdown articles. Scanned by `website/scripts/build-content.ts` at build time and served as the \"Theory\" section of the website.\n\n## Directory Structure\n\n```\ndocs/\n├── AI/             AI-related articles\n├── 前端基础/       HTML, CSS, JavaScript fundamentals\n├── 前端框架/       React, Vue framework concepts\n├── 工程化/         Build tools, bundlers, CI/CD\n├── 算法/           Algorithm and data structure theory\n├── 网络/           HTTP, TCP, browser networking\n├── 运行时/         Browser runtime, event loop, V8\n├── 面试准备/       Interview preparation materials\n├── 其他语言/       Non-JavaScript language references\n└── 实践/           Practice-related docs + component launchers\n    ├── with_react/launcher/   React local dev environment\n    └── with_vue/launcher/     Vue local dev environment\n```\n\n## Article Format\n\nStandard Markdown. The first `# Heading` becomes the article title. All headings build the table of contents.\n\nNo special frontmatter or metadata required — the build script extracts everything it needs from the Markdown content.\n\n## Build Integration\n\n- `website/scripts/build-content.ts` scans `docs/**/*.md` (excluding `node_modules`, `dist`, `launcher`).\n- Output: `website/src/generated/knowledge.ts` — array of `KnowledgeArticle` objects with markdown content, headings, and search text.\n- The build caches docs input state; unchanged docs skip regeneration.\n\n## Relationship to Other Modules\n\n- Problem source code and test cases are in [problems/](../problems/README.md), not here.\n- Component launchers (`实践/with_react/launcher`, `实践/with_vue/launcher`) are standalone Vite projects for local development of React/Vue component problems.\n",
     "headings": [
       {
         "depth": 1,
@@ -95,31 +95,26 @@ export const knowledgeArticles: KnowledgeArticle[] = [
       },
       {
         "depth": 2,
-        "text": "目录约定",
-        "slug": "section"
+        "text": "Directory Structure",
+        "slug": "directory-structure"
       },
       {
         "depth": 2,
-        "text": "题库源码规范",
-        "slug": "section-2"
+        "text": "Article Format",
+        "slug": "article-format"
       },
       {
         "depth": 2,
-        "text": "测试文件规范",
-        "slug": "section-3"
+        "text": "Build Integration",
+        "slug": "build-integration"
       },
       {
         "depth": 2,
-        "text": "构建约束",
-        "slug": "section-4"
-      },
-      {
-        "depth": 2,
-        "text": "协作规则",
-        "slug": "section-5"
+        "text": "Relationship to Other Modules",
+        "slug": "relationship-to-other-modules"
       }
     ],
-    "searchText": "docs readme.md docs docs 是仓库唯一的内容源目录。website 在构建时只读取这里的理论文章、题库源码和同级测试定义，再生成展示所需的 src/generated/ 文件。 目录约定 题库源码规范 每个题目文件头部都必须包含统一注释块： 补充规则： @description 必须把题目目标写完整，至少说明要实现什么、输入是什么、输出是什么、空值或非法值怎么处理、是否要保持原对象或原数组不变。 @approach 只解释当前紧邻实现的思路；如果一个文件里有多个实现，每个实现都要有自己独立的注释块，不能共用一段思路说明。 @params、@return 要直接面向学习者，避免占位文字、脏格式或“请在函数签名中补充”之类的提示语。 纯 .js 题目不能包含 export、export default、module.exports。 如果文件只用于讲解概念、不适合进入题库，可以在头部注释块中添加独立标签 @skip，该文件会被 website 构建流程忽略。 测试文件规范 每个题目的测试文件必须与源码同级，并使用 <题目名 test.js 命名： 实践/utility/scheduler.js 实践/utility/scheduler test.js 测试文件只导出最小输入输出数组： 测试约束： 非 @skip 题目至少提供 5 条用例。 前 3 条固定作为“基础用例”，构建后会自动映射到 basiccases。 全部用例会作为“完整用例”，构建后会自动映射到 fullcases，并且完整用例天然包含基础用例。 用例顺序必须渐进式组织，推荐顺序为：基础情况 边界情况 异常情况 大数据量或补充情况。 测试文件中不再写 runner、launcherpath、visibility、timeoutms 等字段，这些信息由构建脚本自动补齐或推断。 构建约束 website 构建时会扫描 docs/ / .md 和 docs/实践/ / .{js,jsx,tsx,vue}。 website 会缓存 docs 输入状态；如果 docs 未变更且已有 src/generated/ ，会跳过 docs 格式化和内容生成。 同级 test.js 变更、题目注释中的 @skip 增删、理论文章变更，都会让缓存失效并触发重新导入。 协作规则 docs 只维护内容源，不维护镜像数据或手写生成结果。 react launcher 会自动导入同级目录中的 .jsx、.tsx 组件，并忽略 test 文件。 vue launcher 会自动导入同级目录中的 .vue 组件，并忽略 test 文件。 react/vue 联调逻辑只放在对应 launcher 目录，不混入通用题库源码。 内容结构、测试协议或题库导入规则变化时，必须同步更新 $1 和 $1。"
+    "searchText": "docs readme.md docs knowledge base markdown articles. scanned by website/scripts/build content.ts at build time and served as the \"theory\" section of the website. directory structure article format standard markdown. the first heading becomes the article title. all headings build the table of contents. no special frontmatter or metadata required — the build script extracts everything it needs from the markdown content. build integration website/scripts/build content.ts scans docs/ / .md (excluding node modules, dist, launcher). output: website/src/generated/knowledge.ts — array of knowledgearticle objects with markdown content, headings, and search text. the build caches docs input state; unchanged docs skip regeneration. relationship to other modules problem source code and test cases are in $1, not here. component launchers (实践/with react/launcher, 实践/with vue/launcher) are standalone vite projects for local development of react/vue component problems."
   },
   {
     "slug": "003-cpp",

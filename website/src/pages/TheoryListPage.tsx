@@ -63,8 +63,8 @@ export function TheoryListPage() {
     <AppShell eyebrow="理论知识" title="知识文库">
       <div className="h-full flex flex-col bg-[var(--color-surface-secondary)]">
         {/* Search Bar */}
-        <div className="px-5 py-4 bg-white border-b border-[var(--color-border)] shrink-0">
-          <div className="relative max-w-xl">
+        <div className="px-4 sm:px-5 py-3 sm:py-4 bg-white border-b border-[var(--color-border)] shrink-0">
+          <div className="relative w-full max-w-xl">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
               <Search size={18} className="text-[var(--color-ink-tertiary)]" />
             </div>
@@ -73,7 +73,7 @@ export function TheoryListPage() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="搜索文章标题或内容..."
-              className="w-full pl-10 pr-4 py-2.5 bg-[var(--color-surface-secondary)] border border-[var(--color-border)] rounded-lg text-sm text-[var(--color-ink)] placeholder:text-[var(--color-ink-tertiary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20 focus:border-[var(--color-primary)] transition-colors"
+              className="w-full pl-10 pr-4 py-2 sm:py-2.5 bg-[var(--color-surface-secondary)] border border-[var(--color-border)] rounded-lg text-sm text-[var(--color-ink)] placeholder:text-[var(--color-ink-tertiary)] focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)]/20 focus:border-[var(--color-primary)] transition-colors"
             />
             {searchQuery && (
               <button
@@ -91,14 +91,14 @@ export function TheoryListPage() {
         </div>
 
         {/* Article List */}
-        <div className="flex-1 overflow-y-auto p-5">
+        <div className="flex-1 overflow-y-auto p-4 sm:p-5">
           {sortedCategories.length === 0 ? (
             <div className="flex flex-col items-center justify-center py-20 text-[var(--color-ink-tertiary)]">
               <FileText size={48} className="mb-4 opacity-50" />
               <p className="text-sm">未找到匹配的文章</p>
             </div>
           ) : (
-            <div className="space-y-8 max-w-5xl">
+            <div className="space-y-6 sm:space-y-8 max-w-5xl">
               {sortedCategories.map((category) => (
                 <section key={category}>
                   <h2 className="text-xs font-bold uppercase tracking-wider text-[var(--color-ink-tertiary)] mb-3 px-1">

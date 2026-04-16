@@ -7,7 +7,7 @@
 
 import { Suspense, lazy, useEffect, useRef, useState } from 'react'
 import { Navigate, useParams } from 'react-router-dom'
-import { Check, Hand, MousePointer2, Play } from 'lucide-react'
+import { Check, Hand, MousePointer2, Play, FileText, Code, Beaker } from 'lucide-react'
 import { AppShell } from '../components/AppShell'
 import { CasePanel } from '../components/CasePanel'
 import { CodeBlock, type CodeBlockInteractionMode } from '../components/CodeBlock'
@@ -19,6 +19,7 @@ import { SplitPane } from '../components/SplitPane'
 import { problems } from '../generated/problems'
 import type { JudgeCase, ProblemRecord } from '../types/content'
 import { ComponentLearnPage } from './ComponentLearnPage'
+import { useAppState } from '../context/AppStateContext'
 
 import type { CustomCase } from '../components/CasePanel'
 import type { ExecutionResponse } from '../types/exam'
@@ -163,6 +164,7 @@ export function LearnPage() {
 }
 
 function LearnProblemView({ problem }: { problem: ProblemRecord }) {
+  const { state: { isMobile } } = useAppState()
   const editorRef = useRef<CodeEditorHandle>(null)
   const [source, setSource] = useState(() => createInitialSource(problem))
   const sourceRef = useRef(source)
@@ -171,6 +173,7 @@ function LearnProblemView({ problem }: { problem: ProblemRecord }) {
   const [busyAction, setBusyAction] = useState<'run' | 'submit' | null>(null)
   const [customCases, setCustomCases] = useState<CustomCase[]>([])
   const [activeTab, setActiveTab] = useState<DetailTab>('description')
+  const [mobileActiveTab, setMobileActiveTab] = useState<'info' | 'code' | 'result'>('info')
   const [solutionInteractionMode, setSolutionInteractionMode] = useState<CodeBlockInteractionMode>(
     () => readStoredSolutionInteractionMode(),
   )
@@ -308,6 +311,109 @@ function LearnProblemView({ problem }: { problem: ProblemRecord }) {
         ? '组件题，请打开本地 Launcher 调试'
         : undefined
 
+  const renderInfoPanel = () => (
+    <ProblemInfoPanel
+      activeTab={activeTab}
+      onSolutionInteractionModeChange={setSolutionInteractionMode}
+      onTabChange={setActiveTab}
+      problem={problem}
+      solutionInteractionMode={solutionInteractionMode}
+    />
+  )
+
+  const renderCodeWorkspace = () => (
+    <Suspense fallback={<LoadingPanel />}>
+      <CodeWorkspace
+        ref={editorRef}
+        description={problem.description}
+        language={problem.sourceType}
+        onChange={updateSource}
+        title={`#${String(problem.sequence).padStart(2, '0')} ${problem.title}`}
+        value={source}
+      />
+    </Suspense>
+  )
+
+  const renderCasePanel = () => (
+    <CasePanel
+      actions={
+        <div className="flex gap-2">
+          <button
+            className="flex items-center gap-1 px-3 py-1.5 rounded-md text-xs font-semibold bg-[var(--color-surface-secondary)] border border-[var(--color-border)] text-[var(--color-ink-secondary)] hover:border-[var(--color-primary)] disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+            data-testid="run-button"
+            disabled={!isAutoJudge || busyAction !== null}
+            onClick={() => executeCases('run')}
+            title={actionTitle}
+            type="button"
+          >
+            <Play size={12} />
+            {busyAction === 'run' ? '运行中...' : '运行'}
+          </button>
+          <button
+            className="flex items-center gap-1 px-3 py-1.5 rounded-md text-xs font-semibold bg-[var(--color-primary)] text-white hover:bg-[var(--color-primary-strong)] disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+            data-testid="submit-button"
+            disabled={!isAutoJudge || busyAction !== null}
+            onClick={() => executeCases('submit')}
+            title={actionTitle}
+            type="button"
+          >
+            <Check size={12} />
+            {busyAction === 'submit' ? '判题中...' : '提交'}
+          </button>
+        </div>
+      }
+      cases={problem.basicCases}
+      consoleExecution={consoleExecution}
+      customCases={isAutoJudge ? customCases : undefined}
+      execution={sampleExecution}
+      onCustomCasesChange={isAutoJudge ? setCustomCases : undefined}
+      title="测试与判题"
+    />
+  )
+
+  if (isMobile) {
+    return (
+      <AppShell
+        eyebrow="学习模式"
+        title={problem.title}
+        showPageHeader={false}
+        backTo="/learn"
+        backLabel="列表"
+      >
+        <div className="h-full flex flex-col bg-[var(--color-canvas)]">
+          <div className="flex-1 min-h-0 overflow-hidden p-2">
+            {mobileActiveTab === 'info' && renderInfoPanel()}
+            {mobileActiveTab === 'code' && renderCodeWorkspace()}
+            {mobileActiveTab === 'result' && renderCasePanel()}
+          </div>
+          
+          <div className="h-14 shrink-0 bg-white border-t border-[var(--color-border)] flex items-stretch">
+            {[
+              { id: 'info' as const, label: '题目', icon: FileText },
+              { id: 'code' as const, label: '代码', icon: Code },
+              { id: 'result' as const, label: '测试', icon: Beaker },
+            ].map((tab) => {
+              const Icon = tab.icon
+              const isActive = mobileActiveTab === tab.id
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => setMobileActiveTab(tab.id)}
+                  className={`flex-1 flex flex-col items-center justify-center gap-1 transition-colors ${
+                    isActive ? 'text-[var(--color-primary)]' : 'text-[var(--color-ink-tertiary)]'
+                  }`}
+                >
+                  <Icon size={18} />
+                  <span className="text-[10px] font-bold">{tab.label}</span>
+                </button>
+              )
+            })}
+          </div>
+        </div>
+      </AppShell>
+    )
+  }
+
   return (
     <AppShell
       eyebrow="学习模式"
@@ -323,13 +429,7 @@ function LearnProblemView({ problem }: { problem: ProblemRecord }) {
           direction="horizontal"
           first={
             <div className="h-full pr-1">
-              <ProblemInfoPanel
-                activeTab={activeTab}
-                onSolutionInteractionModeChange={setSolutionInteractionMode}
-                onTabChange={setActiveTab}
-                problem={problem}
-                solutionInteractionMode={solutionInteractionMode}
-              />
+              {renderInfoPanel()}
             </div>
           }
           firstClassName="h-full"
@@ -343,16 +443,7 @@ function LearnProblemView({ problem }: { problem: ProblemRecord }) {
                 direction="vertical"
                 first={
                   <div className="h-full pb-1">
-                    <Suspense fallback={<LoadingPanel />}>
-                      <CodeWorkspace
-                        ref={editorRef}
-                        description={problem.description}
-                        language={problem.sourceType}
-                        onChange={updateSource}
-                        title={`#${String(problem.sequence).padStart(2, '0')} ${problem.title}`}
-                        value={source}
-                      />
-                    </Suspense>
+                    {renderCodeWorkspace()}
                   </div>
                 }
                 firstClassName="h-full"
@@ -360,40 +451,7 @@ function LearnProblemView({ problem }: { problem: ProblemRecord }) {
                 minSecondSize={120}
                 second={
                   <div className="h-full pt-1">
-                    <CasePanel
-                      actions={
-                        <div className="flex gap-2">
-                          <button
-                            className="flex items-center gap-1 px-3 py-1.5 rounded-md text-xs font-semibold bg-[var(--color-surface-secondary)] border border-[var(--color-border)] text-[var(--color-ink-secondary)] hover:border-[var(--color-primary)] disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-                            data-testid="run-button"
-                            disabled={!isAutoJudge || busyAction !== null}
-                            onClick={() => executeCases('run')}
-                            title={actionTitle}
-                            type="button"
-                          >
-                            <Play size={12} />
-                            {busyAction === 'run' ? '运行中...' : '运行'}
-                          </button>
-                          <button
-                            className="flex items-center gap-1 px-3 py-1.5 rounded-md text-xs font-semibold bg-[var(--color-primary)] text-white hover:bg-[var(--color-primary-strong)] disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-                            data-testid="submit-button"
-                            disabled={!isAutoJudge || busyAction !== null}
-                            onClick={() => executeCases('submit')}
-                            title={actionTitle}
-                            type="button"
-                          >
-                            <Check size={12} />
-                            {busyAction === 'submit' ? '判题中...' : '提交'}
-                          </button>
-                        </div>
-                      }
-                      cases={problem.basicCases}
-                      consoleExecution={consoleExecution}
-                      customCases={isAutoJudge ? customCases : undefined}
-                      execution={sampleExecution}
-                      onCustomCasesChange={isAutoJudge ? setCustomCases : undefined}
-                      title="测试与判题"
-                    />
+                    {renderCasePanel()}
                   </div>
                 }
                 secondClassName="h-full"
