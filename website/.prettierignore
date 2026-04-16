@@ -1,0 +1,7 @@
+dist
+src/generated
+node_modules
+../docs/实践/with_react/launcher/node_modules
+../docs/实践/with_react/launcher/dist
+../docs/实践/with_vue/launcher/node_modules
+../docs/实践/with_vue/launcher/dist

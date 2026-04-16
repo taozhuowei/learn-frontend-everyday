@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>前端代码实战网站</title>
+    <script type="module" crossorigin src="/assets/index-BPTz_qpA.js"></script>
+    <link rel="modulepreload" crossorigin href="/assets/rolldown-runtime-COnpUsM8.js">
+    <link rel="modulepreload" crossorigin href="/assets/editor-react-DiXhggMT.js">
+    <link rel="modulepreload" crossorigin href="/assets/router-vendor-DS_gNhID.js">
+    <link rel="modulepreload" crossorigin href="/assets/vendor-XORyAwIR.js">
+    <link rel="modulepreload" crossorigin href="/assets/markdown-runtime-BR6R6d9A.js">
+    <link rel="modulepreload" crossorigin href="/assets/react-vendor-EgBWBM5P.js">
+    <link rel="modulepreload" crossorigin href="/assets/LoadingPanel-BPcBXfIA.js">
+    <link rel="modulepreload" crossorigin href="/assets/problem-data-CFo5x1p1.js">
+    <link rel="modulepreload" crossorigin href="/assets/AppStateContext-D-fGhU4B.js">
+    <link rel="stylesheet" crossorigin href="/assets/vendor-8SnfkbGj.css">
+    <link rel="stylesheet" crossorigin href="/assets/index-CMqiBKw9.css">
+  </head>
+  <body>
+    <div id="root"></div>
+    <script>
+      (function () {
+        const base_path = '/'.replace(/\/$/, '')
+        const url = new URL(window.location.href)
+        const redirect_path = url.searchParams.get('p')
+        const redirect_query = url.searchParams.get('q')
+        const redirect_hash = url.searchParams.get('h')
+
+        if (!redirect_path) {
+          return
+        }
+
+        url.searchParams.delete('p')
+        url.searchParams.delete('q')
+        url.searchParams.delete('h')
+
+        const preserved_query = url.searchParams.toString()
+        const next_search = redirect_query
+          ? `?${redirect_query}${preserved_query ? `&${preserved_query}` : ''}`
+          : preserved_query
+            ? `?${preserved_query}`
+            : ''
+        const next_hash = redirect_hash ? `#${redirect_hash}` : ''
+
+        window.history.replaceState(
+          null,
+          '',
+          `${base_path}${redirect_path}${next_search}${next_hash}`,
+        )
+      })()
+    </script>
+  </body>
+</html>
