@@ -16,7 +16,7 @@
     "lint:fix": "eslint . --fix",
     "format": "prettier --write . ../judge/src",
     "format:check": "prettier --check . ../judge/src",
-    "check:all": "npm run format:check && npm run lint",
+    "check:all": "yarn run format:check && yarn run lint",
     "prepare": "cd .. && npx husky"
   },
   "dependencies": {
