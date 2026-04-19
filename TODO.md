@@ -82,7 +82,7 @@ FORBIDDEN: <明确禁止项，如：禁止使用 eval>
 *目标：彻底消除 `entry_extractor` 和 `sandbox_builder` 的代码执行提权漏洞。*
 *协同流转：`security-engineer` 实现 -> `code-reviewer` 审计*
 
-- [ ] **B1: 重构 `entry_extractor.ts` 消除裸露 `new Function`** (P0)
+- [x] **B1: 重构 `entry_extractor.ts` 消除裸露 `new Function`** (P0)
   - **范围**: `judge/src/sandbox/entry_extractor.ts`, `judge/package.json`
   - **任务**: 移除宿主环境下直接调用的 `new Function`。要求采用基于 AST（如 `acorn`）的静态分析方案或严格的 Worker 隔离方案提取用户代码。
   - **验收标准**: 取消使用原生 `new Function` 进行模块提取，且 A2 中的提取层逃逸测试用例由“攻击成功”变为“被安全拦截”。
@@ -91,7 +91,7 @@ FORBIDDEN: <明确禁止项，如：禁止使用 eval>
     2. 成功处理各类 ES6 `export default` 的源码转换。
     3. 所有核心评测用例回归全部 `PASS`。
 
-- [ ] **B2: 升级 `sandbox_builder.ts` 为强隔离层** (P1)
+- [x] **B2: 升级 `sandbox_builder.ts` 为强隔离层** (P1)
   - **范围**: `judge/src/sandbox/sandbox_builder.ts`, `judge/src/core/judge_core.ts`
   - **任务**: 依照 `judge/DESIGN.md`，将基于 `Proxy+with` 的基础沙盒升级为完全隔离的 Web Worker。所有通信必须通过 `postMessage` 序列化，杜绝任何对宿主环境原型链的访问。
   - **验收标准**: 执行代码运行在 Worker 或严格的 iframe 沙箱中，彻底阻断与主界面的 DOM 及全局对象的内存联系。

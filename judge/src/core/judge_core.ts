@@ -1,21 +1,11 @@
 import type { ProblemContract, TestCase, TestFile, CaseResult, JudgeResult } from './types'
 import { getContract } from './problem_registry'
-import { methodCallRunner } from '../runners/method_call_runner'
-import { functionCallRunner } from '../runners/function_call_runner'
-import { behavioralRunner } from '../runners/behavioral_runner'
-import { asyncRunner } from '../runners/async_runner'
+import { extractExport, extractPrototype, extractClass } from '../sandbox/entry_extractor'
+import { runInWorkerSandbox } from '../sandbox/sandbox_builder'
 import { deepEqualValidator } from '../validators/deep_equal_validator'
 import { behavioralValidator } from '../validators/behavioral_validator'
 
-type Runner = (contract: ProblemContract, testCase: TestCase, userCode: string) => Promise<unknown>
 type Validator = (actual: unknown, expected: unknown) => { passed: boolean; reason?: string }
-
-const runners: Record<string, Runner> = {
-  'method-call': methodCallRunner,
-  'function-call': functionCallRunner,
-  'behavioral': behavioralRunner,
-  'async': asyncRunner
-}
 
 const validators: Record<string, Validator> = {
   'deep-equal': deepEqualValidator,
@@ -32,6 +22,25 @@ export class JudgeCore {
       throw new Error(`Problem "${problemId}" not found`)
     }
 
+    // Extract user code
+    let fnCode = '';
+    try {
+      if (contract.entry.type === 'prototype' && contract.entry.host) {
+        fnCode = extractPrototype(userCode, contract.entry.host, contract.entry.name);
+      } else if (contract.entry.type === 'class') {
+        fnCode = extractClass(userCode);
+      } else {
+        fnCode = extractExport(userCode);
+      }
+    } catch (error) {
+      return {
+        problemId,
+        passed: false,
+        cases: [{ id: 'setup', passed: false, actual: null, expected: null, error: 'Failed to extract code: ' + error }],
+        duration: 0
+      }
+    }
+
     // 2. Combine all test cases
     const all_cases = [...testFile.examples, ...testFile.hidden]
 
@@ -39,7 +48,7 @@ export class JudgeCore {
     const case_results: CaseResult[] = []
 
     for (const testCase of all_cases) {
-      const result = await this.runTestCase(contract, testCase, userCode)
+      const result = await this.runTestCase(contract, testCase, fnCode)
       case_results.push(result)
     }
 
@@ -58,19 +67,8 @@ export class JudgeCore {
   private async runTestCase(
     contract: ProblemContract,
     testCase: TestCase,
-    userCode: string
+    fnCode: string
   ): Promise<CaseResult> {
-    const runner = runners[contract.runner]
-    if (!runner) {
-      return {
-        id: testCase.id,
-        passed: false,
-        actual: null,
-        expected: testCase.expected,
-        error: `Unknown runner: ${contract.runner}`
-      }
-    }
-
     const validator = validators[contract.validator]
     if (!validator) {
       return {
@@ -83,8 +81,8 @@ export class JudgeCore {
     }
 
     try {
-      // Run the test
-      const actual = await runner(contract, testCase, userCode)
+      // Run the test inside isolated Web Worker sandbox
+      const { actual, meta } = await runInWorkerSandbox(contract, testCase, fnCode)
 
       // Validate the result
       const validation = validator(actual, testCase.expected)
@@ -95,7 +93,7 @@ export class JudgeCore {
         actual,
         expected: testCase.expected,
         error: validation.reason,
-        meta: extractMeta(actual)
+        meta
       }
     } catch (error) {
       return {
@@ -109,19 +107,3 @@ export class JudgeCore {
   }
 }
 
-function extractMeta(actual: unknown): CaseResult['meta'] {
-  if (typeof actual === 'object' && actual !== null) {
-    const meta: CaseResult['meta'] = {}
-    const obj = actual as Record<string, unknown>
-
-    if ('callCount' in obj && typeof obj.callCount === 'number') {
-      meta.callCount = obj.callCount
-    }
-    if ('maxConcurrent' in obj && typeof obj.maxConcurrent === 'number') {
-      meta.maxConcurrent = obj.maxConcurrent
-    }
-
-    return meta
-  }
-  return undefined
-}

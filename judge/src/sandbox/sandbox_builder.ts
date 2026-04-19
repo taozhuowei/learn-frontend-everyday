@@ -1,47 +1,59 @@
-export function buildSandbox(context: Record<string, unknown>): (code: string) => unknown {
-  return function (code: string): unknown {
-    const proxy = new Proxy(context, {
-      has(): boolean {
-        return true
-      },
-      get(target, key): unknown {
-        return target[key as string]
-      },
-      set(target, key, value): boolean {
-        target[key as string] = value
-        return true
+import { WORKER_CODE } from './worker_script'
+import type { ProblemContract, TestCase } from '../core/types'
+
+export async function runInWorkerSandbox(
+  contract: ProblemContract,
+  testCase: TestCase,
+  fnCode: string
+): Promise<{ actual?: unknown; meta?: any }> {
+  return new Promise(async (resolve, reject) => {
+    let worker: any = null
+    let timeoutId: any = null
+
+    const handleResult = (result: any) => {
+      if (timeoutId) clearTimeout(timeoutId)
+      if (worker) {
+        worker.terminate ? worker.terminate() : worker.terminate?.()
       }
-    })
-
-    const wrapped_code = `
-      with (sandbox) {
-        return (function() {
-          ${code}
-        })();
+      if (result.success) {
+        resolve({ actual: result.actual, meta: result.meta })
+      } else {
+        reject(new Error(result.error))
       }
-    `
+    }
 
-    const fn = new Function('sandbox', wrapped_code)
-    return fn(proxy)
-  }
-}
+    try {
+      if (typeof Worker !== 'undefined') {
+        // Browser environment
+        const blob = new Blob([WORKER_CODE], { type: 'application/javascript' })
+        const url = URL.createObjectURL(blob)
+        worker = new Worker(url)
+        worker.onmessage = (e: MessageEvent) => handleResult(e.data)
+        worker.onerror = (err: ErrorEvent) => {
+          if (timeoutId) clearTimeout(timeoutId)
+          reject(new Error(err.message))
+        }
+        worker.postMessage({ contract, testCase, fnCode })
+      } else {
+        // Node.js environment (Vitest)
+        const { Worker: NodeWorker } = await import('node:worker_threads')
+        worker = new NodeWorker(WORKER_CODE, { eval: true })
+        worker.on('message', handleResult)
+        worker.on('error', (err: Error) => {
+          if (timeoutId) clearTimeout(timeoutId)
+          reject(err)
+        })
+        worker.postMessage({ contract, testCase, fnCode })
+      }
 
-// Disable a native method by dotted path, returns a restore function
-// Example: disableNativeMethod('Array.prototype.filter') sets Array.prototype.filter = undefined
-export function disableNativeMethod(path: string): () => void {
-  const parts = path.split('.')
-  let current: unknown = globalThis
-
-  for (let i = 0; i < parts.length - 1; i++) {
-    current = (current as Record<string, unknown>)[parts[i]]
-  }
-
-  const last_key = parts[parts.length - 1]
-  const original = (current as Record<string, unknown>)[last_key]
-
-  ;(current as Record<string, unknown>)[last_key] = undefined
-
-  return function restore(): void {
-    ;(current as Record<string, unknown>)[last_key] = original
-  }
+      // 10 second timeout for any execution
+      timeoutId = setTimeout(() => {
+        if (worker) worker.terminate ? worker.terminate() : worker.terminate?.()
+        reject(new Error('Execution Timeout'))
+      }, 10000)
+    } catch (err) {
+      if (timeoutId) clearTimeout(timeoutId)
+      reject(err)
+    }
+  })
 }

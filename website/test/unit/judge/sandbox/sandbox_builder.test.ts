@@ -1,41 +1,46 @@
 import { describe, it, expect } from 'vitest'
-import { buildSandbox, disableNativeMethod } from '@judge/sandbox/sandbox_builder'
+import { runInWorkerSandbox } from '@judge/sandbox/sandbox_builder'
 
-describe('buildSandbox', () => {
-  it('returns a function', () => {
-    const sandbox = buildSandbox({})
-    expect(typeof sandbox).toBe('function')
+describe('runInWorkerSandbox', () => {
+  it('runs function-call runner in isolated worker', async () => {
+    const contract: any = {
+      runner: 'function-call',
+      entry: { type: 'export', name: 'default' },
+    }
+    const testCase: any = {
+      id: 'test-1',
+      input: { target: '10', args: ['20'] }
+    }
+    const fnCode = `
+      (function() {
+        const module = { exports: {} };
+        module.exports.default = (a, b) => a + b;
+        return module.exports.default;
+      })()
+    `
+    const { actual, meta } = await runInWorkerSandbox(contract, testCase, fnCode)
+    expect(actual).toBe(30)
   })
 
-  it('sandbox returns context variable value', () => {
-    const sandbox = buildSandbox({ x: 42 })
-    const result = sandbox('return x')
-    expect(result).toBe(42)
-  })
-
-  it('can set variables in context via sandbox code', () => {
-    const context: Record<string, unknown> = {}
-    const sandbox = buildSandbox(context)
-    sandbox('y = 100')
-    expect(context.y).toBe(100)
-  })
-
-  it('accessing undefined vars returns undefined due to Proxy has trap', () => {
-    const sandbox = buildSandbox({})
-    const result = sandbox('return typeof undefined_var')
-    expect(result).toBe('undefined')
-  })
-})
-
-describe('disableNativeMethod', () => {
-  it('disables Array.prototype.filter and restore function restores it', () => {
-    const original = Array.prototype.filter
-    expect(typeof original).toBe('function')
-
-    const restore = disableNativeMethod('Array.prototype.filter')
-    expect(Array.prototype.filter).toBeUndefined()
-
-    restore()
-    expect(Array.prototype.filter).toBe(original)
+  it('sandbox restricts access to node process object', async () => {
+    const contract: any = {
+      runner: 'function-call',
+      entry: { type: 'export', name: 'default' },
+    }
+    const testCase: any = {
+      id: 'test-2',
+      input: { target: 'null' }
+    }
+    const fnCode = `
+      (function() {
+        return function() {
+          return typeof process !== 'undefined' ? process.pid : null;
+        }
+      })()
+    `
+    const { actual } = await runInWorkerSandbox(contract, testCase, fnCode)
+    // worker_threads in Node.js do not have `process` globally unless explicitly passed,
+    // but a proper web worker has no process. It should return null.
+    expect(actual).toBeNull()
   })
 })
