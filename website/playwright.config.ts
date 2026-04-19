@@ -10,7 +10,6 @@ export default defineConfig({
   use: {
     baseURL: 'http://127.0.0.1:5173',
     headless: !!process.env.CI || !process.env.PLAYWRIGHT_HEADED,
-    channel: 'chrome',
     viewport: { width: 1280, height: 800 },
     actionTimeout: 15000,
     navigationTimeout: 30000,
