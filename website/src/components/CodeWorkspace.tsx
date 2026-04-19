@@ -5,9 +5,11 @@
  */
 
 import { useEffect, useRef, useCallback, useImperativeHandle, forwardRef } from 'react'
-import Editor, { type BeforeMount, type OnMount } from '@monaco-editor/react'
+import Editor, { type BeforeMount, type OnMount, loader } from '@monaco-editor/react'
 import { AlignLeft } from 'lucide-react'
-import type * as monaco from 'monaco-editor'
+import * as monaco from 'monaco-editor'
+
+loader.config({ monaco })
 
 export interface CodeEditorHandle {
   getValue: () => string
