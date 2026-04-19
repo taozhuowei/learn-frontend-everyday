@@ -8,6 +8,7 @@ import { useEffect, useRef, useCallback, useImperativeHandle, forwardRef } from 
 import Editor, { type BeforeMount, type OnMount, loader } from '@monaco-editor/react'
 import { AlignLeft } from 'lucide-react'
 import * as monaco from 'monaco-editor'
+import { LoadingPanel } from './LoadingPanel'
 
 loader.config({ monaco })
 
@@ -188,8 +189,9 @@ export const CodeWorkspace = forwardRef<
       </div>
 
       {/* Editor */}
-      <div className="cf-editor-container">
+      <div className="cf-editor-container relative">
         <Editor
+          loading={<LoadingPanel className="absolute inset-0 z-10 w-full h-full" type="code" />}
           beforeMount={handleBeforeMount}
           height="100%"
           language={resolvedLanguage}

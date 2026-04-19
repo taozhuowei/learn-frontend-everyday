@@ -5,7 +5,8 @@
 
 import type { ReactNode } from 'react'
 import { useEffect, useState, useMemo } from 'react'
-import { Plus, Trash2 } from 'lucide-react'
+import { Plus, Trash2, CheckCircle2 } from 'lucide-react'
+import { motion, AnimatePresence } from 'framer-motion'
 import type { JudgeCase } from '../types/content'
 import type { ExecutionResponse } from '../types/exam'
 
@@ -164,11 +165,49 @@ export function CasePanel({
     onCustomCasesChange((customCases || []).filter((c) => c.id !== id))
   }
 
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: { staggerChildren: 0.08, delayChildren: 0.1 },
+    },
+  }
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 15 },
+    show: {
+      opacity: 1,
+      y: 0,
+      transition: { type: 'spring' as const, stiffness: 350, damping: 25 },
+    },
+  }
+
+  const allPassed =
+    execution?.summary?.passedCount === execution?.summary?.totalCount &&
+    (execution?.summary?.totalCount ?? 0) > 0
+
   return (
     <aside
-      className="flex flex-col h-full bg-white border border-[var(--color-border)] rounded-[var(--radius-lg)] overflow-hidden"
+      className="relative flex flex-col h-full bg-white border border-[var(--color-border)] rounded-[var(--radius-lg)] overflow-hidden"
       data-testid="case-panel"
     >
+      {/* Success Delight Overlay */}
+      <AnimatePresence>
+        {allPassed && activeTab === 'cases' && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.5, y: -50 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.8 }}
+            transition={{ type: 'spring', stiffness: 200, damping: 20 }}
+            className="absolute top-16 right-4 z-10 pointer-events-none"
+          >
+            <div className="bg-[var(--color-success)] text-white p-2 rounded-full shadow-lg flex items-center justify-center">
+              <CheckCircle2 size={32} />
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Panel header */}
       <div className="flex items-center justify-between px-4 h-11 border-b border-[var(--color-border)] shrink-0">
         <span className="text-sm font-bold text-[var(--color-ink)]">{title}</span>
@@ -207,7 +246,13 @@ export function CasePanel({
       <div className="flex-1 overflow-y-auto p-4">
         {/* 测试用例 tab */}
         {activeTab === 'cases' ? (
-          <div className="flex flex-col gap-3">
+          <motion.div
+            className="flex flex-col gap-3"
+            variants={containerVariants}
+            initial="hidden"
+            animate="show"
+            key={execution ? 'executed' : 'idle'}
+          >
             {/* 基础用例 */}
             {cases.map((testCase) => {
               const result = execution?.results.find((item) => item.caseId === testCase.id)
@@ -215,7 +260,8 @@ export function CasePanel({
               const hasFailed = result?.passed === false
 
               return (
-                <div
+                <motion.div
+                  variants={itemVariants}
                   className={`rounded-md border p-3 text-xs font-mono ${
                     hasPassed
                       ? 'border-[var(--color-success)] bg-[var(--color-success-light)]'
@@ -267,7 +313,7 @@ export function CasePanel({
                       {extractParams(testCase.input)}
                     </div>
                   )}
-                </div>
+                </motion.div>
               )
             })}
 
@@ -278,7 +324,8 @@ export function CasePanel({
               const hasFailed = result?.passed === false
 
               return (
-                <div
+                <motion.div
+                  variants={itemVariants}
                   className={`rounded-md border p-3 text-xs font-mono ${
                     hasPassed
                       ? 'border-[var(--color-success)] bg-[var(--color-success-light)]'
@@ -348,22 +395,23 @@ export function CasePanel({
                       </div>
                     ))}
                   </div>
-                </div>
+                </motion.div>
               )
             })}
 
             {/* 添加自定义用例按钮 */}
             {hasCustomCases ? (
-              <button
+              <motion.button
+                variants={itemVariants}
                 onClick={handleAddCustomCase}
                 className="mt-2 flex items-center justify-center gap-2 w-full py-2.5 rounded-md border border-dashed border-[var(--color-border-strong)] text-xs font-semibold text-[var(--color-ink-tertiary)] hover:text-[var(--color-primary)] hover:border-[var(--color-primary)] hover:bg-[var(--color-surface-secondary)] transition-colors"
                 type="button"
               >
                 <Plus size={14} />
                 添加自定义用例
-              </button>
+              </motion.button>
             ) : null}
-          </div>
+          </motion.div>
         ) : null}
 
         {/* 控制台 tab - 终端风格 */}
