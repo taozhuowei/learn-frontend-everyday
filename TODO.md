@@ -104,7 +104,7 @@ FORBIDDEN: <明确禁止项，如：禁止使用 eval>
 *目标：解决 `@monaco-editor/react` 带来的包体积膨胀与首屏阻塞问题。*
 *协同流转：`optimize` 实现 -> `code-reviewer` 审计*
 
-- [ ] **C1: Monaco Editor 的极致异步分包**
+- [x] **C1: Monaco Editor 的极致异步分包**
   - **范围**: `website/vite.config.ts`, `website/scripts/build_config.mjs`, `website/src/components/CodeWorkspace.tsx`
   - **任务**: 将 monaco-editor 抽离为独立的 chunk。在 `CodeWorkspace.tsx` 中使用 `React.lazy` + `Suspense` 动态导入编辑器，确保首屏加载不被阻塞。
   - **验收标准**: `monaco-editor` 核心依赖被构建产物隔离，并实现按需异步加载，控制应用主 chunk (< 500KB)。
@@ -113,7 +113,7 @@ FORBIDDEN: <明确禁止项，如：禁止使用 eval>
     2. 使用了 `React.lazy` 或类似动态 `import()` 包装。
     3. 运行项目首屏加载瀑布图中编辑器加载不阻断核心框架。
 
-- [ ] **C2: 首屏加载依赖与路由懒加载梳理**
+- [x] **C2: 首屏加载依赖与路由懒加载梳理**
   - **范围**: `website/src/App.tsx`, 路由配置文件
   - **任务**: 确保路由级别的懒加载全面生效，检查并消除由于错误的顶级 import 导致的代码全量打包问题。
   - **验收标准**: 页面级组件实现严格路由切分，`npm run build` 不出现巨大 Vendor Chunk 警告。
@@ -126,7 +126,7 @@ FORBIDDEN: <明确禁止项，如：禁止使用 eval>
 *目标：为生硬的 UI 注入生命力，提升“刷题”的情绪反馈，并遵循物理直觉的动画标准。*
 *协同流转：`animate` 实现 -> `code-reviewer` 审计*
 
-- [ ] **D1: 编辑器与页面的骨架屏 (Skeleton) 过渡**
+- [x] **D1: 编辑器与页面的骨架屏 (Skeleton) 过渡**
   - **范围**: `website/src/components/LoadingPanel.tsx`, `website/src/components/CodeWorkspace.tsx`
   - **任务**: 弃用干转的 Spinner，设计并实现符合 Tailwind v4 规范的脉冲骨架屏（Pulse Skeleton），平滑覆盖代码编辑器初始化与题目详情的加载态。
   - **验收标准**: 在任何模块加载延迟的场景下展示流畅的脉冲呼吸式骨架占位屏，符合视觉无感过渡要求。
@@ -135,7 +135,7 @@ FORBIDDEN: <明确禁止项，如：禁止使用 eval>
     2. 应用于 `React.lazy` 的 Fallback 以及组件初始化拉取数据时。
     3. 不再有生硬的空白闪烁现象。
 
-- [ ] **D2: 引入 `framer-motion` 重构状态流转**
+- [x] **D2: 引入 `framer-motion` 重构状态流转**
   - **范围**: `website/package.json`, `website/src/components/CasePanel.tsx`, `website/src/pages/ExamSessionPage.tsx`
   - **任务**: 安装 `framer-motion`。将代码运行后从“执行中”到“展示用例结果”的 UI 切换，重构为带有物理缓动的级联展开动画（Staggered fade-in），时长约束在 150-300ms。
   - **验收标准**: 列表和面板在插入、切换和移除时有平滑且带有物理直觉的动画（基于 framer-motion）。
@@ -144,7 +144,7 @@ FORBIDDEN: <明确禁止项，如：禁止使用 eval>
     2. Case 结果列表呈现交错进场（Stagger）动画，60fps 性能。
     3. 组件生命周期（挂载/卸载）由 `AnimatePresence` 托管。
 
-- [ ] **D3: 实现成功判定庆祝动效 (Success Delight)**
+- [x] **D3: 实现成功判定庆祝动效 (Success Delight)**
   - **范围**: `website/src/components/CasePanel.tsx` 或相关结果展示层
   - **任务**: 当判定所有 Case 均为 `passed: true` 时，触发微型庆祝交互（如平滑的绿色 Checkmark 连笔动画或局部的粒子效果）。确保动效不会阻断用户进行“下一题”等后续操作。
   - **验收标准**: 在全部测试用例通过后，界面上产生不阻塞流程的显著情绪正反馈（庆祝动画）。
