@@ -9,7 +9,7 @@ export default defineConfig({
     },
   },
   test: {
-    include: ['test/unit/**/*.test.ts', 'test/integration/**/*.test.ts'],
+    include: ['test/unit/**/*.test.ts', 'test/integration/**/*.test.ts', '../judge/tests/**/*.test.ts'],
     coverage: {
       provider: 'v8',
       include: ['../judge/src/**/*.ts', 'src/utils/**/*.ts', 'scripts/**/*.mjs'],
