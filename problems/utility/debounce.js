@@ -27,3 +27,5 @@ function debounce(task, delay) {
 }
 
 debounce;
+
+export default debounce;

@@ -45,3 +45,5 @@ function reverseListRecursive(head) {
 
   return newHead;
 }
+
+export default reverseList;

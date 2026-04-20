@@ -58,3 +58,5 @@ function postorderTraversalIterative(root) {
 
   return result.reverse();
 }
+
+export default postorderTraversal;

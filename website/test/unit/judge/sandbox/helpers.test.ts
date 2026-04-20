@@ -5,7 +5,7 @@ import {
   arrayToList,
   listToArray,
   arrayToTree,
-  treeToArray
+  treeToArray,
 } from '@judge/sandbox/helpers'
 
 describe('ListNode', () => {

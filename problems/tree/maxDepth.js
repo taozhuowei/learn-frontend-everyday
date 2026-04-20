@@ -59,3 +59,5 @@ function maxDepthBFS(root) {
 
   return depth;
 }
+
+export default maxDepth;

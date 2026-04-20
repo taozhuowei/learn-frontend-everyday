@@ -83,3 +83,5 @@ function flattenIterative(arr, depth = Infinity) {
 
   return result;
 }
+
+export default flatten;

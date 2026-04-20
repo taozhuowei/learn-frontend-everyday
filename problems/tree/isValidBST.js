@@ -64,3 +64,5 @@ function isValidBSTRecursive(root) {
 
   return validate(root, null, null);
 }
+
+export default isValidBST;

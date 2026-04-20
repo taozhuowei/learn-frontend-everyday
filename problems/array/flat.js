@@ -13,7 +13,11 @@ Array.prototype.myFlat = function (depth = 1) {
     throw new TypeError("Cannot read property 'myFlat' of null or undefined");
   }
 
-  // 2. 把调用者转成对象（规范写法）
+  // 2. 规范化 depth，如果小于等于 0 则直接返回原数组副本
+  if (depth <= 0) {
+    return Array.from(this);
+  }
+
   const arr = this;
   const result = [];
 
@@ -34,3 +38,5 @@ Array.prototype.myFlat = function (depth = 1) {
 
   return result;
 };
+
+export default Array.prototype.myFlat;

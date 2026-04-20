@@ -58,3 +58,5 @@ function preorderTraversalIterative(root) {
 
   return result;
 }
+
+export default preorderTraversal;

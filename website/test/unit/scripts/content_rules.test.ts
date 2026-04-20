@@ -148,6 +148,8 @@ describe('validate_test_cases', () => {
       examples: [{ expected: 1 }],
       hidden: [],
     }
-    expect(() => validate_test_cases(invalid_cases, 'test.js')).toThrow('必须有 input 对象或 target+args 或 display+execute')
+    expect(() => validate_test_cases(invalid_cases, 'test.js')).toThrow(
+      '必须有 input 对象或 target+args 或 display+execute',
+    )
   })
 })

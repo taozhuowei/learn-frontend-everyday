@@ -38,23 +38,33 @@ describe('VirtualClock', () => {
 
     it('setTimeout fires after tick reaches delay', () => {
       let called = false
-      setTimeout(() => { called = true }, 100)
+      setTimeout(() => {
+        called = true
+      }, 100)
       clock.tick(100)
       expect(called).toBe(true)
     })
 
     it('setTimeout does not fire before delay is reached', () => {
       let called = false
-      setTimeout(() => { called = true }, 200)
+      setTimeout(() => {
+        called = true
+      }, 200)
       clock.tick(100)
       expect(called).toBe(false)
     })
 
     it('multiple timers fire in correct order', () => {
       const results: number[] = []
-      setTimeout(() => { results.push(1) }, 100)
-      setTimeout(() => { results.push(2) }, 50)
-      setTimeout(() => { results.push(3) }, 150)
+      setTimeout(() => {
+        results.push(1)
+      }, 100)
+      setTimeout(() => {
+        results.push(2)
+      }, 50)
+      setTimeout(() => {
+        results.push(3)
+      }, 150)
       clock.tick(200)
       expect(results).toEqual([2, 1, 3])
     })
@@ -67,7 +77,9 @@ describe('VirtualClock', () => {
 
     it('cancelled timer does not fire', () => {
       let called = false
-      const id = setTimeout(() => { called = true }, 100)
+      const id = setTimeout(() => {
+        called = true
+      }, 100)
       clearTimeout(id)
       clock.tick(100)
       expect(called).toBe(false)
@@ -81,7 +93,9 @@ describe('VirtualClock', () => {
 
     it('fires repeatedly at interval', () => {
       let count = 0
-      setInterval(() => { count++ }, 100)
+      setInterval(() => {
+        count++
+      }, 100)
       clock.tick(100)
       expect(count).toBe(1)
       clock.tick(100)
@@ -98,7 +112,9 @@ describe('VirtualClock', () => {
 
     it('stops repeated firing', () => {
       let count = 0
-      const id = setInterval(() => { count++ }, 100)
+      const id = setInterval(() => {
+        count++
+      }, 100)
       clock.tick(100)
       expect(count).toBe(1)
       clearInterval(id)

@@ -29,3 +29,5 @@ function myInstanceof(obj, constructor) {
 
   return false;
 }
+
+export default myInstanceof;

@@ -10,7 +10,7 @@
  * @return
  * 返回一个新的 Promise，其状态由最先完成的任务决定。
  */
-Promise.myRace = function (promises) {
+function promiseRace(promises) {
   return new Promise((resolve, reject) => {
     const queue = Array.from(promises);
 
@@ -40,4 +40,6 @@ Promise.myRace = function (promises) {
         });
     });
   });
-};
+}
+
+export default promiseRace;

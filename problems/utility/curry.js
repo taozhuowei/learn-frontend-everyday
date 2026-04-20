@@ -20,3 +20,5 @@ function curry(fn) {
     };
   };
 }
+
+export default curry;

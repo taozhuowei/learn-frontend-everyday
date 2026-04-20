@@ -168,3 +168,5 @@ function resolvePromise(promise2, x, resolve, reject) {
     resolve(x);
   }
 }
+
+export default MyPromise;

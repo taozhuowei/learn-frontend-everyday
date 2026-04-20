@@ -24,3 +24,5 @@ function myNew(constructor, ...args) {
     ? result
     : obj;
 }
+
+export default myNew;

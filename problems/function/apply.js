@@ -26,3 +26,5 @@ Function.prototype.myApply = function (context, argsArray) {
   delete context[fnSymbol];
   return result;
 };
+
+export default Function.prototype.myApply;

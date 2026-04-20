@@ -33,3 +33,5 @@ function deepClone(obj, cache = new WeakMap()) {
 }
 
 const deepCopy = deepClone;
+
+export default deepClone;

@@ -51,3 +51,5 @@ Array.prototype.myReduce = function (callback, initialValue) {
 
   return accumulator;
 };
+
+export default Array.prototype.myReduce;

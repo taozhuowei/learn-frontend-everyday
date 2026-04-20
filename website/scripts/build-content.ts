@@ -199,14 +199,9 @@ function extractSkeleton(rawSource: string): string {
   return result.replace(/\n{3,}/g, '\n\n').trim()
 }
 
-function validateJsSource(relativePath: string, source: string) {
-  if (!relativePath.endsWith('.js')) {
-    return
-  }
-
-  if (/^\s*export\s+/m.test(source) || /module\.exports/.test(source)) {
-    throw new Error(`${relativePath} 仍然包含导出语法，JS 题目源码需要保持为单一可执行实现。`)
-  }
+function validateJsSource(_relativePath: string, _source: string) {
+  // Logic removed: We now allow and encourage export default in JS files
+  // for judge compatibility.
 }
 
 function walkMarkdownFiles(currentDir: string, bucket: string[] = []) {
@@ -263,10 +258,11 @@ function walkProblemFiles(currentDir: string, bucket: string[] = []) {
 
 function sanitizeSlug(value: string) {
   return value
-    .normalize('NFKD')
-    .replace(/[\u0300-\u036f]/g, '')
+    .trim()
     .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/\s+/g, '-')
+    .replace(/[^\w\u4e00-\u9fa5-]+/g, '')
+    .replace(/--+/g, '-')
     .replace(/^-+|-+$/g, '')
 }
 
@@ -428,6 +424,42 @@ function buildProblems() {
     const sourceType = path.extname(filePath).slice(1)
     const executionConfig = getExecutionConfig(sourceType)
 
+    // Build Template with LeetCode-style definitions and automatic export
+    let template =
+      executionConfig.executionMode === 'component'
+        ? stripHeaderComment(source)
+        : extractSkeleton(source)
+
+    if (executionConfig.executionMode === 'browser') {
+      const dataStructureDefinitions: Record<string, string> = {
+        linkedlist: `/**\n * Definition for singly-linked list.\n * function ListNode(val, next) {\n *     this.val = (val===undefined ? 0 : val)\n *     this.next = (next===undefined ? null : next)\n * }\n */\n\n`,
+        tree: `/**\n * Definition for a binary tree node.\n * function TreeNode(val, left, right) {\n *     this.val = (val===undefined ? 0 : val)\n *     this.left = (left===undefined ? null : left)\n *     this.right = (right===undefined ? null : right)\n * }\n */\n\n`,
+      }
+
+      const header = dataStructureDefinitions[categoryId] || ''
+
+      // Find actual function name in the source to avoid keyword or mismatch issues
+      const firstFuncMatch = source.match(/^function\s+([\w$]+)/m)
+      const exportName = firstFuncMatch ? firstFuncMatch[1] : stem
+
+      // Append export default if not already present in the skeleton
+      const footer = template.includes('export default') ? '' : `\n\nexport default ${exportName}`
+      template = header + template + footer
+    }
+
+    const solutionCodeFull = stripHeaderComment(source)
+    let solutionCode = solutionCodeFull
+    if (
+      executionConfig.executionMode === 'browser' &&
+      !solutionCodeFull.includes('export default')
+    ) {
+      const firstFuncMatch = source.match(/^function\s+([\w$]+)/m)
+      const exportName = firstFuncMatch ? firstFuncMatch[1] : stem
+      if (!/^(new|instanceof|extends)$/.test(exportName)) {
+        solutionCode += `\n\nexport default ${exportName}`
+      }
+    }
+
     problemRecords.push({
       id: stem,
       slug: stem,
@@ -442,11 +474,8 @@ function buildProblems() {
       approachText,
       paramsText,
       returnText,
-      template:
-        executionConfig.executionMode === 'component'
-          ? stripHeaderComment(source)
-          : extractSkeleton(source),
-      solutionCode: stripHeaderComment(source),
+      template,
+      solutionCode,
       testCases,
       // 兼容性字段（支持新旧两种格式）
       basicCases: testCases.examples.map((c, i) => ({

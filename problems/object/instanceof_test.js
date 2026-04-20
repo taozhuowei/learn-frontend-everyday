@@ -9,7 +9,7 @@ module.exports = {
     {
       id: "example-2",
       hidden: false,
-      input: { target: "{}", args: ["Array"] },
+      input: { target: "({})", args: ["Array"] },
       expected: false,
     },
     {
@@ -23,7 +23,7 @@ module.exports = {
     {
       id: "hidden-1",
       hidden: true,
-      input: { target: "function() {}", args: ["Function"] },
+      input: { target: "(function() {})", args: ["Function"] },
       expected: true,
     },
     {
