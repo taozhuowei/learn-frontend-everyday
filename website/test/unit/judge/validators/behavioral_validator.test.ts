@@ -19,18 +19,12 @@ describe('behavioralValidator', () => {
 
   describe('maxConcurrent', () => {
     it('should pass when maxConcurrent matches', () => {
-      const result = behavioralValidator(
-        { callCount: 1, maxConcurrent: 2 },
-        { maxConcurrent: 2 }
-      )
+      const result = behavioralValidator({ callCount: 1, maxConcurrent: 2 }, { maxConcurrent: 2 })
       expect(result.passed).toBe(true)
     })
 
     it('should not pass when maxConcurrent mismatches', () => {
-      const result = behavioralValidator(
-        { callCount: 1, maxConcurrent: 3 },
-        { maxConcurrent: 2 }
-      )
+      const result = behavioralValidator({ callCount: 1, maxConcurrent: 3 }, { maxConcurrent: 2 })
       expect(result.passed).toBe(false)
     })
   })
@@ -39,7 +33,7 @@ describe('behavioralValidator', () => {
     it('should pass when hasError is true and actual has error', () => {
       const result = behavioralValidator(
         { callCount: 0, error: new Error('x') },
-        { hasError: true }
+        { hasError: true },
       )
       expect(result.passed).toBe(true)
     })
@@ -50,10 +44,7 @@ describe('behavioralValidator', () => {
     })
 
     it('should not pass when hasError mismatches', () => {
-      const result = behavioralValidator(
-        { callCount: 0 },
-        { hasError: true }
-      )
+      const result = behavioralValidator({ callCount: 0 }, { hasError: true })
       expect(result.passed).toBe(false)
     })
   })
@@ -62,7 +53,7 @@ describe('behavioralValidator', () => {
     it('should pass when all fields match', () => {
       const result = behavioralValidator(
         { callCount: 5, maxConcurrent: 3, error: new Error('test') },
-        { callCount: 5, maxConcurrent: 3, hasError: true }
+        { callCount: 5, maxConcurrent: 3, hasError: true },
       )
       expect(result.passed).toBe(true)
     })
@@ -70,7 +61,7 @@ describe('behavioralValidator', () => {
     it('should pass when only callCount specified and matches, ignoring others', () => {
       const result = behavioralValidator(
         { callCount: 3, maxConcurrent: 5, error: new Error('test') },
-        { callCount: 3 }
+        { callCount: 3 },
       )
       expect(result.passed).toBe(true)
     })

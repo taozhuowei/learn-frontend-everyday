@@ -10,52 +10,16 @@
  * @return
  * 返回合并后的链表头节点。
  */
-function mergeTwoLists(list1, list2) {
-  const dummy = { val: 0, next: null };
-  let tail = dummy;
-
-  while (list1 !== null && list2 !== null) {
-    if (list1.val <= list2.val) {
-      tail.next = list1;
-      list1 = list1.next;
-    } else {
-      tail.next = list2;
-      list2 = list2.next;
-    }
-    tail = tail.next;
+function mergeTwoLists(l1, l2) {
+  if (!l1) return l2;
+  if (!l2) return l1;
+  if (l1.val <= l2.val) {
+    l1.next = mergeTwoLists(l1.next, l2);
+    return l1;
+  } else {
+    l2.next = mergeTwoLists(l1, l2.next);
+    return l2;
   }
-
-  tail.next = list1 !== null ? list1 : list2;
-
-  return dummy.next;
 }
 
-/**
- * @description 使用递归方式合并两个升序链表。函数需要在每一层递归中比较两个头节点，把较小节点作为当前结果头节点，再把剩余部分继续递归合并。实现时同样要处理任意一条链表为空、两边长度不同，以及递归终止后直接返回剩余链表的情况。
- * @approach
- * 1. 递归出口是其中一条链表为空，此时直接返回另一条链表。
- * 2. 比较两个头节点的值，较小节点作为当前层返回结果的头节点。
- * 3. 较小节点的 next 指向“剩余节点继续合并”的递归结果。
- * @params
- * list1：第一条升序链表的头节点。
- * list2：第二条升序链表的头节点。
- * @return
- * 返回合并后的链表头节点。
- */
-function mergeTwoListsRecursive(list1, list2) {
-  if (!list1) {
-    return list2;
-  }
-
-  if (!list2) {
-    return list1;
-  }
-
-  if (list1.val <= list2.val) {
-    list1.next = mergeTwoListsRecursive(list1.next, list2);
-    return list1;
-  }
-
-  list2.next = mergeTwoListsRecursive(list1, list2.next);
-  return list2;
-}
+export default mergeTwoLists;

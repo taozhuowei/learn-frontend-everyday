@@ -28,3 +28,5 @@ Child.prototype.constructor = Child;
 Child.prototype.run = function run() {
   console.log("I'm " + this.little_name + ", I'm running.");
 };
+
+export default Parent;

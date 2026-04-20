@@ -17,13 +17,12 @@ import { MarkdownContent } from '../components/MarkdownContent'
 import { ProblemDescriptionContent } from '../components/ProblemDescriptionContent'
 import { SplitPane } from '../components/SplitPane'
 import { problems } from '../generated/problems'
-import type { JudgeCase, ProblemRecord } from '../types/content'
+import type { ProblemRecord } from '../types/content'
 import { ComponentLearnPage } from './ComponentLearnPage'
 import { useAppState } from '../context/AppStateContext'
 
 import type { CustomCase } from '../components/CasePanel'
-import type { ExecutionResponse } from '../types/exam'
-import { runCode } from '../utils/codeRunner'
+import { useProblemExecution } from '../hooks/useProblemExecution'
 
 const CodeWorkspace = lazy(() =>
   import('../components/CodeWorkspace').then((module) => ({ default: module.CodeWorkspace })),
@@ -40,7 +39,7 @@ function readStoredSolutionInteractionMode(): CodeBlockInteractionMode {
 
   const storedMode = window.localStorage.getItem(SOLUTION_INTERACTION_MODE_STORAGE_KEY)
   return storedMode === 'pan' || storedMode === 'select'
-    ? storedMode
+    ? (storedMode as CodeBlockInteractionMode)
     : DEFAULT_SOLUTION_INTERACTION_MODE
 }
 
@@ -171,9 +170,10 @@ function LearnProblemView({ problem }: { problem: ProblemRecord }) {
   const editorRef = useRef<CodeEditorHandle>(null)
   const [source, setSource] = useState(() => createInitialSource(problem))
   const sourceRef = useRef(source)
-  const [sampleExecution, setSampleExecution] = useState<ExecutionResponse | null>(null)
-  const [consoleExecution, setConsoleExecution] = useState<ExecutionResponse | null>(null)
-  const [busyAction, setBusyAction] = useState<'run' | 'submit' | null>(null)
+
+  const { sampleExecution, consoleExecution, busyAction, execute, resetExecution } =
+    useProblemExecution()
+
   const [customCases, setCustomCases] = useState<CustomCase[]>([])
   const [activeTab, setActiveTab] = useState<DetailTab>('description')
   const [solutionInteractionMode, setSolutionInteractionMode] = useState<CodeBlockInteractionMode>(
@@ -184,125 +184,24 @@ function LearnProblemView({ problem }: { problem: ProblemRecord }) {
     window.localStorage.setItem(SOLUTION_INTERACTION_MODE_STORAGE_KEY, solutionInteractionMode)
   }, [solutionInteractionMode])
 
+  useEffect(() => {
+    setSource(createInitialSource(problem))
+    setCustomCases([])
+    resetExecution()
+  }, [problem, resetExecution])
+
   function updateSource(nextSource: string) {
     sourceRef.current = nextSource
     setSource(nextSource)
   }
 
-  /**
-   * Build a valid JS eval expression from a custom case's target + args.
-   * Array prototype methods: target.myMethod(args)
-   * Function prototype methods: target.myMethod(args)
-   * Other (utility/object etc.): problemId(target, ...args)
-   */
-  function buildCustomEvalInput(target: string, args: string[]): string {
-    const argsStr = args.filter((a) => a.trim()).join(', ')
-    const arrayMethodMap: Record<string, string> = {
-      filter: 'myFilter',
-      map: 'myMap',
-      forEach: 'myForEach',
-      reduce: 'myReduce',
-      flat: 'myFlat',
-    }
-    const fnMethodMap: Record<string, string> = {
-      apply: 'myApply',
-      call: 'myCall',
-      bind: 'myBind',
-    }
-    if (problem.categoryId === 'array' && problem.id in arrayMethodMap) {
-      return `(${target}).${arrayMethodMap[problem.id]}(${argsStr})`
-    }
-    if (problem.categoryId === 'function' && problem.id in fnMethodMap) {
-      return `(${target}).${fnMethodMap[problem.id]}(${argsStr})`
-    }
-    // Generic: treat as a direct function call
-    const allArgs = [target, ...args].filter((a) => a.trim()).join(', ')
-    return `${problem.id}(${allArgs})`
-  }
-
-  function parseCustomCases(): JudgeCase[] {
-    return customCases
-      .filter((c) => c.target.trim())
-      .map((c, index) => ({
-        id: c.id,
-        type: 'basic' as const,
-        description: `自定义用例 ${index + 1}`,
-        input: buildCustomEvalInput(c.target, c.args),
-        expected: undefined,
-      }))
-  }
-
   async function executeCases(kind: 'run' | 'submit') {
-    if (problem.executionMode !== 'browser') return
-
     const sourceCode = editorRef.current?.getValue() ?? sourceRef.current
-    const customCasesParsed = kind === 'run' ? parseCustomCases() : []
-    setBusyAction(kind)
-
-    // Build testFile for JudgeCore - run only uses examples, submit uses all
-    const testFile = problem.testCases
-      ? kind === 'run'
-        ? { examples: problem.testCases.examples, hidden: [] }
-        : problem.testCases
-      : undefined
-
-    try {
-      // Run JudgeCore for the standard cases
-      const judgeResponse = await runCode({
-        source: sourceCode,
-        cases: [],
-        solutionCode: problem.solutionCode,
-        problemId: problem.id,
-        testFile: testFile as unknown as { examples: unknown[]; hidden: unknown[] },
-      })
-
-      // Run eval-based runner for custom cases (separate call, no testFile)
-      let finalResponse = judgeResponse
-      if (customCasesParsed.length > 0) {
-        const customResponse = await runCode({
-          source: sourceCode,
-          cases: customCasesParsed,
-          solutionCode: problem.solutionCode,
-          problemId: undefined,
-          testFile: undefined,
-        })
-        finalResponse = {
-          summary: {
-            passedCount: judgeResponse.summary.passedCount + customResponse.summary.passedCount,
-            totalCount: judgeResponse.summary.totalCount + customResponse.summary.totalCount,
-          },
-          results: [...judgeResponse.results, ...customResponse.results],
-        }
-      }
-
-      if (kind === 'run') {
-        setSampleExecution(finalResponse)
-      }
-      setConsoleExecution(finalResponse)
-    } catch (error) {
-      const message = error instanceof Error ? error.message : String(error)
-      const baseCases = kind === 'run' ? problem.basicCases : problem.fullCases
-      const allCases = [...baseCases, ...customCasesParsed]
-      const response: ExecutionResponse = {
-        summary: { passedCount: 0, totalCount: allCases.length },
-        results: allCases.map((singleCase) => ({
-          caseId: singleCase.id,
-          description: singleCase.description,
-          passed: false,
-          expected: singleCase.expected,
-          actual: null,
-          logs: [],
-          error: message,
-          durationMs: 0,
-        })),
-      }
-      if (kind === 'run') {
-        setSampleExecution(response)
-      }
-      setConsoleExecution(response)
-    } finally {
-      setBusyAction(null)
-    }
+    await execute(kind, {
+      problem,
+      sourceCode,
+      customCases,
+    })
   }
 
   const isAutoJudge = problem.executionMode === 'browser'

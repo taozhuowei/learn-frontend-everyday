@@ -22,13 +22,28 @@ describe('JudgeCore Integration', () => {
 
     const filter_test_file = {
       examples: [
-        { id: 'ex-1', hidden: false, input: { target: '[1,2,3,4,5,6]', args: ['x => x % 2 === 0'] }, expected: [2, 4, 6] },
-        { id: 'ex-2', hidden: false, input: { target: '[1,2,3,4]', args: ['x => x > 2'] }, expected: [3, 4] }
+        {
+          id: 'ex-1',
+          hidden: false,
+          input: { target: '[1,2,3,4,5,6]', args: ['x => x % 2 === 0'] },
+          expected: [2, 4, 6],
+        },
+        {
+          id: 'ex-2',
+          hidden: false,
+          input: { target: '[1,2,3,4]', args: ['x => x > 2'] },
+          expected: [3, 4],
+        },
       ],
       hidden: [
         { id: 'h-1', hidden: true, input: { target: '[]', args: ['x => true'] }, expected: [] },
-        { id: 'h-2', hidden: true, input: { target: '[1,2,3]', args: ['x => false'] }, expected: [] }
-      ]
+        {
+          id: 'h-2',
+          hidden: true,
+          input: { target: '[1,2,3]', args: ['x => false'] },
+          expected: [],
+        },
+      ],
     }
 
     it('should pass all test cases for filter', async () => {
@@ -36,7 +51,7 @@ describe('JudgeCore Integration', () => {
 
       expect(result.passed).toBe(true)
       expect(result.cases).toHaveLength(4)
-      expect(result.cases.every(c => c.passed)).toBe(true)
+      expect(result.cases.every((c) => c.passed)).toBe(true)
     })
   })
 
@@ -56,12 +71,12 @@ describe('JudgeCore Integration', () => {
     const reverse_test_file = {
       examples: [
         { id: 'ex-1', hidden: false, input: { target: '[1,2,3,4,5]' }, expected: [5, 4, 3, 2, 1] },
-        { id: 'ex-2', hidden: false, input: { target: '[1,2]' }, expected: [2, 1] }
+        { id: 'ex-2', hidden: false, input: { target: '[1,2]' }, expected: [2, 1] },
       ],
       hidden: [
         { id: 'h-1', hidden: true, input: { target: '[]' }, expected: [] },
-        { id: 'h-2', hidden: true, input: { target: '[1]' }, expected: [1] }
-      ]
+        { id: 'h-2', hidden: true, input: { target: '[1]' }, expected: [1] },
+      ],
     }
 
     it('should pass all test cases for reverseList', async () => {
@@ -92,11 +107,11 @@ describe('JudgeCore Integration', () => {
               { type: 'call' as const },
               { type: 'call' as const },
               { type: 'call' as const },
-              { type: 'tick' as const, ms: 100 }
-            ]
+              { type: 'tick' as const, ms: 100 },
+            ],
           },
-          expected: { callCount: 1 }
-        }
+          expected: { callCount: 1 },
+        },
       ],
       hidden: [
         {
@@ -108,12 +123,12 @@ describe('JudgeCore Integration', () => {
               { type: 'call' as const },
               { type: 'tick' as const, ms: 100 },
               { type: 'call' as const },
-              { type: 'tick' as const, ms: 200 }
-            ]
+              { type: 'tick' as const, ms: 200 },
+            ],
           },
-          expected: { callCount: 1 }
-        }
-      ]
+          expected: { callCount: 1 },
+        },
+      ],
     }
 
     it('should pass all test cases for debounce', async () => {
@@ -152,24 +167,27 @@ describe('JudgeCore Integration', () => {
         {
           id: 'ex-1',
           hidden: false,
-          input: { target: 'promiseAll([MyPromise.resolve(1), MyPromise.resolve(2), MyPromise.resolve(3)])' },
-          expected: [1, 2, 3]
+          input: {
+            target:
+              'promiseAll([MyPromise.resolve(1), MyPromise.resolve(2), MyPromise.resolve(3)])',
+          },
+          expected: [1, 2, 3],
         },
         {
           id: 'ex-2',
           hidden: false,
           input: { target: 'promiseAll([])' },
-          expected: []
-        }
+          expected: [],
+        },
       ],
       hidden: [
         {
           id: 'h-1',
           hidden: true,
           input: { target: 'promiseAll([1, 2, 3])' },
-          expected: [1, 2, 3]
-        }
-      ]
+          expected: [1, 2, 3],
+        },
+      ],
     }
 
     it('should pass all test cases for promise_all', async () => {
@@ -184,28 +202,43 @@ describe('JudgeCore Integration', () => {
 
     const filter_test_file = {
       examples: [
-        { id: 'ex-1', hidden: false, input: { target: '[1,2,3,4,5,6]', args: ['x => x % 2 === 0'] }, expected: [2, 4, 6] },
-        { id: 'ex-2', hidden: false, input: { target: '[1,2,3,4]', args: ['x => x > 2'] }, expected: [3, 4] }
+        {
+          id: 'ex-1',
+          hidden: false,
+          input: { target: '[1,2,3,4,5,6]', args: ['x => x % 2 === 0'] },
+          expected: [2, 4, 6],
+        },
+        {
+          id: 'ex-2',
+          hidden: false,
+          input: { target: '[1,2,3,4]', args: ['x => x > 2'] },
+          expected: [3, 4],
+        },
       ],
       hidden: [
         { id: 'h-1', hidden: true, input: { target: '[]', args: ['x => true'] }, expected: [] },
-        { id: 'h-2', hidden: true, input: { target: '[1,2,3]', args: ['x => false'] }, expected: [] }
-      ]
+        {
+          id: 'h-2',
+          hidden: true,
+          input: { target: '[1,2,3]', args: ['x => false'] },
+          expected: [],
+        },
+      ],
     }
 
     it('should fail when code is incorrect', async () => {
       const result = await judge.run('filter', wrong_code, filter_test_file)
 
       expect(result.passed).toBe(false)
-      expect(result.cases.some(c => !c.passed)).toBe(true)
+      expect(result.cases.some((c) => !c.passed)).toBe(true)
     })
   })
 
   describe('unknown problem', () => {
     it('should throw error for nonexistent problem', async () => {
-      await expect(
-        judge.run('nonexistent', '', { examples: [], hidden: [] })
-      ).rejects.toThrow('not found')
+      await expect(judge.run('nonexistent', '', { examples: [], hidden: [] })).rejects.toThrow(
+        'not found',
+      )
     })
   })
 })

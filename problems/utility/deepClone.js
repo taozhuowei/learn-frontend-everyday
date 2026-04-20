@@ -41,3 +41,5 @@ function deepClone(obj, cache = new WeakMap()) {
 
   return clonedObj;
 }
+
+export default deepClone;

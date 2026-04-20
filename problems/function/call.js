@@ -30,3 +30,5 @@ Function.prototype.myCall = function (context, ...args) {
 
   return result;
 };
+
+export default Function.prototype.myCall;

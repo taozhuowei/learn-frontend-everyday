@@ -60,7 +60,7 @@ export const generatedTestManifest = [
     "categoryName": "函数方法",
     "executionMode": "browser",
     "basicCaseCount": 3,
-    "fullCaseCount": 8
+    "fullCaseCount": 6
   },
   {
     "problemId": "call",

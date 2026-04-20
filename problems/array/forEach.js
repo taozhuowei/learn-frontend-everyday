@@ -29,3 +29,5 @@ Array.prototype.myForEach = function (callback, thisArg) {
     }
   }
 };
+
+export default Array.prototype.myForEach;

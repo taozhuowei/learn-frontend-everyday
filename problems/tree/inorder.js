@@ -59,3 +59,5 @@ function inorderTraversalIterative(root) {
 
   return result;
 }
+
+export default inorderTraversal;

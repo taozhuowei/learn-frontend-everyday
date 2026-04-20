@@ -289,20 +289,74 @@ describe('formatDuration', () => {
 
 describe('clampConfig', () => {
   it('clamps durationMinutes to [5, 180]', () => {
-    expect(clampConfig({ durationMinutes: 3, questionCount: 5, categoryIds: [], passingScore: 50 }, 5, 10).durationMinutes).toBe(5)
-    expect(clampConfig({ durationMinutes: 200, questionCount: 5, categoryIds: [], passingScore: 50 }, 5, 10).durationMinutes).toBe(180)
-    expect(clampConfig({ durationMinutes: 60, questionCount: 5, categoryIds: [], passingScore: 50 }, 5, 10).durationMinutes).toBe(60)
+    expect(
+      clampConfig(
+        { durationMinutes: 3, questionCount: 5, categoryIds: [], passingScore: 50 },
+        5,
+        10,
+      ).durationMinutes,
+    ).toBe(5)
+    expect(
+      clampConfig(
+        { durationMinutes: 200, questionCount: 5, categoryIds: [], passingScore: 50 },
+        5,
+        10,
+      ).durationMinutes,
+    ).toBe(180)
+    expect(
+      clampConfig(
+        { durationMinutes: 60, questionCount: 5, categoryIds: [], passingScore: 50 },
+        5,
+        10,
+      ).durationMinutes,
+    ).toBe(60)
   })
 
   it('clamps questionCount to [1, problemsCount]', () => {
-    expect(clampConfig({ durationMinutes: 60, questionCount: 0, categoryIds: [], passingScore: 50 }, 5, 10).questionCount).toBe(1)
-    expect(clampConfig({ durationMinutes: 60, questionCount: 20, categoryIds: [], passingScore: 50 }, 5, 10).questionCount).toBe(10)
-    expect(clampConfig({ durationMinutes: 60, questionCount: 5, categoryIds: [], passingScore: 50 }, 5, 10).questionCount).toBe(5)
+    expect(
+      clampConfig(
+        { durationMinutes: 60, questionCount: 0, categoryIds: [], passingScore: 50 },
+        5,
+        10,
+      ).questionCount,
+    ).toBe(1)
+    expect(
+      clampConfig(
+        { durationMinutes: 60, questionCount: 20, categoryIds: [], passingScore: 50 },
+        5,
+        10,
+      ).questionCount,
+    ).toBe(10)
+    expect(
+      clampConfig(
+        { durationMinutes: 60, questionCount: 5, categoryIds: [], passingScore: 50 },
+        5,
+        10,
+      ).questionCount,
+    ).toBe(5)
   })
 
   it('clamps passingScore to [1, 100]', () => {
-    expect(clampConfig({ durationMinutes: 60, questionCount: 5, categoryIds: [], passingScore: 0 }, 5, 10).passingScore).toBe(1)
-    expect(clampConfig({ durationMinutes: 60, questionCount: 5, categoryIds: [], passingScore: 150 }, 5, 10).passingScore).toBe(100)
-    expect(clampConfig({ durationMinutes: 60, questionCount: 5, categoryIds: [], passingScore: 75 }, 5, 10).passingScore).toBe(75)
+    expect(
+      clampConfig(
+        { durationMinutes: 60, questionCount: 5, categoryIds: [], passingScore: 0 },
+        5,
+        10,
+      ).passingScore,
+    ).toBe(1)
+    expect(
+      clampConfig(
+        { durationMinutes: 60, questionCount: 5, categoryIds: [], passingScore: 150 },
+        5,
+        10,
+      ).passingScore,
+    ).toBe(100)
+    expect(
+      clampConfig(
+        { durationMinutes: 60, questionCount: 5, categoryIds: [], passingScore: 75 },
+        5,
+        10,
+      ).passingScore,
+    ).toBe(75)
   })
 })

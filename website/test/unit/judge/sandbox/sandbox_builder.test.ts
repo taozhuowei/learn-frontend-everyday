@@ -9,7 +9,7 @@ describe('runInWorkerSandbox', () => {
     }
     const testCase: any = {
       id: 'test-1',
-      input: { target: '10', args: ['20'] }
+      input: { target: '10', args: ['20'] },
     }
     const fnCode = `
       (function() {
@@ -29,7 +29,7 @@ describe('runInWorkerSandbox', () => {
     }
     const testCase: any = {
       id: 'test-2',
-      input: { target: 'null' }
+      input: { target: 'null' },
     }
     const fnCode = `
       (function() {

@@ -39,3 +39,5 @@ Array.prototype.myFilter = function (callback, thisArg) {
   // 5. 返回新数组
   return result;
 };
+
+export default Array.prototype.myFilter;

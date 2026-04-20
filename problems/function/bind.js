@@ -32,3 +32,5 @@ Function.prototype.myBind = function (context, ...presetArgs) {
 
   return boundFn;
 };
+
+export default Function.prototype.myBind;

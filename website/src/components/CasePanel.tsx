@@ -186,6 +186,11 @@ export function CasePanel({
     execution?.summary?.passedCount === execution?.summary?.totalCount &&
     (execution?.summary?.totalCount ?? 0) > 0
 
+  const firstFailedHiddenCase = useMemo(() => {
+    if (!execution) return null
+    return execution.results.find((r) => r.caseId.startsWith('hidden') && !r.passed)
+  }, [execution])
+
   return (
     <aside
       className="relative flex flex-col h-full bg-white border border-[var(--color-border)] rounded-[var(--radius-lg)] overflow-hidden"
@@ -316,6 +321,41 @@ export function CasePanel({
                 </motion.div>
               )
             })}
+
+            {/* Hidden Case Failure (LeetCode style) */}
+            {firstFailedHiddenCase && (
+              <motion.div
+                variants={itemVariants}
+                className="rounded-md border p-3 text-xs font-mono border-[var(--color-danger)] bg-[var(--color-danger-light)]"
+              >
+                <div className="flex items-center justify-between mb-1.5">
+                  <span className="font-semibold text-[var(--color-danger)] not-italic font-sans text-[0.6875rem]">
+                    解答错误 (隐藏测试用例)
+                  </span>
+                  <span className="px-1.5 py-0.5 rounded text-[0.6rem] font-bold font-sans bg-[var(--color-danger)] text-white">
+                    未通过
+                  </span>
+                </div>
+                <div className="flex flex-col gap-1 text-[var(--color-ink)]">
+                  <div>
+                    <span className="text-[var(--color-ink-muted)] mr-1">输入</span>
+                    <span className="break-all">{firstFailedHiddenCase.description}</span>
+                  </div>
+                  <div>
+                    <span className="text-[var(--color-ink-muted)] mr-1">预期输出</span>
+                    <span className="break-all text-[var(--color-success)] font-bold">
+                      {JSON.stringify(firstFailedHiddenCase.expected)}
+                    </span>
+                  </div>
+                  <div>
+                    <span className="text-[var(--color-ink-muted)] mr-1">实际输出</span>
+                    <span className="break-all text-[var(--color-danger)] font-bold">
+                      {JSON.stringify(firstFailedHiddenCase.actual)}
+                    </span>
+                  </div>
+                </div>
+              </motion.div>
+            )}
 
             {/* 自定义用例 */}
             {(customCases || []).map((customCase, index) => {

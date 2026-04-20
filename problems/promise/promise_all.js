@@ -7,7 +7,7 @@
  * @return
  * 返回一个新的 Promise；全部成功时兑现按原顺序组成的结果数组，任意一项失败时立即拒绝。
  */
-Promise.myAll = function (promises) {
+function promiseAll(promises) {
   return new Promise((resolve, reject) => {
     const queue = Array.from(promises);
     const length = queue.length;
@@ -36,5 +36,6 @@ Promise.myAll = function (promises) {
         });
     });
   });
-};
-Promise.myAll;
+}
+
+export default promiseAll;

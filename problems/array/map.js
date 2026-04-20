@@ -30,3 +30,5 @@ Array.prototype.myMap = function (callback, thisArg) {
 
   return result;
 };
+
+export default Array.prototype.myMap;

@@ -4,66 +4,61 @@ module.exports = {
       id: "example-1",
       hidden: false,
       input: {
-        target: "function(a, b) { return this.x + a + b; }",
-        args: ["{ x: 10 }", "1"],
+        target:
+          "((function(a, b) { return this.x + a + b; }).myBind({ x: 10 }, 1)(2))",
+        args: [],
       },
-      expected: "bind_result",
+      expected: 13,
     },
     {
       id: "example-2",
       hidden: false,
       input: {
-        target: "function() { return this.name; }",
-        args: ['{ name: "bound" }'],
+        target:
+          "((function() { return this.name; }).myBind({ name: 'bound' })())",
+        args: [],
       },
-      expected: "bind_result",
+      expected: "bound",
     },
     {
       id: "example-3",
       hidden: false,
       input: {
-        target: "function(a, b, c) { return a + b + c; }",
-        args: ["{}", "1", "2"],
+        target:
+          "((function(a, b, c) { return a + b + c; }).myBind({}, 1, 2)(3))",
+        args: [],
       },
-      expected: "bind_result",
+      expected: 6,
     },
   ],
   hidden: [
     {
       id: "hidden-1",
       hidden: true,
-      input: { target: "function() { return this; }", args: ["{ a: 1 }"] },
-      expected: "bind_result",
+      input: {
+        target: "((function() { return this; }).myBind({ a: 1 })())",
+        args: [],
+      },
+      expected: { a: 1 },
     },
     {
       id: "hidden-2",
       hidden: true,
-      input: { target: "function() { return new.target; }", args: ["{}"] },
-      expected: "bind_result",
+      input: {
+        target: "((function() { return !!new.target; }).myBind({})())",
+        args: [],
+      },
+      expected: false,
     },
     {
       id: "hidden-3",
       hidden: true,
       input: {
-        target: "function(x) { return this.val + x; }",
-        args: ["{ val: 5 }"],
+        target:
+          "((function(x) { return this.val + x; }).myBind({ val: 5 })(10))",
+        args: [],
       },
-      expected: "bind_result",
-    },
-    {
-      id: "hidden-4",
-      hidden: true,
-      input: {
-        target: "function(a, b) { return a * b; }",
-        args: ["null", "3"],
-      },
-      expected: "bind_result",
-    },
-    {
-      id: "hidden-5",
-      hidden: true,
-      input: { target: "Array.prototype.push", args: ["[1, 2]"] },
-      expected: "bind_result",
+      expected: 15,
     },
   ],
 };

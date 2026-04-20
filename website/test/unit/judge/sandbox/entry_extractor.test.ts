@@ -15,14 +15,16 @@ describe('extractExport', () => {
     const code = 'export default function add(a,b){return a+b}'
     const fnString = extractExport(code)
     expect(typeof fnString).toBe('string')
-    expect(fnString).toContain('module.exports.default = function add')
+    expect(fnString).toContain('(function()')
+    expect(fnString).toContain('var cleanCode')
+    expect(fnString).toContain('eval(cleanCode)')
   })
 
   it('extracts arrow function from export default', () => {
     const code = 'export default (a,b)=>a+b'
     const fnString = extractExport(code)
     expect(typeof fnString).toBe('string')
-    expect(fnString).toContain('module.exports.default = (a,b)=>a+b')
+    expect(fnString).toContain('__cf_default__ = ')
   })
 })
 
@@ -31,6 +33,6 @@ describe('extractClass', () => {
     const code = 'export default class Foo { bar() { return 1; } }'
     const classString = extractClass(code)
     expect(typeof classString).toBe('string')
-    expect(classString).toContain('module.exports.default = class Foo')
+    expect(classString).toContain('class Foo')
   })
 })

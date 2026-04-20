@@ -42,7 +42,7 @@ module.exports = {
       id: "hidden-4",
       hidden: true,
       input: { target: "[[[[1]]]]", args: ["3"] },
-      expected: [[1]],
+      expected: [1],
     },
     {
       id: "hidden-5",

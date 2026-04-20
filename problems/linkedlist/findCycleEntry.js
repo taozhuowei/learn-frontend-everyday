@@ -32,3 +32,5 @@ function detectCycle(head) {
 
   return null;
 }
+
+export default detectCycle;

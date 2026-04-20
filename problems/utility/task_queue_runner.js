@@ -66,3 +66,5 @@ function runTask(task, index, timeout, retries) {
     attempt();
   });
 }
+
+export default execute;

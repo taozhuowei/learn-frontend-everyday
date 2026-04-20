@@ -3,19 +3,19 @@ module.exports = {
     {
       id: "example-1",
       hidden: false,
-      input: { target: "{ a: 1, b: 2 }", args: [] },
+      input: { target: "({ a: 1, b: 2 })", args: [] },
       expected: { a: 1, b: 2 },
     },
     {
       id: "example-2",
       hidden: false,
-      input: { target: "{ arr: [1, 2, 3] }", args: [] },
+      input: { target: "({ arr: [1, 2, 3] })", args: [] },
       expected: { arr: [1, 2, 3] },
     },
     {
       id: "example-3",
       hidden: false,
-      input: { target: "{ nested: { a: 1 } }", args: [] },
+      input: { target: "({ nested: { a: 1 } })", args: [] },
       expected: { nested: { a: 1 } },
     },
   ],
@@ -29,7 +29,7 @@ module.exports = {
     {
       id: "hidden-2",
       hidden: true,
-      input: { target: "{ a: { b: { c: 1 } } }", args: [] },
+      input: { target: "({ a: { b: { c: 1 } } })", args: [] },
       expected: { a: { b: { c: 1 } } },
     },
     {
@@ -41,13 +41,13 @@ module.exports = {
     {
       id: "hidden-4",
       hidden: true,
-      input: { target: "{ a: null, b: undefined }", args: [] },
+      input: { target: "({ a: null, b: undefined })", args: [] },
       expected: { a: null, b: undefined },
     },
     {
       id: "hidden-5",
       hidden: true,
-      input: { target: "{ date: new Date(2024, 0, 1) }", args: [] },
+      input: { target: "({ date: new Date(2024, 0, 1) })", args: [] },
       expected: { date: new Date(2024, 0, 1) },
     },
   ],

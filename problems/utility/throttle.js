@@ -13,14 +13,17 @@ function throttle(task, requireTime) {
     throw new TypeError("throttle can only run with functions");
   }
 
-  let lastTime = 0;
+  let lastTime = null; // 使用 null 区分从未执行的状态
 
   return function (...args) {
     const now = Date.now();
 
-    if (now - lastTime >= requireTime) {
+    // 第一次执行，或者距离上一次执行已过指定时间
+    if (lastTime === null || now - lastTime >= requireTime) {
       task.apply(this, args);
       lastTime = now;
     }
   };
 }
+
+export default throttle;
