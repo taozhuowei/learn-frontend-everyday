@@ -42,9 +42,10 @@ export const CodeWorkspace = forwardRef<
     onChange: (value: string) => void
     actions?: WorkspaceAction[]
     footer?: React.ReactNode
+    headerRight?: React.ReactNode
   }
 >(function CodeWorkspace(
-  { title, description, language = 'javascript', value, onChange, actions, footer },
+  { title, description, language = 'javascript', value, onChange, actions, footer, headerRight },
   ref,
 ) {
   const resolvedLanguage = LANGUAGE_MAP[language] ?? language
@@ -185,9 +186,9 @@ export const CodeWorkspace = forwardRef<
               {action.label}
             </button>
           ))}
+          {headerRight}
         </div>
       </div>
-
       {/* Editor */}
       <div className="cf-editor-container relative">
         <Editor

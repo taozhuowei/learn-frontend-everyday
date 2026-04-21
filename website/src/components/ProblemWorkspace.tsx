@@ -38,6 +38,7 @@ export function ProblemWorkspace({
   initialSource,
   onSourceChange,
   renderInfoPanel,
+  renderHeaderRight,
   onSubmit,
   onRun,
   submitButtonLabel = '提交',
@@ -170,6 +171,7 @@ export function ProblemWorkspace({
                       onChange={handleSourceChange}
                       title={`#${String(problem.sequence).padStart(2, '0')} ${problem.title}`}
                       value={source}
+                      headerRight={renderHeaderRight?.()}
                     />
                   </Suspense>
                 </div>

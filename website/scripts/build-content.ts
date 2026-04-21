@@ -77,8 +77,23 @@ function stripHeaderComment(source: string) {
   return source.replace(/^\s*\/\*\*[\s\S]*?\*\/\s*/m, '').trim()
 }
 
-function extractSkeleton(rawSource: string): string {
+function extractSkeleton(rawSource: string, isComponent: boolean): string {
   const source = stripHeaderComment(rawSource)
+
+  if (isComponent) {
+    // For components, we want to keep imports and constants at the top,
+    // but empty out the bodies of functions and classes.
+    // A simple regex-based approach for common React/Vue patterns:
+    return source
+      .replace(
+        /(export\s+default\s+function\s+\w+\s*\([^)]*\)\s*\{)([\s\S]*?)(\})/g,
+        '$1\n  // 在此编写你的实现\n$3',
+      )
+      .replace(
+        /(export\s+default\s+class\s+\w+[\s\S]*?\{)([\s\S]*?)(\})/g,
+        '$1\n  // 在此编写你的实现\n$3',
+      )
+  }
 
   let result = ''
   let i = 0
@@ -424,11 +439,10 @@ function buildProblems() {
     const sourceType = path.extname(filePath).slice(1)
     const executionConfig = getExecutionConfig(sourceType)
 
+    const isComponent = executionConfig.executionMode === 'component'
+
     // Build Template with LeetCode-style definitions and automatic export
-    let template =
-      executionConfig.executionMode === 'component'
-        ? stripHeaderComment(source)
-        : extractSkeleton(source)
+    let template = extractSkeleton(source, isComponent)
 
     if (executionConfig.executionMode === 'browser') {
       const dataStructureDefinitions: Record<string, string> = {
