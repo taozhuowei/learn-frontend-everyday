@@ -103,13 +103,9 @@ export function ProblemWorkspace({
     }
   }
 
-  const isAutoJudge = problem.executionMode === 'browser'
+  const isRunnable = problem.executionMode !== 'local'
   const actionTitle =
-    problem.executionMode === 'local'
-      ? '本地环境题，请在本机 Node.js 环境下判题'
-      : problem.executionMode === 'component'
-        ? '组件题，请打开本地 Launcher 调试'
-        : undefined
+    problem.executionMode === 'local' ? '本地环境题，请在本机 Node.js 环境下判题' : undefined
 
   return (
     <div className="h-full p-2 relative overflow-hidden">
@@ -187,20 +183,22 @@ export function ProblemWorkspace({
                         <div className="flex gap-2">
                           <button
                             className="flex-1 flex items-center justify-center gap-1 px-3 py-1.5 rounded-md text-xs font-semibold bg-[var(--color-surface-secondary)] border border-[var(--color-border)] text-[var(--color-ink-secondary)] hover:border-[var(--color-primary)] disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-                            disabled={!isAutoJudge || busyAction !== null}
+                            disabled={!isRunnable || busyAction !== null}
                             onClick={() => handleExecute('run')}
                             title={actionTitle}
                             type="button"
+                            data-testid="run-button"
                           >
                             <Play size={12} />
                             {busyAction === 'run' ? '运行中...' : '运行'}
                           </button>
                           <button
                             className="flex-1 flex items-center justify-center gap-1 px-3 py-1.5 rounded-md text-xs font-semibold bg-[var(--color-primary)] text-white hover:bg-[var(--color-primary-strong)] disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-                            disabled={!isAutoJudge || busyAction !== null}
+                            disabled={!isRunnable || busyAction !== null}
                             onClick={() => handleExecute('submit')}
                             title={actionTitle}
                             type="button"
+                            data-testid="submit-button"
                           >
                             <Check size={12} />
                             {busyAction === 'submit' ? '判题中...' : submitButtonLabel}
@@ -210,10 +208,14 @@ export function ProblemWorkspace({
                     }
                     cases={problem.basicCases}
                     consoleExecution={consoleExecution}
-                    customCases={isAutoJudge ? customCases : undefined}
+                    customCases={
+                      isRunnable && problem.executionMode === 'browser' ? customCases : undefined
+                    }
                     execution={sampleExecution}
                     mode={mode}
-                    onCustomCasesChange={isAutoJudge ? setCustomCases : undefined}
+                    onCustomCasesChange={
+                      isRunnable && problem.executionMode === 'browser' ? setCustomCases : undefined
+                    }
                     title="测试与判题"
                   />
                 </div>
