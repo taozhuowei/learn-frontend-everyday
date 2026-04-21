@@ -284,7 +284,10 @@ export function CasePanel({
                       {testCase.description}
                     </span>
                     {result ? (
-                      <span
+                      <motion.span
+                        initial={{ scale: 0.5, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        transition={{ type: 'spring', stiffness: 500, damping: 15 }}
                         className={`px-1.5 py-0.5 rounded text-[0.6rem] font-bold font-sans ${
                           result.passed
                             ? 'bg-[var(--color-success)] text-white'
@@ -292,7 +295,7 @@ export function CasePanel({
                         }`}
                       >
                         {result.passed ? '通过' : '失败'}
-                      </span>
+                      </motion.span>
                     ) : (
                       <span className="px-1.5 py-0.5 rounded text-[0.6rem] font-bold font-sans bg-[var(--color-border)] text-[var(--color-ink-muted)]">
                         待运行
