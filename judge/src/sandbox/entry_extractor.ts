@@ -12,7 +12,7 @@ export function extractPrototype(
     (function() {
       var exports = {};
       var module = { exports: exports };
-      var cleanCode = \`${code.replace(/`/g, '\\`').replace(/\$/g, '\\$')}\`
+      var cleanCode = \`${code.replace(/`/g, "\\`").replace(/\$/g, "\\$")}\`
         .replace(/export\\s+default\\s+/g, '')
         .replace(/export\\s+/g, '');
       eval(cleanCode);
@@ -22,8 +22,10 @@ export function extractPrototype(
 }
 
 export function extractExport(code: string, problemId?: string): string {
-  const camelId = problemId ? problemId.replace(/_([a-z])/g, (g) => g[1].toUpperCase()) : '';
-  const pascalId = camelId ? camelId[0].toUpperCase() + camelId.slice(1) : '';
+  const camelId = problemId
+    ? problemId.replace(/_([a-z])/g, (g) => g[1].toUpperCase())
+    : "";
+  const pascalId = camelId ? camelId[0].toUpperCase() + camelId.slice(1) : "";
 
   return `
     (function() {
@@ -31,7 +33,7 @@ export function extractExport(code: string, problemId?: string): string {
       var module = { exports: exports };
       var __cf_default__ = undefined;
       
-      var cleanCode = \`${code.replace(/`/g, '\\`').replace(/\$/g, '\\$')}\`
+      var cleanCode = \`${code.replace(/`/g, "\\`").replace(/\$/g, "\\$")}\`
         .replace(/export\\s+default\\s+/g, '__cf_default__ = ')
         .replace(/export\\s+/g, '');
       
@@ -63,7 +65,7 @@ export function extractExport(code: string, problemId?: string): string {
       m = cleanCode.match(/class\\s+([\\w$]+)/);
       if (m) { try { var v = eval(m[1]); if (typeof v !== 'undefined') return v; } catch(e) {} }
 
-      throw new Error("Export not found for problem: " + "${problemId || 'unknown'}");
+      throw new Error("Export not found for problem: " + "${problemId || "unknown"}");
     })()
   `;
 }
