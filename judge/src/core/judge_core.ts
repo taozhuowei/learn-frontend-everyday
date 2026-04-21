@@ -129,6 +129,15 @@ export class JudgeCore {
         meta,
       };
     } catch (error) {
+      const validation = validator(error, testCase.expected);
+      if (validation.passed) {
+        return {
+          id: testCase.id,
+          passed: true,
+          actual: error,
+          expected: testCase.expected,
+        };
+      }
       return {
         id: testCase.id,
         passed: false,

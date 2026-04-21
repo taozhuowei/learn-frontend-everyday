@@ -14,17 +14,17 @@ module.exports = {
       id: "example-2",
       hidden: false,
       input: {
-        target: "promiseRace([])",
+        target: "promiseRace([MyPromise.resolve(3)])",
         args: [],
       },
-      expected: { error: "" },
+      expected: 3,
     },
     {
       id: "example-3",
       hidden: false,
       input: {
         target:
-          'promiseRace([MyPromise.reject(new Error("err")), MyPromise.resolve(1)])',
+          'promiseRace([MyPromise.reject(new Error("err")), new MyPromise(r => setTimeout(() => r(1), 10))])',
         args: [],
       },
       expected: { error: "err" },

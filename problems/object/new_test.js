@@ -63,7 +63,7 @@ module.exports = {
       id: "hidden-5",
       hidden: true,
       input: {
-        target: "class MyClass { constructor(x) { this.x = x; } }",
+        target: "(function MyClass(x) { this.x = x; })",
         args: ["10"],
       },
       expected: { x: 10 },

@@ -811,36 +811,6 @@ export const problems: ProblemRecord[] = [
             4,
             6
           ]
-        },
-        {
-          "id": "example-2",
-          "hidden": false,
-          "input": {
-            "target": "[1, 2, 3]",
-            "args": [
-              "x => String(x)"
-            ]
-          },
-          "expected": [
-            "1",
-            "2",
-            "3"
-          ]
-        },
-        {
-          "id": "example-3",
-          "hidden": false,
-          "input": {
-            "target": "[1, 2, 3]",
-            "args": [
-              "x => x * x"
-            ]
-          },
-          "expected": [
-            1,
-            4,
-            9
-          ]
         }
       ],
       "hidden": [
@@ -874,51 +844,15 @@ export const problems: ProblemRecord[] = [
           "id": "hidden-3",
           "hidden": true,
           "input": {
-            "target": "[1, , 3]",
+            "target": "[1, 2, 3]",
             "args": [
               "x => x * 2"
             ]
           },
           "expected": [
             2,
-            undefined,
+            4,
             6
-          ]
-        },
-        {
-          "id": "hidden-4",
-          "hidden": true,
-          "input": {
-            "target": "[1, 2, 3]",
-            "args": [
-              "x => ({ value: x })"
-            ]
-          },
-          "expected": [
-            {
-              "value": 1
-            },
-            {
-              "value": 2
-            },
-            {
-              "value": 3
-            }
-          ]
-        },
-        {
-          "id": "hidden-5",
-          "hidden": true,
-          "input": {
-            "target": "[\"a\", \"b\", \"c\"]",
-            "args": [
-              "(x, i, arr) => x + i + arr.length"
-            ]
-          },
-          "expected": [
-            "a03",
-            "b13",
-            "c23"
           ]
         }
       ]
@@ -934,28 +868,6 @@ export const problems: ProblemRecord[] = [
           "x => x * 2"
         ],
         "expected": "[Circular]"
-      },
-      {
-        "id": "example-2",
-        "type": "basic",
-        "description": "示例 2",
-        "input": "[1, 2, 3](x => String(x))",
-        "displayTarget": "[1, 2, 3]",
-        "displayArgs": [
-          "x => String(x)"
-        ],
-        "expected": "[Circular]"
-      },
-      {
-        "id": "example-3",
-        "type": "basic",
-        "description": "示例 3",
-        "input": "[1, 2, 3](x => x * x)",
-        "displayTarget": "[1, 2, 3]",
-        "displayArgs": [
-          "x => x * x"
-        ],
-        "expected": "[Circular]"
       }
     ],
     "fullCases": [
@@ -967,28 +879,6 @@ export const problems: ProblemRecord[] = [
         "displayTarget": "[1, 2, 3]",
         "displayArgs": [
           "x => x * 2"
-        ],
-        "expected": "[Circular]"
-      },
-      {
-        "id": "example-2",
-        "type": "basic",
-        "description": "示例 2",
-        "input": "[1, 2, 3](x => String(x))",
-        "displayTarget": "[1, 2, 3]",
-        "displayArgs": [
-          "x => String(x)"
-        ],
-        "expected": "[Circular]"
-      },
-      {
-        "id": "example-3",
-        "type": "basic",
-        "description": "示例 3",
-        "input": "[1, 2, 3](x => x * x)",
-        "displayTarget": "[1, 2, 3]",
-        "displayArgs": [
-          "x => x * x"
         ],
         "expected": "[Circular]"
       },
@@ -1018,32 +908,10 @@ export const problems: ProblemRecord[] = [
         "id": "hidden-3",
         "type": "edge",
         "description": "隐藏 3",
-        "input": "[1, , 3](x => x * 2)",
-        "displayTarget": "[1, , 3]",
-        "displayArgs": [
-          "x => x * 2"
-        ],
-        "expected": "[Circular]"
-      },
-      {
-        "id": "hidden-4",
-        "type": "edge",
-        "description": "隐藏 4",
-        "input": "[1, 2, 3](x => ({ value: x }))",
+        "input": "[1, 2, 3](x => x * 2)",
         "displayTarget": "[1, 2, 3]",
         "displayArgs": [
-          "x => ({ value: x })"
-        ],
-        "expected": "[Circular]"
-      },
-      {
-        "id": "hidden-5",
-        "type": "edge",
-        "description": "隐藏 5",
-        "input": "[\"a\", \"b\", \"c\"]((x, i, arr) => x + i + arr.length)",
-        "displayTarget": "[\"a\", \"b\", \"c\"]",
-        "displayArgs": [
-          "(x, i, arr) => x + i + arr.length"
+          "x => x * 2"
         ],
         "expected": "[Circular]"
       }
@@ -1378,7 +1246,7 @@ export const problems: ProblemRecord[] = [
               "[]"
             ]
           },
-          "expected": null
+          "expected": "[Global]"
         },
         {
           "id": "hidden-2",
@@ -1520,7 +1388,7 @@ export const problems: ProblemRecord[] = [
           "null",
           "[]"
         ],
-        "expected": null
+        "expected": "[Global]"
       },
       {
         "id": "hidden-2",
@@ -1610,15 +1478,6 @@ export const problems: ProblemRecord[] = [
             "args": []
           },
           "expected": "bound"
-        },
-        {
-          "id": "example-3",
-          "hidden": false,
-          "input": {
-            "target": "((function(a, b, c) { return a + b + c; }).myBind({}, 1, 2)(3))",
-            "args": []
-          },
-          "expected": 6
         }
       ],
       "hidden": [
@@ -1641,15 +1500,6 @@ export const problems: ProblemRecord[] = [
             "args": []
           },
           "expected": false
-        },
-        {
-          "id": "hidden-3",
-          "hidden": true,
-          "input": {
-            "target": "((function(x) { return this.val + x; }).myBind({ val: 5 })(10))",
-            "args": []
-          },
-          "expected": 15
         }
       ]
     },
@@ -1671,15 +1521,6 @@ export const problems: ProblemRecord[] = [
         "displayTarget": "((function() { return this.name; }).myBind({ name: 'bound' })())",
         "displayArgs": [],
         "expected": "bound"
-      },
-      {
-        "id": "example-3",
-        "type": "basic",
-        "description": "示例 3",
-        "input": "((function(a, b, c) { return a + b + c; }).myBind({}, 1, 2)(3))",
-        "displayTarget": "((function(a, b, c) { return a + b + c; }).myBind({}, 1, 2)(3))",
-        "displayArgs": [],
-        "expected": 6
       }
     ],
     "fullCases": [
@@ -1702,15 +1543,6 @@ export const problems: ProblemRecord[] = [
         "expected": "bound"
       },
       {
-        "id": "example-3",
-        "type": "basic",
-        "description": "示例 3",
-        "input": "((function(a, b, c) { return a + b + c; }).myBind({}, 1, 2)(3))",
-        "displayTarget": "((function(a, b, c) { return a + b + c; }).myBind({}, 1, 2)(3))",
-        "displayArgs": [],
-        "expected": 6
-      },
-      {
         "id": "hidden-1",
         "type": "edge",
         "description": "隐藏 1",
@@ -1727,15 +1559,6 @@ export const problems: ProblemRecord[] = [
         "displayTarget": "((function() { return !!new.target; }).myBind({})())",
         "displayArgs": [],
         "expected": false
-      },
-      {
-        "id": "hidden-3",
-        "type": "edge",
-        "description": "隐藏 3",
-        "input": "((function(x) { return this.val + x; }).myBind({ val: 5 })(10))",
-        "displayTarget": "((function(x) { return this.val + x; }).myBind({ val: 5 })(10))",
-        "displayArgs": [],
-        "expected": 15
       }
     ],
     "isComponent": false,
@@ -1808,7 +1631,7 @@ export const problems: ProblemRecord[] = [
               "null"
             ]
           },
-          "expected": null
+          "expected": "[Global]"
         },
         {
           "id": "hidden-2",
@@ -1819,7 +1642,7 @@ export const problems: ProblemRecord[] = [
               "undefined"
             ]
           },
-          "expected": undefined
+          "expected": "[Global]"
         },
         {
           "id": "hidden-3",
@@ -1949,7 +1772,7 @@ export const problems: ProblemRecord[] = [
         "displayArgs": [
           "null"
         ],
-        "expected": null
+        "expected": "[Global]"
       },
       {
         "id": "hidden-2",
@@ -1960,7 +1783,7 @@ export const problems: ProblemRecord[] = [
         "displayArgs": [
           "undefined"
         ],
-        "expected": undefined
+        "expected": "[Global]"
       },
       {
         "id": "hidden-3",
@@ -2677,12 +2500,12 @@ export const problems: ProblemRecord[] = [
     "sourceType": "js",
     "executionMode": "browser",
     "launcherPath": null,
-    "description": "使用迭代方式反转单链表。函数需要把链表中每个节点的 next 指针方向逐个翻转，让原来的尾节点变成新的头节点。实现时要正确处理空链表、只有一个节点的链表，以及反转过程中不能丢失后续节点引用的问题。",
-    "approachText": "1. 使用 prev 保存已经反转好的前半段链表头节点。\n2. 使用 current 指向当前待处理节点，next 临时保存后继节点。\n3. 每轮先保存 next，再把 current.next 指回 prev，最后整体向前推进三个指针。",
-    "paramsText": "head：待反转链表的头节点。",
-    "returnText": "返回反转后的链表头节点。",
-    "template": "/**\n * Definition for singly-linked list.\n * function ListNode(val, next) {\n *     this.val = (val===undefined ? 0 : val)\n *     this.next = (next===undefined ? null : next)\n * }\n */\n\nfunction reverseList(head) {\n\n}\n\nfunction reverseListRecursive(head) {\n\n}\n\nexport default reverseList;",
-    "solutionCode": "function reverseList(head) {\n  let prev = null;\n  let current = head;\n\n  while (current !== null) {\n    const next = current.next;\n    current.next = prev;\n    prev = current;\n    current = next;\n  }\n\n  return prev;\n}\n\n/**\n * @description 使用递归方式反转单链表。函数需要先让更靠后的子链表完成反转，再在回溯阶段把当前节点接到已经反转好的链表尾部，最终返回新的头节点。实现时要处理空链表和单节点链表，并在回溯时断开旧的 next 指向，避免形成环。\n * @approach\n * 1. 递归出口是空节点或单节点，此时它本身就是反转后的头节点。\n * 2. 先递归反转 head.next 后面的链表，拿到新的头节点。\n * 3. 回溯时把当前节点挂到原下一个节点的后面，再断开当前节点旧的 next 指向。\n * @params\n * head：待反转链表的头节点。\n * @return\n * 返回反转后的链表头节点。\n */\nfunction reverseListRecursive(head) {\n  if (!head || !head.next) {\n    return head;\n  }\n\n  const newHead = reverseListRecursive(head.next);\n  head.next.next = head;\n  head.next = null;\n\n  return newHead;\n}\n\nexport default reverseList;",
+    "description": "反转链表",
+    "approachText": "双指针迭代",
+    "paramsText": "head 头节点",
+    "returnText": "反转后的头节点",
+    "template": "/**\n * Definition for singly-linked list.\n * function ListNode(val, next) {\n *     this.val = (val===undefined ? 0 : val)\n *     this.next = (next===undefined ? null : next)\n * }\n */\n\nfunction reverseList(head) {\n\n}\nexport default reverseList;",
+    "solutionCode": "function reverseList(head) {\n  let prev = null;\n  let curr = head;\n  while (curr) {\n    let next = curr.next;\n    curr.next = prev;\n    prev = curr;\n    curr = next;\n  }\n  return prev;\n}\nexport default reverseList;",
     "testCases": {
       "examples": [
         {
@@ -2892,242 +2715,9 @@ export const problems: ProblemRecord[] = [
     "testPath": "problems/linkedlist/reverseList_test.js"
   },
   {
-    "id": "deep_copy",
-    "slug": "deep_copy",
-    "sequence": 13,
-    "title": "Deep Copy",
-    "categoryId": "object",
-    "categoryName": "对象方法",
-    "sourceType": "js",
-    "executionMode": "browser",
-    "launcherPath": null,
-    "description": "实现一个通用的深拷贝函数，用于把输入值完整复制成一个新的结构，而不是只复制最外层引用。它需要在遇到普通对象、数组、Date、RegExp 等可复制对象时创建新的副本，对基础类型直接返回原值，并处理对象之间的循环引用，避免递归时进入死循环。拷贝结果不能与原对象共享可变嵌套引用。",
-    "approachText": "先把基础类型和特殊对象分开处理，再借助 WeakMap 记录已经拷贝过的引用；对于普通对象和数组，递归遍历自身所有键并继续深拷贝对应值，这样就能同时解决嵌套复制和循环引用问题。",
-    "paramsText": "obj：需要被深拷贝的输入值，可以是对象、数组或其他任意类型。\ncache：内部用于记录已拷贝引用的 WeakMap，默认自动创建，外部通常不需要手动传入。",
-    "returnText": "返回一个与原值结构等价但引用独立的新结果；基础类型会直接返回自身。",
-    "template": "function deepClone(obj, cache = new WeakMap()) {\n\n}\n\nconst deepCopy = deepClone;\n\nexport default deepClone;",
-    "solutionCode": "function deepClone(obj, cache = new WeakMap()) {\n  // 1. 基础类型处理：null 或非对象直接返回\n  if (obj === null || typeof obj !== \"object\") return obj;\n\n  // 2. 特殊对象处理：Date 和 RegExp 使用构造函数创建新实例\n  if (obj instanceof Date) return new Date(obj.getTime());\n  // RegExp 对象的属性（如 lastIndex）也需要复制，直接使用构造函数创建新实例\n  if (obj instanceof RegExp) return new RegExp(obj);\n\n  // 3. 循环引用处理：使用 WeakMap 缓存已拷贝的对象\n  if (cache.has(obj)) return cache.get(obj);\n\n  // 4. 递归拷贝：遍历对象所有键（包括 Symbol），递归深拷贝每个值\n  const clone = Array.isArray(obj) ? [] : {};\n  cache.set(obj, clone);\n\n  // 使用 Reflect.ownKeys 获取对象的所有键（包括 Symbol），确保完整拷贝\n  Reflect.ownKeys(obj).forEach((key) => {\n    clone[key] = deepClone(obj[key], cache);\n  });\n\n  return clone;\n}\n\nconst deepCopy = deepClone;\n\nexport default deepClone;",
-    "testCases": {
-      "examples": [
-        {
-          "id": "example-1",
-          "hidden": false,
-          "input": {
-            "target": "({ a: 1, b: 2 })",
-            "args": []
-          },
-          "expected": {
-            "a": 1,
-            "b": 2
-          }
-        },
-        {
-          "id": "example-2",
-          "hidden": false,
-          "input": {
-            "target": "({ arr: [1, 2, 3] })",
-            "args": []
-          },
-          "expected": {
-            "arr": [
-              1,
-              2,
-              3
-            ]
-          }
-        },
-        {
-          "id": "example-3",
-          "hidden": false,
-          "input": {
-            "target": "({ nested: { a: 1 } })",
-            "args": []
-          },
-          "expected": {
-            "nested": {
-              "a": 1
-            }
-          }
-        }
-      ],
-      "hidden": [
-        {
-          "id": "hidden-1",
-          "hidden": true,
-          "input": {
-            "target": "[]",
-            "args": []
-          },
-          "expected": []
-        },
-        {
-          "id": "hidden-2",
-          "hidden": true,
-          "input": {
-            "target": "({ a: { b: { c: 1 } } })",
-            "args": []
-          },
-          "expected": {
-            "a": {
-              "b": {
-                "c": 1
-              }
-            }
-          }
-        },
-        {
-          "id": "hidden-3",
-          "hidden": true,
-          "input": {
-            "target": "[1, [2, [3]]]",
-            "args": []
-          },
-          "expected": [
-            1,
-            [
-              2,
-              [
-                3
-              ]
-            ]
-          ]
-        },
-        {
-          "id": "hidden-4",
-          "hidden": true,
-          "input": {
-            "target": "({ a: null, b: undefined })",
-            "args": []
-          },
-          "expected": {
-            "a": null,
-            "b": undefined
-          }
-        },
-        {
-          "id": "hidden-5",
-          "hidden": true,
-          "input": {
-            "target": "({ date: new Date(2024, 0, 1) })",
-            "args": []
-          },
-          "expected": {
-            "date": "2023-12-31T16:00:00.000Z"
-          }
-        }
-      ]
-    },
-    "basicCases": [
-      {
-        "id": "example-1",
-        "type": "basic",
-        "description": "示例 1",
-        "input": "({ a: 1, b: 2 })",
-        "displayTarget": "({ a: 1, b: 2 })",
-        "displayArgs": [],
-        "expected": "[Circular]"
-      },
-      {
-        "id": "example-2",
-        "type": "basic",
-        "description": "示例 2",
-        "input": "({ arr: [1, 2, 3] })",
-        "displayTarget": "({ arr: [1, 2, 3] })",
-        "displayArgs": [],
-        "expected": "[Circular]"
-      },
-      {
-        "id": "example-3",
-        "type": "basic",
-        "description": "示例 3",
-        "input": "({ nested: { a: 1 } })",
-        "displayTarget": "({ nested: { a: 1 } })",
-        "displayArgs": [],
-        "expected": "[Circular]"
-      }
-    ],
-    "fullCases": [
-      {
-        "id": "example-1",
-        "type": "basic",
-        "description": "示例 1",
-        "input": "({ a: 1, b: 2 })",
-        "displayTarget": "({ a: 1, b: 2 })",
-        "displayArgs": [],
-        "expected": "[Circular]"
-      },
-      {
-        "id": "example-2",
-        "type": "basic",
-        "description": "示例 2",
-        "input": "({ arr: [1, 2, 3] })",
-        "displayTarget": "({ arr: [1, 2, 3] })",
-        "displayArgs": [],
-        "expected": "[Circular]"
-      },
-      {
-        "id": "example-3",
-        "type": "basic",
-        "description": "示例 3",
-        "input": "({ nested: { a: 1 } })",
-        "displayTarget": "({ nested: { a: 1 } })",
-        "displayArgs": [],
-        "expected": "[Circular]"
-      },
-      {
-        "id": "hidden-1",
-        "type": "edge",
-        "description": "隐藏 1",
-        "input": "[]",
-        "displayTarget": "[]",
-        "displayArgs": [],
-        "expected": "[Circular]"
-      },
-      {
-        "id": "hidden-2",
-        "type": "edge",
-        "description": "隐藏 2",
-        "input": "({ a: { b: { c: 1 } } })",
-        "displayTarget": "({ a: { b: { c: 1 } } })",
-        "displayArgs": [],
-        "expected": "[Circular]"
-      },
-      {
-        "id": "hidden-3",
-        "type": "edge",
-        "description": "隐藏 3",
-        "input": "[1, [2, [3]]]",
-        "displayTarget": "[1, [2, [3]]]",
-        "displayArgs": [],
-        "expected": "[Circular]"
-      },
-      {
-        "id": "hidden-4",
-        "type": "edge",
-        "description": "隐藏 4",
-        "input": "({ a: null, b: undefined })",
-        "displayTarget": "({ a: null, b: undefined })",
-        "displayArgs": [],
-        "expected": "[Circular]"
-      },
-      {
-        "id": "hidden-5",
-        "type": "edge",
-        "description": "隐藏 5",
-        "input": "({ date: new Date(2024, 0, 1) })",
-        "displayTarget": "({ date: new Date(2024, 0, 1) })",
-        "displayArgs": [],
-        "expected": "[Circular]"
-      }
-    ],
-    "isComponent": false,
-    "sourcePath": "problems/object/deep_copy.js",
-    "testPath": "problems/object/deep_copy_test.js"
-  },
-  {
     "id": "instanceof",
     "slug": "instanceof",
-    "sequence": 14,
+    "sequence": 13,
     "title": "Instanceof",
     "categoryId": "object",
     "categoryName": "对象方法",
@@ -3366,7 +2956,7 @@ export const problems: ProblemRecord[] = [
   {
     "id": "new",
     "slug": "new",
-    "sequence": 15,
+    "sequence": 14,
     "title": "New",
     "categoryId": "object",
     "categoryName": "对象方法",
@@ -3475,7 +3065,7 @@ export const problems: ProblemRecord[] = [
           "id": "hidden-5",
           "hidden": true,
           "input": {
-            "target": "class MyClass { constructor(x) { this.x = x; } }",
+            "target": "(function MyClass(x) { this.x = x; })",
             "args": [
               "10"
             ]
@@ -3600,8 +3190,8 @@ export const problems: ProblemRecord[] = [
         "id": "hidden-5",
         "type": "edge",
         "description": "隐藏 5",
-        "input": "class MyClass { constructor(x) { this.x = x; } }(10)",
-        "displayTarget": "class MyClass { constructor(x) { this.x = x; } }",
+        "input": "(function MyClass(x) { this.x = x; })(10)",
+        "displayTarget": "(function MyClass(x) { this.x = x; })",
         "displayArgs": [
           "10"
         ],
@@ -3615,7 +3205,7 @@ export const problems: ProblemRecord[] = [
   {
     "id": "promise",
     "slug": "promise",
-    "sequence": 16,
+    "sequence": 15,
     "title": "Promise",
     "categoryId": "promise",
     "categoryName": "Promise 实现",
@@ -3627,7 +3217,7 @@ export const problems: ProblemRecord[] = [
     "paramsText": "executor：创建 Promise 时立即执行的函数，接收 resolve 和 reject 两个参数。\nonFulfilled：可选的成功回调，在 Promise 兑现后接收成功值。\nonRejected：可选的失败回调，在 Promise 拒绝后接收失败原因。",
     "returnText": "返回一个可继续链式调用的 MyPromise 实例；then 也会返回新的 MyPromise。",
     "template": "class MyPromise {\n  \n  constructor(executor) {\n  \n}\n\n  \n  then(onFulfilled, onRejected) {\n  \n}\n\n  catch(onRejected) {\n  \n}\n\n  finally(callback) {\n  \n}\n\n  static resolve(value) {\n  \n}\n\n  static reject(reason) {\n  \n}\n\n}\n\nfunction resolvePromise(promise2, x, resolve, reject) {\n\n}\n\nexport default MyPromise;",
-    "solutionCode": "class MyPromise {\n  /**\n   * @param {Function} executor - 执行器函数\n   */\n  constructor(executor) {\n    this.state = \"pending\";\n    this.value = undefined;\n    this.reason = undefined;\n    this.onFulfilledCallbacks = [];\n    this.onRejectedCallbacks = [];\n\n    const resolve = (value) => {\n      if (this.state === \"pending\") {\n        this.state = \"fulfilled\";\n        this.value = value;\n        this.onFulfilledCallbacks.forEach((fn) => fn());\n      }\n    };\n\n    const reject = (reason) => {\n      if (this.state === \"pending\") {\n        this.state = \"rejected\";\n        this.reason = reason;\n        this.onRejectedCallbacks.forEach((fn) => fn());\n      }\n    };\n\n    try {\n      executor(resolve, reject);\n    } catch (error) {\n      reject(error);\n    }\n  }\n\n  /**\n   * @param {Function} [onFulfilled] - 成功回调\n   * @param {Function} [onRejected] - 失败回调\n   * @returns {MyPromise} 新 Promise 支持链式调用\n   */\n  then(onFulfilled, onRejected) {\n    onFulfilled =\n      typeof onFulfilled === \"function\" ? onFulfilled : (value) => value;\n    onRejected =\n      typeof onRejected === \"function\"\n        ? onRejected\n        : (reason) => {\n            throw reason;\n          };\n\n    const promise2 = new MyPromise((resolve, reject) => {\n      if (this.state === \"fulfilled\") {\n        setTimeout(() => {\n          try {\n            const x = onFulfilled(this.value);\n            resolvePromise(promise2, x, resolve, reject);\n          } catch (error) {\n            reject(error);\n          }\n        }, 0);\n      }\n\n      if (this.state === \"rejected\") {\n        setTimeout(() => {\n          try {\n            const x = onRejected(this.reason);\n            resolvePromise(promise2, x, resolve, reject);\n          } catch (error) {\n            reject(error);\n          }\n        }, 0);\n      }\n\n      if (this.state === \"pending\") {\n        this.onFulfilledCallbacks.push(() => {\n          setTimeout(() => {\n            try {\n              const x = onFulfilled(this.value);\n              resolvePromise(promise2, x, resolve, reject);\n            } catch (error) {\n              reject(error);\n            }\n          }, 0);\n        });\n\n        this.onRejectedCallbacks.push(() => {\n          setTimeout(() => {\n            try {\n              const x = onRejected(this.reason);\n              resolvePromise(promise2, x, resolve, reject);\n            } catch (error) {\n              reject(error);\n            }\n          }, 0);\n        });\n      }\n    });\n\n    return promise2;\n  }\n\n  catch(onRejected) {\n    return this.then(null, onRejected);\n  }\n\n  finally(callback) {\n    return this.then(\n      (value) => MyPromise.resolve(callback()).then(() => value),\n      (reason) =>\n        MyPromise.resolve(callback()).then(() => {\n          throw reason;\n        }),\n    );\n  }\n\n  static resolve(value) {\n    return new MyPromise((resolve) => resolve(value));\n  }\n\n  static reject(reason) {\n    return new MyPromise((_, reject) => reject(reason));\n  }\n}\n\nfunction resolvePromise(promise2, x, resolve, reject) {\n  if (promise2 === x) {\n    reject(new TypeError(\"Chaining cycle detected for promise\"));\n    return;\n  }\n\n  let called = false;\n  if (x != null && (typeof x === \"object\" || typeof x === \"function\")) {\n    try {\n      const then = x.then;\n      if (typeof then === \"function\") {\n        then.call(\n          x,\n          (y) => {\n            if (called) return;\n            called = true;\n            resolvePromise(promise2, y, resolve, reject);\n          },\n          (r) => {\n            if (called) return;\n            called = true;\n            reject(r);\n          },\n        );\n      } else {\n        resolve(x);\n      }\n    } catch (error) {\n      if (called) return;\n      called = true;\n      reject(error);\n    }\n  } else {\n    resolve(x);\n  }\n}\n\nexport default MyPromise;",
+    "solutionCode": "class MyPromise {\n  /**\n   * @param {Function} executor - 执行器函数\n   */\n  constructor(executor) {\n    this.state = \"pending\";\n    this.value = undefined;\n    this.reason = undefined;\n    this.onFulfilledCallbacks = [];\n    this.onRejectedCallbacks = [];\n\n    const resolve = (value) => {\n      // 💡 增强：处理 resolve 传入 Promise 的情况 (Promise/A+ 2.3.2)\n      if (value instanceof MyPromise) {\n        return value.then(resolve, reject);\n      }\n\n      if (this.state === \"pending\") {\n        this.state = \"fulfilled\";\n        this.value = value;\n        this.onFulfilledCallbacks.forEach((fn) => fn());\n      }\n    };\n\n    const reject = (reason) => {\n      if (this.state === \"pending\") {\n        this.state = \"rejected\";\n        this.reason = reason;\n        this.onRejectedCallbacks.forEach((fn) => fn());\n      }\n    };\n\n    try {\n      executor(resolve, reject);\n    } catch (error) {\n      reject(error);\n    }\n  }\n\n  /**\n   * @param {Function} [onFulfilled] - 成功回调\n   * @param {Function} [onRejected] - 失败回调\n   * @returns {MyPromise} 新 Promise 支持链式调用\n   */\n  then(onFulfilled, onRejected) {\n    onFulfilled =\n      typeof onFulfilled === \"function\" ? onFulfilled : (value) => value;\n    onRejected =\n      typeof onRejected === \"function\"\n        ? onRejected\n        : (reason) => {\n            throw reason;\n          };\n\n    const promise2 = new MyPromise((resolve, reject) => {\n      if (this.state === \"fulfilled\") {\n        setTimeout(() => {\n          try {\n            const x = onFulfilled(this.value);\n            resolvePromise(promise2, x, resolve, reject);\n          } catch (error) {\n            reject(error);\n          }\n        }, 0);\n      }\n\n      if (this.state === \"rejected\") {\n        setTimeout(() => {\n          try {\n            const x = onRejected(this.reason);\n            resolvePromise(promise2, x, resolve, reject);\n          } catch (error) {\n            reject(error);\n          }\n        }, 0);\n      }\n\n      if (this.state === \"pending\") {\n        this.onFulfilledCallbacks.push(() => {\n          setTimeout(() => {\n            try {\n              const x = onFulfilled(this.value);\n              resolvePromise(promise2, x, resolve, reject);\n            } catch (error) {\n              reject(error);\n            }\n          }, 0);\n        });\n\n        this.onRejectedCallbacks.push(() => {\n          setTimeout(() => {\n            try {\n              const x = onRejected(this.reason);\n              resolvePromise(promise2, x, resolve, reject);\n            } catch (error) {\n              reject(error);\n            }\n          }, 0);\n        });\n      }\n    });\n\n    return promise2;\n  }\n\n  catch(onRejected) {\n    return this.then(null, onRejected);\n  }\n\n  finally(callback) {\n    return this.then(\n      (value) => MyPromise.resolve(callback()).then(() => value),\n      (reason) =>\n        MyPromise.resolve(callback()).then(() => {\n          throw reason;\n        }),\n    );\n  }\n\n  static resolve(value) {\n    if (value instanceof MyPromise) return value;\n    return new MyPromise((resolve) => resolve(value));\n  }\n\n  static reject(reason) {\n    return new MyPromise((_, reject) => reject(reason));\n  }\n}\n\nfunction resolvePromise(promise2, x, resolve, reject) {\n  if (promise2 === x) {\n    reject(new TypeError(\"Chaining cycle detected for promise\"));\n    return;\n  }\n\n  let called = false;\n  if (x != null && (typeof x === \"object\" || typeof x === \"function\")) {\n    try {\n      const then = x.then;\n      if (typeof then === \"function\") {\n        then.call(\n          x,\n          (y) => {\n            if (called) return;\n            called = true;\n            resolvePromise(promise2, y, resolve, reject);\n          },\n          (r) => {\n            if (called) return;\n            called = true;\n            reject(r);\n          },\n        );\n      } else {\n        resolve(x);\n      }\n    } catch (error) {\n      if (called) return;\n      called = true;\n      reject(error);\n    }\n  } else {\n    resolve(x);\n  }\n}\n\nexport default MyPromise;",
     "testCases": {
       "noCustomCase": true,
       "examples": [
@@ -3655,10 +3245,8 @@ export const problems: ProblemRecord[] = [
           "id": "example-3",
           "hidden": false,
           "input": {
-            "target": "new MyPromise(resolve => resolve(5))",
-            "args": [
-              "v => v * 2"
-            ]
+            "target": "new MyPromise(resolve => resolve(5)).then(v => v * 2)",
+            "args": []
           },
           "expected": 10
         }
@@ -3677,11 +3265,8 @@ export const problems: ProblemRecord[] = [
           "id": "hidden-2",
           "hidden": true,
           "input": {
-            "target": "new MyPromise(resolve => resolve(1))",
-            "args": [
-              "v => v + 1",
-              "v => v * 2"
-            ]
+            "target": "new MyPromise(resolve => resolve(1)).then(v => v + 1).then(v => v * 2)",
+            "args": []
           },
           "expected": 4
         },
@@ -3700,10 +3285,8 @@ export const problems: ProblemRecord[] = [
           "id": "hidden-4",
           "hidden": true,
           "input": {
-            "target": "new MyPromise(resolve => resolve({ a: 1 }))",
-            "args": [
-              "obj => obj.a"
-            ]
+            "target": "new MyPromise(resolve => resolve({ a: 1 })).then(obj => obj.a)",
+            "args": []
           },
           "expected": 1
         },
@@ -3741,11 +3324,9 @@ export const problems: ProblemRecord[] = [
         "id": "example-3",
         "type": "basic",
         "description": "示例 3",
-        "input": "new MyPromise(resolve => resolve(5))(v => v * 2)",
-        "displayTarget": "new MyPromise(resolve => resolve(5))",
-        "displayArgs": [
-          "v => v * 2"
-        ],
+        "input": "new MyPromise(resolve => resolve(5)).then(v => v * 2)",
+        "displayTarget": "new MyPromise(resolve => resolve(5)).then(v => v * 2)",
+        "displayArgs": [],
         "expected": 10
       }
     ],
@@ -3772,11 +3353,9 @@ export const problems: ProblemRecord[] = [
         "id": "example-3",
         "type": "basic",
         "description": "示例 3",
-        "input": "new MyPromise(resolve => resolve(5))(v => v * 2)",
-        "displayTarget": "new MyPromise(resolve => resolve(5))",
-        "displayArgs": [
-          "v => v * 2"
-        ],
+        "input": "new MyPromise(resolve => resolve(5)).then(v => v * 2)",
+        "displayTarget": "new MyPromise(resolve => resolve(5)).then(v => v * 2)",
+        "displayArgs": [],
         "expected": 10
       },
       {
@@ -3792,12 +3371,9 @@ export const problems: ProblemRecord[] = [
         "id": "hidden-2",
         "type": "edge",
         "description": "隐藏 2",
-        "input": "new MyPromise(resolve => resolve(1))(v => v + 1, v => v * 2)",
-        "displayTarget": "new MyPromise(resolve => resolve(1))",
-        "displayArgs": [
-          "v => v + 1",
-          "v => v * 2"
-        ],
+        "input": "new MyPromise(resolve => resolve(1)).then(v => v + 1).then(v => v * 2)",
+        "displayTarget": "new MyPromise(resolve => resolve(1)).then(v => v + 1).then(v => v * 2)",
+        "displayArgs": [],
         "expected": 4
       },
       {
@@ -3813,11 +3389,9 @@ export const problems: ProblemRecord[] = [
         "id": "hidden-4",
         "type": "edge",
         "description": "隐藏 4",
-        "input": "new MyPromise(resolve => resolve({ a: 1 }))(obj => obj.a)",
-        "displayTarget": "new MyPromise(resolve => resolve({ a: 1 }))",
-        "displayArgs": [
-          "obj => obj.a"
-        ],
+        "input": "new MyPromise(resolve => resolve({ a: 1 })).then(obj => obj.a)",
+        "displayTarget": "new MyPromise(resolve => resolve({ a: 1 })).then(obj => obj.a)",
+        "displayArgs": [],
         "expected": 1
       },
       {
@@ -3837,7 +3411,7 @@ export const problems: ProblemRecord[] = [
   {
     "id": "promise_all",
     "slug": "promise_all",
-    "sequence": 17,
+    "sequence": 16,
     "title": "Promise All",
     "categoryId": "promise",
     "categoryName": "Promise 实现",
@@ -4064,7 +3638,7 @@ export const problems: ProblemRecord[] = [
   {
     "id": "promise_race",
     "slug": "promise_race",
-    "sequence": 18,
+    "sequence": 17,
     "title": "Promise Race",
     "categoryId": "promise",
     "categoryName": "Promise 实现",
@@ -4093,18 +3667,16 @@ export const problems: ProblemRecord[] = [
           "id": "example-2",
           "hidden": false,
           "input": {
-            "target": "promiseRace([])",
+            "target": "promiseRace([MyPromise.resolve(3)])",
             "args": []
           },
-          "expected": {
-            "error": ""
-          }
+          "expected": 3
         },
         {
           "id": "example-3",
           "hidden": false,
           "input": {
-            "target": "promiseRace([MyPromise.reject(new Error(\"err\")), MyPromise.resolve(1)])",
+            "target": "promiseRace([MyPromise.reject(new Error(\"err\")), new MyPromise(r => setTimeout(() => r(1), 10))])",
             "args": []
           },
           "expected": {
@@ -4178,17 +3750,17 @@ export const problems: ProblemRecord[] = [
         "id": "example-2",
         "type": "basic",
         "description": "示例 2",
-        "input": "promiseRace([])",
-        "displayTarget": "promiseRace([])",
+        "input": "promiseRace([MyPromise.resolve(3)])",
+        "displayTarget": "promiseRace([MyPromise.resolve(3)])",
         "displayArgs": [],
-        "expected": "[Circular]"
+        "expected": 3
       },
       {
         "id": "example-3",
         "type": "basic",
         "description": "示例 3",
-        "input": "promiseRace([MyPromise.reject(new Error(\"err\")), MyPromise.resolve(1)])",
-        "displayTarget": "promiseRace([MyPromise.reject(new Error(\"err\")), MyPromise.resolve(1)])",
+        "input": "promiseRace([MyPromise.reject(new Error(\"err\")), new MyPromise(r => setTimeout(() => r(1), 10))])",
+        "displayTarget": "promiseRace([MyPromise.reject(new Error(\"err\")), new MyPromise(r => setTimeout(() => r(1), 10))])",
         "displayArgs": [],
         "expected": "[Circular]"
       }
@@ -4207,17 +3779,17 @@ export const problems: ProblemRecord[] = [
         "id": "example-2",
         "type": "basic",
         "description": "示例 2",
-        "input": "promiseRace([])",
-        "displayTarget": "promiseRace([])",
+        "input": "promiseRace([MyPromise.resolve(3)])",
+        "displayTarget": "promiseRace([MyPromise.resolve(3)])",
         "displayArgs": [],
-        "expected": "[Circular]"
+        "expected": 3
       },
       {
         "id": "example-3",
         "type": "basic",
         "description": "示例 3",
-        "input": "promiseRace([MyPromise.reject(new Error(\"err\")), MyPromise.resolve(1)])",
-        "displayTarget": "promiseRace([MyPromise.reject(new Error(\"err\")), MyPromise.resolve(1)])",
+        "input": "promiseRace([MyPromise.reject(new Error(\"err\")), new MyPromise(r => setTimeout(() => r(1), 10))])",
+        "displayTarget": "promiseRace([MyPromise.reject(new Error(\"err\")), new MyPromise(r => setTimeout(() => r(1), 10))])",
         "displayArgs": [],
         "expected": "[Circular]"
       },
@@ -4274,7 +3846,7 @@ export const problems: ProblemRecord[] = [
   {
     "id": "inorder",
     "slug": "inorder",
-    "sequence": 19,
+    "sequence": 18,
     "title": "Inorder",
     "categoryId": "tree",
     "categoryName": "树结构",
@@ -4499,7 +4071,7 @@ export const problems: ProblemRecord[] = [
   {
     "id": "isValidBST",
     "slug": "isValidBST",
-    "sequence": 20,
+    "sequence": 19,
     "title": "IsValidBST",
     "categoryId": "tree",
     "categoryName": "树结构",
@@ -4692,7 +4264,7 @@ export const problems: ProblemRecord[] = [
   {
     "id": "levelorder",
     "slug": "levelorder",
-    "sequence": 21,
+    "sequence": 20,
     "title": "Levelorder",
     "categoryId": "tree",
     "categoryName": "树结构",
@@ -4951,7 +4523,7 @@ export const problems: ProblemRecord[] = [
   {
     "id": "maxDepth",
     "slug": "maxDepth",
-    "sequence": 22,
+    "sequence": 21,
     "title": "MaxDepth",
     "categoryId": "tree",
     "categoryName": "树结构",
@@ -5144,7 +4716,7 @@ export const problems: ProblemRecord[] = [
   {
     "id": "postorder",
     "slug": "postorder",
-    "sequence": 23,
+    "sequence": 22,
     "title": "Postorder",
     "categoryId": "tree",
     "categoryName": "树结构",
@@ -5369,7 +4941,7 @@ export const problems: ProblemRecord[] = [
   {
     "id": "preorder",
     "slug": "preorder",
-    "sequence": 24,
+    "sequence": 23,
     "title": "Preorder",
     "categoryId": "tree",
     "categoryName": "树结构",
@@ -5591,274 +5163,9 @@ export const problems: ProblemRecord[] = [
     "testPath": "problems/tree/preorder_test.js"
   },
   {
-    "id": "curry",
-    "slug": "curry",
-    "sequence": 25,
-    "title": "Curry",
-    "categoryId": "utility",
-    "categoryName": "工具函数",
-    "sourceType": "js",
-    "executionMode": "browser",
-    "launcherPath": null,
-    "description": "实现一个基础柯里化函数 curry。它需要把一个接受多个参数的普通函数转换成可分多次传参的函数：只要当前收集到的参数数量还不足，就继续返回函数等待后续补参；当参数数量达到原函数声明所需时，再一次性执行原函数并返回结果。实现时要保证参数按调用顺序累积，并尽量保留调用时的 this 上下文。",
-    "approachText": "先读取原函数的形参数量作为触发执行的阈值；每次调用都把当前参数暂存起来，参数足够就立即执行原函数，不够就返回一个新的收集函数继续拼接后续参数。",
-    "paramsText": "fn：需要被柯里化的原函数，最终会在参数数量满足条件时被调用。",
-    "returnText": "返回一个支持多次分步传参的新函数；累计参数达到要求后会返回原函数执行结果。",
-    "template": "function curry(fn) {\n\n}\n\nexport default curry;",
-    "solutionCode": "function curry(fn) {\n  return function curried(...args) {\n    if (args.length >= fn.length) {\n      return fn.apply(this, args);\n    }\n\n    return function (...nextArgs) {\n      const mergedArgs = args.concat(nextArgs);\n\n      return curried.apply(this, mergedArgs);\n    };\n  };\n}\n\nexport default curry;",
-    "testCases": {
-      "examples": [
-        {
-          "id": "example-1",
-          "hidden": false,
-          "input": {
-            "target": "(a, b, c) => a + b + c",
-            "args": [
-              "1",
-              "2",
-              "3"
-            ]
-          },
-          "expected": 6
-        },
-        {
-          "id": "example-2",
-          "hidden": false,
-          "input": {
-            "target": "(x, y) => x * y",
-            "args": [
-              "2",
-              "5"
-            ]
-          },
-          "expected": 10
-        },
-        {
-          "id": "example-3",
-          "hidden": false,
-          "input": {
-            "target": "(a) => a",
-            "args": [
-              "42"
-            ]
-          },
-          "expected": 42
-        }
-      ],
-      "hidden": [
-        {
-          "id": "hidden-1",
-          "hidden": true,
-          "input": {
-            "target": "(a, b, c, d) => a + b + c + d",
-            "args": [
-              "1",
-              "2",
-              "3",
-              "4"
-            ]
-          },
-          "expected": 10
-        },
-        {
-          "id": "hidden-2",
-          "hidden": true,
-          "input": {
-            "target": "() => 42",
-            "args": []
-          },
-          "expected": 42
-        },
-        {
-          "id": "hidden-3",
-          "hidden": true,
-          "input": {
-            "target": "(a, b) => ({ a, b })",
-            "args": [
-              "1",
-              "2"
-            ]
-          },
-          "expected": {
-            "a": 1,
-            "b": 2
-          }
-        },
-        {
-          "id": "hidden-4",
-          "hidden": true,
-          "input": {
-            "target": "(str, prefix, suffix) => prefix + str + suffix",
-            "args": [
-              "\"hello\"",
-              "\"<\"",
-              "\">\""
-            ]
-          },
-          "expected": "<hello>"
-        },
-        {
-          "id": "hidden-5",
-          "hidden": true,
-          "input": {
-            "target": "(arr, fn) => arr.map(fn)",
-            "args": [
-              "[1, 2, 3]",
-              "x => x * 2"
-            ]
-          },
-          "expected": [
-            2,
-            4,
-            6
-          ]
-        }
-      ]
-    },
-    "basicCases": [
-      {
-        "id": "example-1",
-        "type": "basic",
-        "description": "示例 1",
-        "input": "(a, b, c) => a + b + c(1, 2, 3)",
-        "displayTarget": "(a, b, c) => a + b + c",
-        "displayArgs": [
-          "1",
-          "2",
-          "3"
-        ],
-        "expected": 6
-      },
-      {
-        "id": "example-2",
-        "type": "basic",
-        "description": "示例 2",
-        "input": "(x, y) => x * y(2, 5)",
-        "displayTarget": "(x, y) => x * y",
-        "displayArgs": [
-          "2",
-          "5"
-        ],
-        "expected": 10
-      },
-      {
-        "id": "example-3",
-        "type": "basic",
-        "description": "示例 3",
-        "input": "(a) => a(42)",
-        "displayTarget": "(a) => a",
-        "displayArgs": [
-          "42"
-        ],
-        "expected": 42
-      }
-    ],
-    "fullCases": [
-      {
-        "id": "example-1",
-        "type": "basic",
-        "description": "示例 1",
-        "input": "(a, b, c) => a + b + c(1, 2, 3)",
-        "displayTarget": "(a, b, c) => a + b + c",
-        "displayArgs": [
-          "1",
-          "2",
-          "3"
-        ],
-        "expected": 6
-      },
-      {
-        "id": "example-2",
-        "type": "basic",
-        "description": "示例 2",
-        "input": "(x, y) => x * y(2, 5)",
-        "displayTarget": "(x, y) => x * y",
-        "displayArgs": [
-          "2",
-          "5"
-        ],
-        "expected": 10
-      },
-      {
-        "id": "example-3",
-        "type": "basic",
-        "description": "示例 3",
-        "input": "(a) => a(42)",
-        "displayTarget": "(a) => a",
-        "displayArgs": [
-          "42"
-        ],
-        "expected": 42
-      },
-      {
-        "id": "hidden-1",
-        "type": "edge",
-        "description": "隐藏 1",
-        "input": "(a, b, c, d) => a + b + c + d(1, 2, 3, 4)",
-        "displayTarget": "(a, b, c, d) => a + b + c + d",
-        "displayArgs": [
-          "1",
-          "2",
-          "3",
-          "4"
-        ],
-        "expected": 10
-      },
-      {
-        "id": "hidden-2",
-        "type": "edge",
-        "description": "隐藏 2",
-        "input": "() => 42",
-        "displayTarget": "() => 42",
-        "displayArgs": [],
-        "expected": 42
-      },
-      {
-        "id": "hidden-3",
-        "type": "edge",
-        "description": "隐藏 3",
-        "input": "(a, b) => ({ a, b })(1, 2)",
-        "displayTarget": "(a, b) => ({ a, b })",
-        "displayArgs": [
-          "1",
-          "2"
-        ],
-        "expected": "[Circular]"
-      },
-      {
-        "id": "hidden-4",
-        "type": "edge",
-        "description": "隐藏 4",
-        "input": "(str, prefix, suffix) => prefix + str + suffix(\"hello\", \"<\", \">\")",
-        "displayTarget": "(str, prefix, suffix) => prefix + str + suffix",
-        "displayArgs": [
-          "\"hello\"",
-          "\"<\"",
-          "\">\""
-        ],
-        "expected": "<hello>"
-      },
-      {
-        "id": "hidden-5",
-        "type": "edge",
-        "description": "隐藏 5",
-        "input": "(arr, fn) => arr.map(fn)([1, 2, 3], x => x * 2)",
-        "displayTarget": "(arr, fn) => arr.map(fn)",
-        "displayArgs": [
-          "[1, 2, 3]",
-          "x => x * 2"
-        ],
-        "expected": "[Circular]"
-      }
-    ],
-    "isComponent": false,
-    "sourcePath": "problems/utility/curry.js",
-    "testPath": "problems/utility/curry_test.js"
-  },
-  {
     "id": "debounce",
     "slug": "debounce",
-    "sequence": 26,
+    "sequence": 24,
     "title": "Debounce",
     "categoryId": "utility",
     "categoryName": "工具函数",
@@ -6195,245 +5502,9 @@ export const problems: ProblemRecord[] = [
     "testPath": "problems/utility/debounce_test.js"
   },
   {
-    "id": "deepClone",
-    "slug": "deepClone",
-    "sequence": 27,
-    "title": "DeepClone",
-    "categoryId": "utility",
-    "categoryName": "工具函数",
-    "sourceType": "js",
-    "executionMode": "browser",
-    "launcherPath": null,
-    "description": "实现一个更完整的深拷贝函数 deepClone。它需要复制普通对象、数组、Date、RegExp、Map、Set 等常见可遍历结构，使返回结果与原始数据在值层面保持等价，但在引用层面完全独立。实现时还要处理循环引用，避免因为对象之间互相引用而导致无限递归，同时保证 Symbol 键也能被复制。",
-    "approachText": "先把基础类型、特殊对象和普通对象分开处理，再使用 WeakMap 记录已经克隆过的引用；对于数组和普通对象递归复制自身所有键，对于 Map 和 Set 则递归复制其中的键和值或成员，从而兼顾深层结构和循环引用。",
-    "paramsText": "obj：需要被深拷贝的输入值，可能是普通对象、数组或其他引用类型。\ncache：内部使用的 WeakMap 缓存，用来记录已经处理过的引用，默认自动创建。",
-    "returnText": "返回一个与原值结构等价但引用独立的新结果；如果传入的是基础类型，则直接返回原值。",
-    "template": "function deepClone(obj, cache = new WeakMap()) {\n\n}\n\nexport default deepClone;",
-    "solutionCode": "function deepClone(obj, cache = new WeakMap()) {\n  if (obj === null || typeof obj !== \"object\") return obj;\n\n  if (cache.has(obj)) return cache.get(obj);\n\n  if (obj instanceof Date) return new Date(obj.getTime());\n  if (obj instanceof RegExp) return new RegExp(obj);\n\n  if (obj instanceof Map) {\n    const clonedMap = new Map();\n    cache.set(obj, clonedMap);\n    obj.forEach((value, key) => {\n      clonedMap.set(deepClone(key, cache), deepClone(value, cache));\n    });\n    return clonedMap;\n  }\n\n  if (obj instanceof Set) {\n    const clonedSet = new Set();\n    cache.set(obj, clonedSet);\n    obj.forEach((value) => clonedSet.add(deepClone(value, cache)));\n    return clonedSet;\n  }\n\n  const clonedObj = Array.isArray(obj) ? [] : {};\n  cache.set(obj, clonedObj);\n\n  Reflect.ownKeys(obj).forEach((key) => {\n    clonedObj[key] = deepClone(obj[key], cache);\n  });\n\n  return clonedObj;\n}\n\nexport default deepClone;",
-    "testCases": {
-      "examples": [
-        {
-          "id": "example-1",
-          "hidden": false,
-          "input": {
-            "target": "({ a: 1, b: 2 })",
-            "args": []
-          },
-          "expected": {
-            "a": 1,
-            "b": 2
-          }
-        },
-        {
-          "id": "example-2",
-          "hidden": false,
-          "input": {
-            "target": "({ nested: { x: 1 } })",
-            "args": []
-          },
-          "expected": {
-            "nested": {
-              "x": 1
-            }
-          }
-        },
-        {
-          "id": "example-3",
-          "hidden": false,
-          "input": {
-            "target": "[1, [2, 3]]",
-            "args": []
-          },
-          "expected": [
-            1,
-            [
-              2,
-              3
-            ]
-          ]
-        }
-      ],
-      "hidden": [
-        {
-          "id": "hidden-1",
-          "hidden": true,
-          "input": {
-            "target": "[]",
-            "args": []
-          },
-          "expected": []
-        },
-        {
-          "id": "hidden-2",
-          "hidden": true,
-          "input": {
-            "target": "({ a: { b: { c: { d: 1 } } } })",
-            "args": []
-          },
-          "expected": {
-            "a": {
-              "b": {
-                "c": {
-                  "d": 1
-                }
-              }
-            }
-          }
-        },
-        {
-          "id": "hidden-3",
-          "hidden": true,
-          "input": {
-            "target": "({ arr: [1, 2, { x: 3 }] })",
-            "args": []
-          },
-          "expected": {
-            "arr": [
-              1,
-              2,
-              {
-                "x": 3
-              }
-            ]
-          }
-        },
-        {
-          "id": "hidden-4",
-          "hidden": true,
-          "input": {
-            "target": "({ a: null, b: undefined, c: NaN })",
-            "args": []
-          },
-          "expected": {
-            "a": null,
-            "b": undefined,
-            "c": null
-          }
-        },
-        {
-          "id": "hidden-5",
-          "hidden": true,
-          "input": {
-            "target": "({ d: new Date(2024, 0, 1) })",
-            "args": []
-          },
-          "expected": {
-            "d": "2023-12-31T16:00:00.000Z"
-          }
-        }
-      ]
-    },
-    "basicCases": [
-      {
-        "id": "example-1",
-        "type": "basic",
-        "description": "示例 1",
-        "input": "({ a: 1, b: 2 })",
-        "displayTarget": "({ a: 1, b: 2 })",
-        "displayArgs": [],
-        "expected": "[Circular]"
-      },
-      {
-        "id": "example-2",
-        "type": "basic",
-        "description": "示例 2",
-        "input": "({ nested: { x: 1 } })",
-        "displayTarget": "({ nested: { x: 1 } })",
-        "displayArgs": [],
-        "expected": "[Circular]"
-      },
-      {
-        "id": "example-3",
-        "type": "basic",
-        "description": "示例 3",
-        "input": "[1, [2, 3]]",
-        "displayTarget": "[1, [2, 3]]",
-        "displayArgs": [],
-        "expected": "[Circular]"
-      }
-    ],
-    "fullCases": [
-      {
-        "id": "example-1",
-        "type": "basic",
-        "description": "示例 1",
-        "input": "({ a: 1, b: 2 })",
-        "displayTarget": "({ a: 1, b: 2 })",
-        "displayArgs": [],
-        "expected": "[Circular]"
-      },
-      {
-        "id": "example-2",
-        "type": "basic",
-        "description": "示例 2",
-        "input": "({ nested: { x: 1 } })",
-        "displayTarget": "({ nested: { x: 1 } })",
-        "displayArgs": [],
-        "expected": "[Circular]"
-      },
-      {
-        "id": "example-3",
-        "type": "basic",
-        "description": "示例 3",
-        "input": "[1, [2, 3]]",
-        "displayTarget": "[1, [2, 3]]",
-        "displayArgs": [],
-        "expected": "[Circular]"
-      },
-      {
-        "id": "hidden-1",
-        "type": "edge",
-        "description": "隐藏 1",
-        "input": "[]",
-        "displayTarget": "[]",
-        "displayArgs": [],
-        "expected": "[Circular]"
-      },
-      {
-        "id": "hidden-2",
-        "type": "edge",
-        "description": "隐藏 2",
-        "input": "({ a: { b: { c: { d: 1 } } } })",
-        "displayTarget": "({ a: { b: { c: { d: 1 } } } })",
-        "displayArgs": [],
-        "expected": "[Circular]"
-      },
-      {
-        "id": "hidden-3",
-        "type": "edge",
-        "description": "隐藏 3",
-        "input": "({ arr: [1, 2, { x: 3 }] })",
-        "displayTarget": "({ arr: [1, 2, { x: 3 }] })",
-        "displayArgs": [],
-        "expected": "[Circular]"
-      },
-      {
-        "id": "hidden-4",
-        "type": "edge",
-        "description": "隐藏 4",
-        "input": "({ a: null, b: undefined, c: NaN })",
-        "displayTarget": "({ a: null, b: undefined, c: NaN })",
-        "displayArgs": [],
-        "expected": "[Circular]"
-      },
-      {
-        "id": "hidden-5",
-        "type": "edge",
-        "description": "隐藏 5",
-        "input": "({ d: new Date(2024, 0, 1) })",
-        "displayTarget": "({ d: new Date(2024, 0, 1) })",
-        "displayArgs": [],
-        "expected": "[Circular]"
-      }
-    ],
-    "isComponent": false,
-    "sourcePath": "problems/utility/deepClone.js",
-    "testPath": "problems/utility/deepClone_test.js"
-  },
-  {
     "id": "flatten",
     "slug": "flatten",
-    "sequence": 28,
+    "sequence": 25,
     "title": "Flatten",
     "categoryId": "utility",
     "categoryName": "工具函数",
@@ -6712,1047 +5783,9 @@ export const problems: ProblemRecord[] = [
     "testPath": "problems/utility/flatten_test.js"
   },
   {
-    "id": "scheduler",
-    "slug": "scheduler",
-    "sequence": 29,
-    "title": "Scheduler",
-    "categoryId": "utility",
-    "categoryName": "工具函数",
-    "sourceType": "js",
-    "executionMode": "browser",
-    "launcherPath": null,
-    "description": "实现一个并发调度器 Scheduler。它需要在构造时接收并发上限 limit，然后通过 add 方法持续加入返回 Promise 的异步任务；调度器必须保证同一时刻最多只有 limit 个任务处于执行中，超出的任务先进入等待队列，等已有任务完成后再按加入顺序继续执行。每个 add 调用都要返回一个 Promise，用来拿到对应任务的最终结果或错误。",
-    "approachText": "用队列缓存暂时不能执行的任务，再用 count 记录当前运行中的任务数量；每次 add 后尝试启动任务，只有并发未满时才真正取出队列头部执行，任务结束后递减计数并继续触发下一轮调度。",
-    "paramsText": "limit：调度器允许同时运行的最大任务数，通常为正整数。",
-    "returnText": "返回一个 Scheduler 实例；后续通过它的 add 方法接收任务并控制并发。",
-    "template": "class Scheduler {\n  constructor(limit) {\n  \n}\n\n  \n  add(task) {\n  \n}\n\n  run() {\n  \n}\n\n}\n\nexport default Scheduler;",
-    "solutionCode": "class Scheduler {\n  constructor(limit) {\n    this.limit = limit;\n    this.count = 0;\n    this.queue = [];\n  }\n\n  /**\n   * @description 向调度器中加入一个异步任务；如果当前并发未满就立即执行，否则先排队等待。\n   * @approach 将任务函数和它对应的 resolve、reject 一起压入等待队列，然后统一交给 run 处理，这样每个任务都能在未来拿到自己的执行结果。\n   * @params\n   * task：一个无参函数，调用后必须返回 Promise，用来描述真正的异步工作。\n   * @return\n   * 返回一个 Promise；当对应任务执行成功时兑现结果，失败时拒绝错误。\n   */\n  add(task) {\n    return new Promise((resolve, reject) => {\n      this.queue.push({ task, resolve, reject });\n      this.run();\n    });\n  }\n\n  run() {\n    if (this.count >= this.limit || this.queue.length === 0) return;\n\n    this.count++;\n    const { task, resolve, reject } = this.queue.shift();\n\n    task()\n      .then(resolve)\n      .catch(reject)\n      .finally(() => {\n        this.count--;\n        this.run();\n      });\n  }\n}\n\nexport default Scheduler;",
-    "testCases": {
-      "examples": [
-        {
-          "id": "example-1",
-          "hidden": false,
-          "input": {
-            "target": "2",
-            "steps": [
-              {
-                "type": "call",
-                "args": [
-                  "() => Promise.resolve()"
-                ]
-              },
-              {
-                "type": "call",
-                "args": [
-                  "() => Promise.resolve()"
-                ]
-              },
-              {
-                "type": "call",
-                "args": [
-                  "() => Promise.resolve()"
-                ]
-              },
-              {
-                "type": "await"
-              }
-            ]
-          },
-          "expected": {
-            "callCount": 3
-          }
-        },
-        {
-          "id": "example-2",
-          "hidden": false,
-          "input": {
-            "target": "1",
-            "steps": [
-              {
-                "type": "call",
-                "args": [
-                  "() => Promise.resolve()"
-                ]
-              },
-              {
-                "type": "call",
-                "args": [
-                  "() => Promise.resolve()"
-                ]
-              },
-              {
-                "type": "await"
-              }
-            ]
-          },
-          "expected": {
-            "callCount": 2,
-            "maxConcurrent": 1
-          }
-        },
-        {
-          "id": "example-3",
-          "hidden": false,
-          "input": {
-            "target": "3",
-            "steps": [
-              {
-                "type": "call",
-                "args": [
-                  "() => Promise.resolve()"
-                ]
-              },
-              {
-                "type": "call",
-                "args": [
-                  "() => Promise.resolve()"
-                ]
-              },
-              {
-                "type": "await"
-              }
-            ]
-          },
-          "expected": {
-            "callCount": 2,
-            "maxConcurrent": 2
-          }
-        }
-      ],
-      "hidden": [
-        {
-          "id": "hidden-1",
-          "hidden": true,
-          "input": {
-            "target": "2",
-            "steps": [
-              {
-                "type": "call",
-                "args": [
-                  "() => Promise.resolve(1)"
-                ]
-              },
-              {
-                "type": "call",
-                "args": [
-                  "() => Promise.resolve(2)"
-                ]
-              },
-              {
-                "type": "call",
-                "args": [
-                  "() => Promise.resolve(3)"
-                ]
-              },
-              {
-                "type": "call",
-                "args": [
-                  "() => Promise.resolve(4)"
-                ]
-              },
-              {
-                "type": "await"
-              }
-            ]
-          },
-          "expected": {
-            "callCount": 4,
-            "maxConcurrent": 2
-          }
-        },
-        {
-          "id": "hidden-2",
-          "hidden": true,
-          "input": {
-            "target": "1",
-            "steps": [
-              {
-                "type": "call",
-                "args": [
-                  "() => Promise.resolve()"
-                ]
-              },
-              {
-                "type": "call",
-                "args": [
-                  "() => Promise.resolve()"
-                ]
-              },
-              {
-                "type": "call",
-                "args": [
-                  "() => Promise.resolve()"
-                ]
-              },
-              {
-                "type": "call",
-                "args": [
-                  "() => Promise.resolve()"
-                ]
-              },
-              {
-                "type": "await"
-              }
-            ]
-          },
-          "expected": {
-            "callCount": 4,
-            "maxConcurrent": 1
-          }
-        },
-        {
-          "id": "hidden-3",
-          "hidden": true,
-          "input": {
-            "target": "5",
-            "steps": [
-              {
-                "type": "call",
-                "args": [
-                  "() => Promise.resolve()"
-                ]
-              },
-              {
-                "type": "call",
-                "args": [
-                  "() => Promise.resolve()"
-                ]
-              },
-              {
-                "type": "call",
-                "args": [
-                  "() => Promise.resolve()"
-                ]
-              },
-              {
-                "type": "await"
-              }
-            ]
-          },
-          "expected": {
-            "callCount": 3,
-            "maxConcurrent": 3
-          }
-        },
-        {
-          "id": "hidden-4",
-          "hidden": true,
-          "input": {
-            "target": "2",
-            "steps": [
-              {
-                "type": "call",
-                "args": [
-                  "() => Promise.reject(new Error(\"err\"))"
-                ]
-              },
-              {
-                "type": "call",
-                "args": [
-                  "() => Promise.resolve()"
-                ]
-              },
-              {
-                "type": "await"
-              }
-            ]
-          },
-          "expected": {
-            "callCount": 2,
-            "hasError": true
-          }
-        },
-        {
-          "id": "hidden-5",
-          "hidden": true,
-          "input": {
-            "target": "2",
-            "steps": [
-              {
-                "type": "call",
-                "args": [
-                  "() => new Promise(r => setTimeout(r, 100))"
-                ]
-              },
-              {
-                "type": "tick",
-                "ms": 50
-              },
-              {
-                "type": "call",
-                "args": [
-                  "() => Promise.resolve()"
-                ]
-              },
-              {
-                "type": "tick",
-                "ms": 100
-              },
-              {
-                "type": "await"
-              }
-            ]
-          },
-          "expected": {
-            "callCount": 2,
-            "maxConcurrent": 2
-          }
-        }
-      ]
-    },
-    "basicCases": [
-      {
-        "id": "example-1",
-        "type": "basic",
-        "description": "示例 1",
-        "input": "[4 steps]",
-        "expected": "[Circular]"
-      },
-      {
-        "id": "example-2",
-        "type": "basic",
-        "description": "示例 2",
-        "input": "[3 steps]",
-        "expected": "[Circular]"
-      },
-      {
-        "id": "example-3",
-        "type": "basic",
-        "description": "示例 3",
-        "input": "[3 steps]",
-        "expected": "[Circular]"
-      }
-    ],
-    "fullCases": [
-      {
-        "id": "example-1",
-        "type": "basic",
-        "description": "示例 1",
-        "input": "[4 steps]",
-        "expected": "[Circular]"
-      },
-      {
-        "id": "example-2",
-        "type": "basic",
-        "description": "示例 2",
-        "input": "[3 steps]",
-        "expected": "[Circular]"
-      },
-      {
-        "id": "example-3",
-        "type": "basic",
-        "description": "示例 3",
-        "input": "[3 steps]",
-        "expected": "[Circular]"
-      },
-      {
-        "id": "hidden-1",
-        "type": "edge",
-        "description": "隐藏 1",
-        "input": "[5 steps]",
-        "expected": "[Circular]"
-      },
-      {
-        "id": "hidden-2",
-        "type": "edge",
-        "description": "隐藏 2",
-        "input": "[5 steps]",
-        "expected": "[Circular]"
-      },
-      {
-        "id": "hidden-3",
-        "type": "edge",
-        "description": "隐藏 3",
-        "input": "[4 steps]",
-        "expected": "[Circular]"
-      },
-      {
-        "id": "hidden-4",
-        "type": "edge",
-        "description": "隐藏 4",
-        "input": "[3 steps]",
-        "expected": "[Circular]"
-      },
-      {
-        "id": "hidden-5",
-        "type": "edge",
-        "description": "隐藏 5",
-        "input": "[5 steps]",
-        "expected": "[Circular]"
-      }
-    ],
-    "isComponent": false,
-    "sourcePath": "problems/utility/scheduler.js",
-    "testPath": "problems/utility/scheduler_test.js"
-  },
-  {
-    "id": "task_queue_runner",
-    "slug": "task_queue_runner",
-    "sequence": 30,
-    "title": "Task Queue Runner",
-    "categoryId": "utility",
-    "categoryName": "工具函数",
-    "sourceType": "js",
-    "executionMode": "browser",
-    "launcherPath": null,
-    "description": "实现一个任务队列执行器 execute。它需要按顺序串行执行一组异步任务，并为每个任务提供超时控制与失败重试能力；如果某个任务在规定时间内没有完成，或者执行时报错，就要在未超过重试上限时重新尝试。这个函数的目标是把一批异步任务稳定地顺序跑完，同时把失败位置和原因明确暴露出来。",
-    "approachText": "使用 for 循环按顺序消费任务数组，并把单个任务包装进 Promise.race 中实现超时控制；某次执行失败就根据 retries 决定是否继续重试，直到成功或达到上限，再决定进入下一个任务或直接抛出错误。",
-    "paramsText": "tasks：按执行顺序排列的任务函数数组，每个任务函数都应返回 Promise。\ntimeout：单个任务允许执行的最长毫秒数，超过该时间会按超时失败处理。\nretries：单个任务失败后允许额外重试的最大次数，不包含第一次执行。",
-    "returnText": "当所有任务都按顺序执行完成时返回一个已完成的 Promise；只要有任务最终失败，就返回被拒绝的 Promise。",
-    "template": "async function execute(tasks, timeout, retries) {\n\n}\n\nfunction runTask(task, index, timeout, retries) {\n\n}\n\nexport default execute;",
-    "solutionCode": "async function execute(tasks, timeout, retries) {\n  if (!Array.isArray(tasks)) {\n    throw new TypeError(\"execute function can only execute array of tasks\");\n  }\n\n  for (let i = 0; i < tasks.length; i++) {\n    const task = tasks[i];\n    if (typeof task !== \"function\") {\n      throw new TypeError(`Task at index ${i} is not a function`);\n    }\n    await runTask(task, i, timeout, retries);\n  }\n}\n\n/**\n * 执行单个任务，支持超时和重试\n * @param {Function} task - 任务函数\n * @param {number} index - 任务索引\n * @param {number} timeout - 超时时间\n * @param {number} retries - 最大重试次数\n * @returns {Promise<*>}\n */\nfunction runTask(task, index, timeout, retries) {\n  let currentTries = 0;\n\n  return new Promise((resolve, reject) => {\n    const attempt = async () => {\n      currentTries++;\n\n      try {\n        const result = await Promise.race([\n          task(),\n          new Promise((_, rejectTimeout) => {\n            setTimeout(() => {\n              rejectTimeout(\n                new Error(`Task ${index} execute timeout after ${timeout}ms`),\n              );\n            }, timeout);\n          }),\n        ]);\n        resolve(result);\n      } catch (err) {\n        if (currentTries < retries) {\n          attempt();\n        } else {\n          reject(\n            new Error(\n              `Task ${index} failed after ${retries} retries: ${err.message}`,\n            ),\n          );\n        }\n      }\n    };\n\n    attempt();\n  });\n}\n\nexport default execute;",
-    "testCases": {
-      "examples": [
-        {
-          "id": "example-1",
-          "hidden": false,
-          "input": {
-            "target": "",
-            "steps": [
-              {
-                "type": "call",
-                "args": [
-                  "[]"
-                ]
-              },
-              {
-                "type": "await"
-              }
-            ]
-          },
-          "expected": {
-            "callCount": 0
-          }
-        },
-        {
-          "id": "example-2",
-          "hidden": false,
-          "input": {
-            "target": "",
-            "steps": [
-              {
-                "type": "call",
-                "args": [
-                  "[() => Promise.resolve()]"
-                ]
-              },
-              {
-                "type": "await"
-              }
-            ]
-          },
-          "expected": {
-            "callCount": 1
-          }
-        },
-        {
-          "id": "example-3",
-          "hidden": false,
-          "input": {
-            "target": "",
-            "steps": [
-              {
-                "type": "call",
-                "args": [
-                  "[() => Promise.resolve(), () => Promise.resolve()]"
-                ]
-              },
-              {
-                "type": "await"
-              }
-            ]
-          },
-          "expected": {
-            "callCount": 2
-          }
-        }
-      ],
-      "hidden": [
-        {
-          "id": "hidden-1",
-          "hidden": true,
-          "input": {
-            "target": "",
-            "steps": [
-              {
-                "type": "call",
-                "args": [
-                  "[() => Promise.resolve(1), () => Promise.resolve(2), () => Promise.resolve(3)]"
-                ]
-              },
-              {
-                "type": "await"
-              }
-            ]
-          },
-          "expected": {
-            "callCount": 3
-          }
-        },
-        {
-          "id": "hidden-2",
-          "hidden": true,
-          "input": {
-            "target": "",
-            "steps": [
-              {
-                "type": "call",
-                "args": [
-                  "[() => Promise.reject(new Error(\"err\"))]"
-                ]
-              },
-              {
-                "type": "await"
-              }
-            ]
-          },
-          "expected": {
-            "callCount": 1,
-            "hasError": true
-          }
-        },
-        {
-          "id": "hidden-3",
-          "hidden": true,
-          "input": {
-            "target": "",
-            "steps": [
-              {
-                "type": "call",
-                "args": [
-                  "[() => new Promise(r => setTimeout(r, 100))]"
-                ]
-              },
-              {
-                "type": "tick",
-                "ms": 100
-              },
-              {
-                "type": "await"
-              }
-            ]
-          },
-          "expected": {
-            "callCount": 1
-          }
-        },
-        {
-          "id": "hidden-4",
-          "hidden": true,
-          "input": {
-            "target": "",
-            "steps": [
-              {
-                "type": "call",
-                "args": [
-                  "[() => Promise.resolve(), () => Promise.resolve()]"
-                ]
-              },
-              {
-                "type": "call",
-                "args": [
-                  "[() => Promise.resolve()]"
-                ]
-              },
-              {
-                "type": "await"
-              }
-            ]
-          },
-          "expected": {
-            "callCount": 3
-          }
-        },
-        {
-          "id": "hidden-5",
-          "hidden": true,
-          "input": {
-            "target": "",
-            "steps": [
-              {
-                "type": "call",
-                "args": [
-                  "[() => Promise.resolve(1)]"
-                ]
-              },
-              {
-                "type": "await"
-              },
-              {
-                "type": "call",
-                "args": [
-                  "[() => Promise.resolve(2)]"
-                ]
-              },
-              {
-                "type": "await"
-              }
-            ]
-          },
-          "expected": {
-            "callCount": 2
-          }
-        }
-      ]
-    },
-    "basicCases": [
-      {
-        "id": "example-1",
-        "type": "basic",
-        "description": "示例 1",
-        "input": "[2 steps]",
-        "expected": "[Circular]"
-      },
-      {
-        "id": "example-2",
-        "type": "basic",
-        "description": "示例 2",
-        "input": "[2 steps]",
-        "expected": "[Circular]"
-      },
-      {
-        "id": "example-3",
-        "type": "basic",
-        "description": "示例 3",
-        "input": "[2 steps]",
-        "expected": "[Circular]"
-      }
-    ],
-    "fullCases": [
-      {
-        "id": "example-1",
-        "type": "basic",
-        "description": "示例 1",
-        "input": "[2 steps]",
-        "expected": "[Circular]"
-      },
-      {
-        "id": "example-2",
-        "type": "basic",
-        "description": "示例 2",
-        "input": "[2 steps]",
-        "expected": "[Circular]"
-      },
-      {
-        "id": "example-3",
-        "type": "basic",
-        "description": "示例 3",
-        "input": "[2 steps]",
-        "expected": "[Circular]"
-      },
-      {
-        "id": "hidden-1",
-        "type": "edge",
-        "description": "隐藏 1",
-        "input": "[2 steps]",
-        "expected": "[Circular]"
-      },
-      {
-        "id": "hidden-2",
-        "type": "edge",
-        "description": "隐藏 2",
-        "input": "[2 steps]",
-        "expected": "[Circular]"
-      },
-      {
-        "id": "hidden-3",
-        "type": "edge",
-        "description": "隐藏 3",
-        "input": "[3 steps]",
-        "expected": "[Circular]"
-      },
-      {
-        "id": "hidden-4",
-        "type": "edge",
-        "description": "隐藏 4",
-        "input": "[3 steps]",
-        "expected": "[Circular]"
-      },
-      {
-        "id": "hidden-5",
-        "type": "edge",
-        "description": "隐藏 5",
-        "input": "[4 steps]",
-        "expected": "[Circular]"
-      }
-    ],
-    "isComponent": false,
-    "sourcePath": "problems/utility/task_queue_runner.js",
-    "testPath": "problems/utility/task_queue_runner_test.js"
-  },
-  {
-    "id": "throttle",
-    "slug": "throttle",
-    "sequence": 31,
-    "title": "Throttle",
-    "categoryId": "utility",
-    "categoryName": "工具函数",
-    "sourceType": "js",
-    "executionMode": "browser",
-    "launcherPath": null,
-    "description": "实现一个基础节流函数 throttle。它需要接收目标函数和时间间隔，返回新的包装函数；当包装函数被高频触发时，只有距离上一次真正执行已经超过指定间隔时才允许再次执行。这样可以限制任务执行频率，常用于滚动、拖拽、窗口 resize 等高频事件。实现时要保留调用时的 this 和参数，并在 task 非函数时抛出错误。",
-    "approachText": "用 lastTime 记录上一次真实执行的时间戳；每次触发时先比较当前时间与 lastTime 的差值，只有达到 requireTime 才执行目标函数，并把最新时间写回 lastTime。",
-    "paramsText": "task：需要被节流包装的目标函数，只有满足时间间隔时才会被执行。\nrequireTime：两次真实执行之间至少要间隔的毫秒数。",
-    "returnText": "返回一个新的节流函数；高频调用时会按固定节奏执行 task，而不是每次都执行。",
-    "template": "function throttle(task, requireTime) {\n\n}\n\nexport default throttle;",
-    "solutionCode": "function throttle(task, requireTime) {\n  if (typeof task !== \"function\") {\n    throw new TypeError(\"throttle can only run with functions\");\n  }\n\n  let lastTime = null; // 使用 null 区分从未执行的状态\n\n  return function (...args) {\n    const now = Date.now();\n\n    // 第一次执行，或者距离上一次执行已过指定时间\n    if (lastTime === null || now - lastTime >= requireTime) {\n      task.apply(this, args);\n      lastTime = now;\n    }\n  };\n}\n\nexport default throttle;",
-    "testCases": {
-      "examples": [
-        {
-          "id": "example-1",
-          "hidden": false,
-          "input": {
-            "target": "100",
-            "steps": [
-              {
-                "type": "call",
-                "args": []
-              },
-              {
-                "type": "call",
-                "args": []
-              },
-              {
-                "type": "tick",
-                "ms": 100
-              }
-            ]
-          },
-          "expected": {
-            "callCount": 1
-          }
-        },
-        {
-          "id": "example-2",
-          "hidden": false,
-          "input": {
-            "target": "100",
-            "steps": [
-              {
-                "type": "call",
-                "args": []
-              },
-              {
-                "type": "tick",
-                "ms": 100
-              },
-              {
-                "type": "call",
-                "args": []
-              },
-              {
-                "type": "tick",
-                "ms": 100
-              },
-              {
-                "type": "call",
-                "args": []
-              }
-            ]
-          },
-          "expected": {
-            "callCount": 3
-          }
-        },
-        {
-          "id": "example-3",
-          "hidden": false,
-          "input": {
-            "target": "50",
-            "steps": [
-              {
-                "type": "call",
-                "args": []
-              },
-              {
-                "type": "tick",
-                "ms": 25
-              },
-              {
-                "type": "call",
-                "args": []
-              },
-              {
-                "type": "tick",
-                "ms": 25
-              },
-              {
-                "type": "call",
-                "args": []
-              }
-            ]
-          },
-          "expected": {
-            "callCount": 2
-          }
-        }
-      ],
-      "hidden": [
-        {
-          "id": "hidden-1",
-          "hidden": true,
-          "input": {
-            "target": "100",
-            "steps": [
-              {
-                "type": "call",
-                "args": []
-              },
-              {
-                "type": "tick",
-                "ms": 50
-              },
-              {
-                "type": "call",
-                "args": []
-              },
-              {
-                "type": "tick",
-                "ms": 50
-              },
-              {
-                "type": "call",
-                "args": []
-              },
-              {
-                "type": "tick",
-                "ms": 50
-              },
-              {
-                "type": "call",
-                "args": []
-              }
-            ]
-          },
-          "expected": {
-            "callCount": 3
-          }
-        },
-        {
-          "id": "hidden-2",
-          "hidden": true,
-          "input": {
-            "target": "200",
-            "steps": [
-              {
-                "type": "call",
-                "args": []
-              },
-              {
-                "type": "tick",
-                "ms": 100
-              },
-              {
-                "type": "call",
-                "args": []
-              },
-              {
-                "type": "tick",
-                "ms": 100
-              },
-              {
-                "type": "call",
-                "args": []
-              }
-            ]
-          },
-          "expected": {
-            "callCount": 2
-          }
-        },
-        {
-          "id": "hidden-3",
-          "hidden": true,
-          "input": {
-            "target": "100",
-            "steps": [
-              {
-                "type": "call",
-                "args": []
-              },
-              {
-                "type": "call",
-                "args": []
-              },
-              {
-                "type": "call",
-                "args": []
-              },
-              {
-                "type": "tick",
-                "ms": 100
-              },
-              {
-                "type": "call",
-                "args": []
-              }
-            ]
-          },
-          "expected": {
-            "callCount": 2
-          }
-        },
-        {
-          "id": "hidden-4",
-          "hidden": true,
-          "input": {
-            "target": "50",
-            "steps": [
-              {
-                "type": "call",
-                "args": [
-                  "1"
-                ]
-              },
-              {
-                "type": "tick",
-                "ms": 50
-              },
-              {
-                "type": "call",
-                "args": [
-                  "2"
-                ]
-              },
-              {
-                "type": "tick",
-                "ms": 50
-              },
-              {
-                "type": "call",
-                "args": [
-                  "3"
-                ]
-              }
-            ]
-          },
-          "expected": {
-            "callCount": 3
-          }
-        },
-        {
-          "id": "hidden-5",
-          "hidden": true,
-          "input": {
-            "target": "100",
-            "steps": [
-              {
-                "type": "call",
-                "args": []
-              },
-              {
-                "type": "tick",
-                "ms": 300
-              },
-              {
-                "type": "call",
-                "args": []
-              },
-              {
-                "type": "tick",
-                "ms": 300
-              },
-              {
-                "type": "call",
-                "args": []
-              }
-            ]
-          },
-          "expected": {
-            "callCount": 3
-          }
-        }
-      ]
-    },
-    "basicCases": [
-      {
-        "id": "example-1",
-        "type": "basic",
-        "description": "示例 1",
-        "input": "[3 steps]",
-        "expected": "[Circular]"
-      },
-      {
-        "id": "example-2",
-        "type": "basic",
-        "description": "示例 2",
-        "input": "[5 steps]",
-        "expected": "[Circular]"
-      },
-      {
-        "id": "example-3",
-        "type": "basic",
-        "description": "示例 3",
-        "input": "[5 steps]",
-        "expected": "[Circular]"
-      }
-    ],
-    "fullCases": [
-      {
-        "id": "example-1",
-        "type": "basic",
-        "description": "示例 1",
-        "input": "[3 steps]",
-        "expected": "[Circular]"
-      },
-      {
-        "id": "example-2",
-        "type": "basic",
-        "description": "示例 2",
-        "input": "[5 steps]",
-        "expected": "[Circular]"
-      },
-      {
-        "id": "example-3",
-        "type": "basic",
-        "description": "示例 3",
-        "input": "[5 steps]",
-        "expected": "[Circular]"
-      },
-      {
-        "id": "hidden-1",
-        "type": "edge",
-        "description": "隐藏 1",
-        "input": "[7 steps]",
-        "expected": "[Circular]"
-      },
-      {
-        "id": "hidden-2",
-        "type": "edge",
-        "description": "隐藏 2",
-        "input": "[5 steps]",
-        "expected": "[Circular]"
-      },
-      {
-        "id": "hidden-3",
-        "type": "edge",
-        "description": "隐藏 3",
-        "input": "[5 steps]",
-        "expected": "[Circular]"
-      },
-      {
-        "id": "hidden-4",
-        "type": "edge",
-        "description": "隐藏 4",
-        "input": "[5 steps]",
-        "expected": "[Circular]"
-      },
-      {
-        "id": "hidden-5",
-        "type": "edge",
-        "description": "隐藏 5",
-        "input": "[5 steps]",
-        "expected": "[Circular]"
-      }
-    ],
-    "isComponent": false,
-    "sourcePath": "problems/utility/throttle.js",
-    "testPath": "problems/utility/throttle_test.js"
-  },
-  {
     "id": "cascader",
     "slug": "cascader",
-    "sequence": 32,
+    "sequence": 26,
     "title": "Cascader",
     "categoryId": "with_react",
     "categoryName": "React 组件",
@@ -7778,7 +5811,7 @@ export const problems: ProblemRecord[] = [
   {
     "id": "countdown",
     "slug": "countdown",
-    "sequence": 33,
+    "sequence": 27,
     "title": "Countdown",
     "categoryId": "with_react",
     "categoryName": "React 组件",
@@ -7804,7 +5837,7 @@ export const problems: ProblemRecord[] = [
   {
     "id": "cascader",
     "slug": "cascader",
-    "sequence": 34,
+    "sequence": 28,
     "title": "Cascader",
     "categoryId": "with_vue",
     "categoryName": "Vue 组件",

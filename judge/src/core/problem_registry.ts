@@ -66,7 +66,7 @@ registerContract("apply", {
 
 registerContract("bind", {
   entry: { type: "prototype", name: "myBind", host: "Function" },
-  runner: "method-call",
+  runner: "async",
   validator: "deep-equal",
   context: { disableNative: ["Function.prototype.bind"] },
 });

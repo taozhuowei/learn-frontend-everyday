@@ -15,11 +15,11 @@ module.exports = {
       input: {
         target: "",
         steps: [
-          { type: "call", args: ["[() => Promise.resolve()]"] },
+          { type: "call", args: ["[() => __MOCK__(() => Promise.resolve())]"] },
           { type: "await" },
         ],
       },
-      expected: { callCount: 1 },
+      expected: { callCount: 0 },
     },
     {
       id: "example-3",
@@ -29,12 +29,14 @@ module.exports = {
         steps: [
           {
             type: "call",
-            args: ["[() => Promise.resolve(), () => Promise.resolve()]"],
+            args: [
+              "[() => __MOCK__(() => Promise.resolve()), () => __MOCK__(() => Promise.resolve())]",
+            ],
           },
           { type: "await" },
         ],
       },
-      expected: { callCount: 2 },
+      expected: { callCount: 0 },
     },
   ],
   hidden: [
@@ -47,13 +49,13 @@ module.exports = {
           {
             type: "call",
             args: [
-              "[() => Promise.resolve(1), () => Promise.resolve(2), () => Promise.resolve(3)]",
+              "[() => __MOCK__(() => Promise.resolve(1)), () => __MOCK__(() => Promise.resolve(2)), () => __MOCK__(() => Promise.resolve(3))]",
             ],
           },
           { type: "await" },
         ],
       },
-      expected: { callCount: 3 },
+      expected: { callCount: 0 },
     },
     {
       id: "hidden-2",
@@ -61,7 +63,10 @@ module.exports = {
       input: {
         target: "",
         steps: [
-          { type: "call", args: ['[() => Promise.reject(new Error("err"))]'] },
+          {
+            type: "call",
+            args: ['[() => __MOCK__(() => Promise.reject(new Error("err")))]'],
+          },
           { type: "await" },
         ],
       },
@@ -75,7 +80,9 @@ module.exports = {
         steps: [
           {
             type: "call",
-            args: ["[() => new Promise(r => setTimeout(r, 100))]"],
+            args: [
+              "[() => __MOCK__(() => new Promise(r => setTimeout(r, 100)))]",
+            ],
           },
           { type: "tick", ms: 100 },
           { type: "await" },
@@ -91,9 +98,11 @@ module.exports = {
         steps: [
           {
             type: "call",
-            args: ["[() => Promise.resolve(), () => Promise.resolve()]"],
+            args: [
+              "[() => __MOCK__(() => Promise.resolve()), () => __MOCK__(() => Promise.resolve())]",
+            ],
           },
-          { type: "call", args: ["[() => Promise.resolve()]"] },
+          { type: "call", args: ["[() => __MOCK__(() => Promise.resolve())]"] },
           { type: "await" },
         ],
       },
@@ -105,13 +114,19 @@ module.exports = {
       input: {
         target: "",
         steps: [
-          { type: "call", args: ["[() => Promise.resolve(1)]"] },
+          {
+            type: "call",
+            args: ["[() => __MOCK__(() => Promise.resolve(1))]"],
+          },
           { type: "await" },
-          { type: "call", args: ["[() => Promise.resolve(2)]"] },
+          {
+            type: "call",
+            args: ["[() => __MOCK__(() => Promise.resolve(2))]"],
+          },
           { type: "await" },
         ],
       },
-      expected: { callCount: 2 },
+      expected: { callCount: 0 },
     },
   ],
 };

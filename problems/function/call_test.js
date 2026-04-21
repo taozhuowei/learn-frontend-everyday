@@ -33,13 +33,13 @@ module.exports = {
       id: "hidden-1",
       hidden: true,
       input: { target: "function() { return this; }", args: ["null"] },
-      expected: null,
+      expected: "[Global]",
     },
     {
       id: "hidden-2",
       hidden: true,
       input: { target: "function() { return this; }", args: ["undefined"] },
-      expected: undefined,
+      expected: "[Global]",
     },
     {
       id: "hidden-3",

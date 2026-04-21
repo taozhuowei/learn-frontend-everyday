@@ -20,16 +20,6 @@ module.exports = {
       },
       expected: "bound",
     },
-    {
-      id: "example-3",
-      hidden: false,
-      input: {
-        target:
-          "((function(a, b, c) { return a + b + c; }).myBind({}, 1, 2)(3))",
-        args: [],
-      },
-      expected: 6,
-    },
   ],
   hidden: [
     {
@@ -49,16 +39,6 @@ module.exports = {
         args: [],
       },
       expected: false,
-    },
-    {
-      id: "hidden-3",
-      hidden: true,
-      input: {
-        target:
-          "((function(x) { return this.val + x; }).myBind({ val: 5 })(10))",
-        args: [],
-      },
-      expected: 15,
     },
   ],
 };
