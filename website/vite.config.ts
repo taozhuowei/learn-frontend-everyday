@@ -14,6 +14,7 @@ export default defineConfig({
   base: pagesBase,
   plugins: [react(), tailwindcss()],
   build: {
+    modulePreload: false,
     chunkSizeWarningLimit: CHUNK_WARNING_LIMIT_KB,
     rollupOptions: {
       output: {
