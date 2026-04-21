@@ -6,7 +6,8 @@
 
 import { Suspense, lazy, useEffect, useRef, useState, type ReactNode } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Check, X, Play } from 'lucide-react'
+import { Check, X, Play, Trophy } from 'lucide-react'
+import confetti from 'canvas-confetti'
 import { SplitPane } from './SplitPane'
 import { LoadingPanel } from './LoadingPanel'
 import { CasePanel, type CustomCase } from './CasePanel'
@@ -74,16 +75,26 @@ export function ProblemWorkspace({
 
     if (!result) return
 
+    const isSuccess = result.summary.passedCount === result.summary.totalCount
+
     if (kind === 'submit') {
-      const isSuccess = result.summary.passedCount === result.summary.totalCount
+      if (isSuccess) {
+        confetti({
+          particleCount: 150,
+          spread: 70,
+          origin: { y: 0.6 },
+          colors: ['#f59e0b', '#fbbf24', '#10b981'],
+        })
+      }
+
       if (mode === 'learn') {
         setToast({
           message: isSuccess
-            ? `判题通过！(${result.summary.passedCount}/${result.summary.totalCount})`
-            : `判题未通过 (${result.summary.passedCount}/${result.summary.totalCount})`,
+            ? `全部通过！即将锻造完成`
+            : `未完全通过 (${result.summary.passedCount}/${result.summary.totalCount})`,
           type: isSuccess ? 'success' : 'error',
         })
-        setTimeout(() => setToast(null), 3000)
+        setTimeout(() => setToast(null), 4000)
       }
       onSubmit?.(result)
     } else {
@@ -105,24 +116,31 @@ export function ProblemWorkspace({
       <AnimatePresence>
         {toast && (
           <motion.div
-            initial={{ opacity: 0, y: 20, scale: 0.95 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.95 }}
-            className="absolute top-6 left-1/2 -translate-x-1/2 z-[100] pointer-events-none"
+            initial={{ opacity: 0, y: -20, scale: 0.9, x: '-50%' }}
+            animate={{ opacity: 1, y: 0, scale: 1, x: '-50%' }}
+            exit={{ opacity: 0, y: -20, scale: 0.9, x: '-50%' }}
+            className="absolute top-10 left-1/2 z-[100] pointer-events-none"
           >
             <div
-              className={`px-4 py-2 rounded-lg shadow-xl border text-sm font-bold flex items-center gap-2 ${
+              className={`px-6 py-3 rounded-2xl shadow-2xl border-2 flex items-center gap-3 ${
                 toast.type === 'success'
-                  ? 'bg-emerald-50 border-emerald-200 text-emerald-700'
-                  : 'bg-red-50 border-red-200 text-red-700'
+                  ? 'bg-emerald-50 border-emerald-500 text-emerald-800'
+                  : 'bg-red-50 border-red-500 text-red-800'
               }`}
             >
-              {toast.type === 'success' ? (
-                <Check className="shrink-0" size={16} />
-              ) : (
-                <X className="shrink-0" size={16} />
-              )}
-              {toast.message}
+              <div
+                className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                  toast.type === 'success' ? 'bg-emerald-500 text-white' : 'bg-red-500 text-white'
+                }`}
+              >
+                {toast.type === 'success' ? <Trophy size={18} /> : <X size={18} />}
+              </div>
+              <div>
+                <div className="font-black text-sm uppercase tracking-wider leading-none mb-1">
+                  {toast.type === 'success' ? 'Forge Success' : 'Forge Failed'}
+                </div>
+                <div className="text-xs font-bold opacity-80">{toast.message}</div>
+              </div>
             </div>
           </motion.div>
         )}
