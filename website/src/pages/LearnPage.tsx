@@ -184,6 +184,7 @@ function LearnProblemView({ problem }: { problem: ProblemRecord }) {
       eyebrow="学习模式"
       title={problem.title}
       showPageHeader={false}
+      showSettings={false}
       backTo="/learn"
       backLabel="题目列表"
     >

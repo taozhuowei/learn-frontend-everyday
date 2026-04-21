@@ -17,6 +17,7 @@ export function AppShell({
   children,
   showTopbar = true,
   showPageHeader = true,
+  showSettings = true,
   backTo,
   backLabel,
 }: {
@@ -27,6 +28,7 @@ export function AppShell({
   children: ReactNode
   showTopbar?: boolean
   showPageHeader?: boolean
+  showSettings?: boolean
   /** Route to navigate back to when back button is clicked */
   backTo?: string
   /** Label shown next to the back arrow (default: "返回") */
@@ -97,16 +99,18 @@ export function AppShell({
 
           <div className="flex items-center gap-1 sm:gap-2 shrink-0 ml-2">
             {headerRight ? <div className="flex items-center">{headerRight}</div> : null}
-            <button
-              aria-expanded={settingsDrawerOpen}
-              aria-label="打开配置面板"
-              className="w-8 h-8 flex items-center justify-center rounded-md text-[var(--color-ink-tertiary)] hover:bg-[var(--color-surface-secondary)] hover:text-[var(--color-ink)] transition-colors"
-              onClick={toggleSettingsPanel}
-              title="考试设置"
-              type="button"
-            >
-              <Settings2 size={16} />
-            </button>
+            {showSettings ? (
+              <button
+                aria-expanded={settingsDrawerOpen}
+                aria-label="打开配置面板"
+                className="w-8 h-8 flex items-center justify-center rounded-md text-[var(--color-ink-tertiary)] hover:bg-[var(--color-surface-secondary)] hover:text-[var(--color-ink)] transition-colors"
+                onClick={toggleSettingsPanel}
+                title="考试设置"
+                type="button"
+              >
+                <Settings2 size={16} />
+              </button>
+            ) : null}
           </div>
         </header>
       ) : null}
