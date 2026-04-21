@@ -7,8 +7,9 @@ import {
   useMemo,
   useReducer,
   useRef,
+  useState,
 } from 'react'
-import { problems } from '../generated/problems'
+import { generatedManifest } from '../generated/manifest'
 import type { ProblemRecord } from '../types/content'
 import type { ExamConfig, ExamResult, ExamSession, SubmittedProblemResult } from '../types/exam'
 import { DEFAULT_EXAM_CONFIG, buildExamResult, clampConfig, createExamSession } from '../utils/exam'
@@ -191,6 +192,14 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
     isMobile: typeof window !== 'undefined' ? window.innerWidth < 768 : false,
   })
   const stateRef = useRef(state)
+  const [allProblems, setAllProblems] = useState<ProblemRecord[]>([])
+
+  // Load problems only when needed (e.g. for exam or deep links)
+  useEffect(() => {
+    import('../generated/problems').then((mod) => {
+      setAllProblems(mod.problems)
+    })
+  }, [])
 
   useEffect(() => {
     const handleResize = () => {
@@ -217,20 +226,27 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
   }, [state])
 
   const categories = useMemo(
-    () =>
-      Array.from(
-        new Map(problems.map((problem) => [problem.categoryId, problem.categoryName])).entries(),
-      ).map(([id, label]) => ({ id, label })),
-    [],
-  )
-  const executableProblemCount = useMemo(
-    () => problems.filter((problem) => problem.executionMode !== 'local').length,
+    () => [
+      { id: 'array', label: '数组方法' },
+      { id: 'function', label: '函数方法' },
+      { id: 'object', label: '对象方法' },
+      { id: 'promise', label: 'Promise' },
+      { id: 'utility', label: '工具函数' },
+      { id: 'tree', label: '树结构' },
+      { id: 'linkedlist', label: '链表' },
+    ],
     [],
   )
 
-  const getProblemById = useCallback((problemId: string) => {
-    return problems.find((problem) => problem.id === problemId)
-  }, [])
+  const executableProblemCount =
+    generatedManifest.browserProblems + generatedManifest.componentProblems
+
+  const getProblemById = useCallback(
+    (problemId: string) => {
+      return allProblems.find((problem) => problem.id === problemId)
+    },
+    [allProblems],
+  )
 
   const updateSettings = useCallback(
     (nextConfig: ExamConfig) => {
@@ -242,13 +258,24 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
     [categories.length, executableProblemCount],
   )
 
-  const startExam = useCallback((problemIds: string[]) => {
-    const { session, deadline } = createExamSession(problemIds, problems, stateRef.current.settings)
-    dispatch({
-      type: 'startExam',
-      payload: { session, deadline },
-    })
-  }, [])
+  const startExam = useCallback(
+    (problemIds: string[]) => {
+      if (allProblems.length === 0) {
+        alert('正在加载题目数据，请稍候...')
+        return
+      }
+      const { session, deadline } = createExamSession(
+        problemIds,
+        allProblems,
+        stateRef.current.settings,
+      )
+      dispatch({
+        type: 'startExam',
+        payload: { session, deadline },
+      })
+    },
+    [allProblems],
+  )
 
   const updateAnswer = useCallback((problemId: string, code: string) => {
     dispatch({
