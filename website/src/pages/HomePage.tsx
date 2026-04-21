@@ -5,6 +5,7 @@
 
 import { BookOpen, ChevronRight, GraduationCap, Trophy } from 'lucide-react'
 import { Link } from 'react-router-dom'
+import { motion } from 'framer-motion'
 
 import { AppShell } from '../components/AppShell'
 import { knowledgeArticles } from '../generated/knowledge'
@@ -74,6 +75,21 @@ const accentMap: Record<string, { bg: string; border: string; icon: string; badg
   },
 }
 
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,
+    },
+  },
+}
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0 },
+}
+
 export function HomePage() {
   return (
     <AppShell showPageHeader={false} showTopbar={false} title="首页">
@@ -87,7 +103,12 @@ export function HomePage() {
             <div className="absolute top-10 right-10 w-48 h-48 rounded-full bg-amber-200/25 blur-2xl" />
           </div>
 
-          <div className="relative max-w-3xl mx-auto px-5 sm:px-8 py-10 sm:py-16 text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="relative max-w-3xl mx-auto px-5 sm:px-8 py-10 sm:py-16 text-center"
+          >
             <div className="flex items-center justify-center gap-2 mb-4">
               <span className="w-9 h-9 rounded-[9px] bg-[var(--color-primary)] text-white text-sm font-extrabold flex items-center justify-center">
                 CF
@@ -116,46 +137,52 @@ export function HomePage() {
                 </span>
               ))}
             </div>
-          </div>
+          </motion.div>
         </div>
 
         {/* Feature cards */}
         <div className="max-w-5xl mx-auto px-5 sm:px-8 py-6 sm:py-10">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <motion.div
+            variants={containerVariants}
+            initial="hidden"
+            animate="visible"
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
+          >
             {featureCards.map((card) => {
               const a = accentMap[card.accent]
               return (
-                <Link
-                  key={card.title}
-                  className={`group flex items-start gap-4 p-5 rounded-[var(--radius-lg)] bg-white border border-[var(--color-border)] ${a.border} ${a.bg} transition-all hover:-translate-y-0.5 hover:shadow-md cursor-pointer`}
-                  to={card.href}
-                >
-                  <div
-                    className={`shrink-0 w-10 h-10 flex items-center justify-center rounded-[var(--radius-md)] bg-[var(--color-surface-secondary)] ${a.icon} mt-0.5`}
+                <motion.div key={card.title} variants={itemVariants}>
+                  <Link
+                    className={`group h-full flex items-start gap-4 p-5 rounded-[var(--radius-lg)] bg-white border border-[var(--color-border)] ${a.border} ${a.bg} transition-all hover:-translate-y-0.5 hover:shadow-md cursor-pointer`}
+                    to={card.href}
                   >
-                    {card.icon}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center justify-between gap-2 mb-1">
-                      <h3 className="text-sm font-bold text-[var(--color-ink)]">{card.title}</h3>
-                      <span
-                        className={`shrink-0 text-[0.6rem] font-bold px-1.5 py-0.5 rounded-full ${a.badge}`}
-                      >
-                        {card.stat}
-                      </span>
+                    <div
+                      className={`shrink-0 w-10 h-10 flex items-center justify-center rounded-[var(--radius-md)] bg-[var(--color-surface-secondary)] ${a.icon} mt-0.5`}
+                    >
+                      {card.icon}
                     </div>
-                    <p className="text-xs text-[var(--color-ink-secondary)] leading-relaxed">
-                      {card.description}
-                    </p>
-                  </div>
-                  <ChevronRight
-                    className={`shrink-0 mt-2 ${a.icon} opacity-0 group-hover:opacity-100 transition-opacity`}
-                    size={16}
-                  />
-                </Link>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center justify-between gap-2 mb-1">
+                        <h3 className="text-sm font-bold text-[var(--color-ink)]">{card.title}</h3>
+                        <span
+                          className={`shrink-0 text-[0.6rem] font-bold px-1.5 py-0.5 rounded-full ${a.badge}`}
+                        >
+                          {card.stat}
+                        </span>
+                      </div>
+                      <p className="text-xs text-[var(--color-ink-secondary)] leading-relaxed">
+                        {card.description}
+                      </p>
+                    </div>
+                    <ChevronRight
+                      className={`shrink-0 mt-2 ${a.icon} opacity-0 group-hover:opacity-100 transition-opacity`}
+                      size={16}
+                    />
+                  </Link>
+                </motion.div>
               )
             })}
-          </div>
+          </motion.div>
         </div>
       </div>
     </AppShell>

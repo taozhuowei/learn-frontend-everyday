@@ -7,6 +7,7 @@
 import { Suspense, lazy, useCallback, useEffect, useRef, useState } from 'react'
 import { Navigate, useNavigate } from 'react-router-dom'
 import { Check, ChevronLeft, ChevronRight, Play, Trophy } from 'lucide-react'
+import { motion, AnimatePresence } from 'framer-motion'
 import { AppShell } from '../components/AppShell'
 import { CasePanel } from '../components/CasePanel'
 import { ExamProblemPanel } from '../components/ExamProblemPanel'
@@ -283,33 +284,44 @@ export function ExamSessionPage() {
       title={activeProblem.title}
       showPageHeader={false}
     >
-      <div className="h-full p-2">
-        <SplitPane
-          className="h-full"
-          defaultSize={340}
-          direction="horizontal"
-          first={<div className="h-full pr-1">{renderInfoPanel()}</div>}
-          firstClassName="h-full"
-          minFirstSize={280}
-          minSecondSize={520}
-          second={
-            <div className="h-full pl-1">
-              <SplitPane
-                className="h-full"
-                defaultSize={360}
-                direction="horizontal"
-                first={<div className="h-full pr-1">{renderCodeWorkspace()}</div>}
-                firstClassName="h-full"
-                fixedPane="second"
-                minFirstSize={360}
-                minSecondSize={320}
-                second={<div className="h-full pl-1">{renderCasePanel()}</div>}
-                secondClassName="h-full"
-              />
-            </div>
-          }
-          secondClassName="h-full"
-        />
+      <div className="h-full p-2 overflow-hidden">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={activeProblem.id}
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: -20 }}
+            transition={{ duration: 0.15, ease: 'easeOut' }}
+            className="h-full"
+          >
+            <SplitPane
+              className="h-full"
+              defaultSize={340}
+              direction="horizontal"
+              first={<div className="h-full pr-1">{renderInfoPanel()}</div>}
+              firstClassName="h-full"
+              minFirstSize={280}
+              minSecondSize={520}
+              second={
+                <div className="h-full pl-1">
+                  <SplitPane
+                    className="h-full"
+                    defaultSize={360}
+                    direction="horizontal"
+                    first={<div className="h-full pr-1">{renderCodeWorkspace()}</div>}
+                    firstClassName="h-full"
+                    fixedPane="second"
+                    minFirstSize={360}
+                    minSecondSize={320}
+                    second={<div className="h-full pl-1">{renderCasePanel()}</div>}
+                    secondClassName="h-full"
+                  />
+                </div>
+              }
+              secondClassName="h-full"
+            />
+          </motion.div>
+        </AnimatePresence>
       </div>
     </AppShell>
   )

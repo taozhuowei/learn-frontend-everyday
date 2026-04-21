@@ -7,6 +7,7 @@
 import { useDeferredValue, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Search, FileText } from 'lucide-react'
+import { motion, AnimatePresence } from 'framer-motion'
 import { AppShell } from '../components/AppShell'
 import { knowledgeArticles } from '../generated/knowledge'
 import type { KnowledgeArticle } from '../types/content'
@@ -31,6 +32,21 @@ function groupArticlesByCategory(articles: KnowledgeArticle[]): Map<string, Know
   }
 
   return groups
+}
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.05,
+    },
+  },
+}
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 10 },
+  visible: { opacity: 1, y: 0 },
 }
 
 export function TheoryListPage() {
@@ -92,43 +108,58 @@ export function TheoryListPage() {
 
         {/* Article List */}
         <div className="flex-1 overflow-y-auto p-4 sm:p-5">
-          {sortedCategories.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-20 text-[var(--color-ink-tertiary)]">
-              <FileText size={48} className="mb-4 opacity-50" />
-              <p className="text-sm">未找到匹配的文章</p>
-            </div>
-          ) : (
-            <div className="space-y-6 sm:space-y-8 max-w-5xl">
-              {sortedCategories.map((category) => (
-                <section key={category}>
-                  <h2 className="text-xs font-bold uppercase tracking-wider text-[var(--color-ink-tertiary)] mb-3 px-1">
-                    {category}
-                  </h2>
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-                    {groupedArticles.get(category)!.map((article) => (
-                      <button
-                        key={article.slug}
-                        onClick={() => navigate(`/theory/${article.slug}`)}
-                        className="text-left p-4 bg-white rounded-lg border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:shadow-sm transition-all group"
-                      >
-                        <div className="flex items-start justify-between gap-3">
-                          <h3 className="font-semibold text-[var(--color-ink)] text-sm leading-snug group-hover:text-[var(--color-primary)] transition-colors line-clamp-2">
-                            {article.title}
-                          </h3>
-                          <span className="shrink-0 inline-flex items-center px-2 py-0.5 rounded-full bg-[var(--color-surface-secondary)] text-[10px] font-medium text-[var(--color-ink-tertiary)]">
-                            {article.headings.length}
-                          </span>
-                        </div>
-                        <p className="mt-2 text-xs text-[var(--color-ink-tertiary)] truncate">
-                          {article.sourcePath}
-                        </p>
-                      </button>
-                    ))}
-                  </div>
-                </section>
-              ))}
-            </div>
-          )}
+          <AnimatePresence mode="wait">
+            {sortedCategories.length === 0 ? (
+              <motion.div
+                key="empty"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="flex flex-col items-center justify-center py-20 text-[var(--color-ink-tertiary)]"
+              >
+                <FileText size={48} className="mb-4 opacity-50" />
+                <p className="text-sm">未找到匹配的文章</p>
+              </motion.div>
+            ) : (
+              <motion.div
+                key="content"
+                variants={containerVariants}
+                initial="hidden"
+                animate="visible"
+                className="space-y-6 sm:space-y-8 max-w-5xl"
+              >
+                {sortedCategories.map((category) => (
+                  <section key={category}>
+                    <h2 className="text-xs font-bold uppercase tracking-wider text-[var(--color-ink-tertiary)] mb-3 px-1">
+                      {category}
+                    </h2>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                      {groupedArticles.get(category)!.map((article) => (
+                        <motion.button
+                          key={article.slug}
+                          variants={itemVariants}
+                          onClick={() => navigate(`/theory/${article.slug}`)}
+                          className="text-left p-4 bg-white rounded-lg border border-[var(--color-border)] hover:border-[var(--color-primary)] hover:shadow-sm transition-all group"
+                        >
+                          <div className="flex items-start justify-between gap-3">
+                            <h3 className="font-semibold text-[var(--color-ink)] text-sm leading-snug group-hover:text-[var(--color-primary)] transition-colors line-clamp-2">
+                              {article.title}
+                            </h3>
+                            <span className="shrink-0 inline-flex items-center px-2 py-0.5 rounded-full bg-[var(--color-surface-secondary)] text-[10px] font-medium text-[var(--color-ink-tertiary)]">
+                              {article.headings.length}
+                            </span>
+                          </div>
+                          <p className="mt-2 text-xs text-[var(--color-ink-tertiary)] truncate">
+                            {article.sourcePath}
+                          </p>
+                        </motion.button>
+                      ))}
+                    </div>
+                  </section>
+                ))}
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </div>
     </AppShell>
