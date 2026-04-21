@@ -84,7 +84,7 @@ const itemVariants = {
 
 export function HomePage() {
   return (
-    <AppShell showPageHeader={false} showTopbar={false} title="首页">
+    <AppShell showPageHeader={false} showTopbar={false} title="前端代码实战">
       <div className="h-full overflow-y-auto bg-white">
         {/* Hero */}
         <div className="relative overflow-hidden border-b border-[var(--color-border)]">
