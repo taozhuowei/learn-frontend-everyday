@@ -262,8 +262,7 @@ textarea {
 .cf-recitation-mode table,
 .cf-recitation-mode pre,
 .cf-recitation-mode blockquote {
-  opacity: 0;
-  user-select: none;
+  display: none;
 }
 
 /* ─── In-document search highlight ─── */

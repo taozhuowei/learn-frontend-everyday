@@ -107,6 +107,7 @@ export function CasePanel({
   customCases,
   onCustomCasesChange,
   actions,
+  mode = 'learn',
 }: {
   title: string
   cases: JudgeCase[]
@@ -115,8 +116,10 @@ export function CasePanel({
   customCases?: CustomCase[]
   onCustomCasesChange?: (cases: CustomCase[]) => void
   actions?: ReactNode
+  mode?: 'learn' | 'exam'
 }) {
-  const hasCustomCases = Array.isArray(customCases) && Boolean(onCustomCasesChange)
+  const hasCustomCases =
+    mode === 'learn' && Array.isArray(customCases) && Boolean(onCustomCasesChange)
   const activeConsoleExecution = consoleExecution ?? execution
   const [activeTab, setActiveTab] = useState<PanelTab>('cases')
 
@@ -323,7 +326,7 @@ export function CasePanel({
             })}
 
             {/* Hidden Case Failure (LeetCode style) */}
-            {firstFailedHiddenCase && (
+            {mode === 'learn' && firstFailedHiddenCase && (
               <motion.div
                 variants={itemVariants}
                 className="rounded-md border p-3 text-xs font-mono border-[var(--color-danger)] bg-[var(--color-danger-light)]"

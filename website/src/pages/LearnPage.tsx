@@ -2,31 +2,20 @@
  * Page: LearnPage
  * Route: /learn/:problemId
  * Purpose: Render the learn workspace with problem details, editor, and judge panel.
- * Data flow: Resolve the current problem from route params, edit source locally, then run browser-safe cases through the code runner.
  */
 
-import { Suspense, lazy, useEffect, useRef, useState } from 'react'
-import { Navigate, useNavigate, useParams } from 'react-router-dom'
-import { Check, Hand, MousePointer2, Play, Code } from 'lucide-react'
+import { useEffect, useState } from 'react'
+import { Navigate, useParams } from 'react-router-dom'
+import { Hand, MousePointer2 } from 'lucide-react'
 import { AppShell } from '../components/AppShell'
-import { CasePanel } from '../components/CasePanel'
 import { CodeBlock, type CodeBlockInteractionMode } from '../components/CodeBlock'
-import type { CodeEditorHandle } from '../components/CodeWorkspace'
-import { LoadingPanel } from '../components/LoadingPanel'
 import { MarkdownContent } from '../components/MarkdownContent'
 import { ProblemDescriptionContent } from '../components/ProblemDescriptionContent'
-import { SplitPane } from '../components/SplitPane'
 import { problems } from '../generated/problems'
 import type { ProblemRecord } from '../types/content'
 import { ComponentLearnPage } from './ComponentLearnPage'
 import { useAppState } from '../context/AppStateContext'
-
-import type { CustomCase } from '../components/CasePanel'
-import { useProblemExecution } from '../hooks/useProblemExecution'
-
-const CodeWorkspace = lazy(() =>
-  import('../components/CodeWorkspace').then((module) => ({ default: module.CodeWorkspace })),
-)
+import { ProblemWorkspace } from '../components/ProblemWorkspace'
 
 const firstProblemId = problems[0]?.id ?? ''
 const SOLUTION_INTERACTION_MODE_STORAGE_KEY = 'practice_solution_interaction_mode'
@@ -36,7 +25,6 @@ function readStoredSolutionInteractionMode(): CodeBlockInteractionMode {
   if (typeof window === 'undefined') {
     return DEFAULT_SOLUTION_INTERACTION_MODE
   }
-
   const storedMode = window.localStorage.getItem(SOLUTION_INTERACTION_MODE_STORAGE_KEY)
   return storedMode === 'pan' || storedMode === 'select'
     ? (storedMode as CodeBlockInteractionMode)
@@ -154,7 +142,7 @@ export function LearnPage() {
     return <Navigate replace to={`/learn/${firstProblemId}`} />
   }
 
-  // 组件题使用三栏布局
+  // 组件题使用专门的页面
   if (problem.isComponent) {
     return <ComponentLearnPage problem={problem} />
   }
@@ -166,15 +154,7 @@ function LearnProblemView({ problem }: { problem: ProblemRecord }) {
   const {
     state: { isMobile },
   } = useAppState()
-  const navigate = useNavigate()
-  const editorRef = useRef<CodeEditorHandle>(null)
-  const [source, setSource] = useState(() => createInitialSource(problem))
-  const sourceRef = useRef(source)
 
-  const { sampleExecution, consoleExecution, busyAction, execute, resetExecution } =
-    useProblemExecution()
-
-  const [customCases, setCustomCases] = useState<CustomCase[]>([])
   const [activeTab, setActiveTab] = useState<DetailTab>('description')
   const [solutionInteractionMode, setSolutionInteractionMode] = useState<CodeBlockInteractionMode>(
     () => readStoredSolutionInteractionMode(),
@@ -184,121 +164,16 @@ function LearnProblemView({ problem }: { problem: ProblemRecord }) {
     window.localStorage.setItem(SOLUTION_INTERACTION_MODE_STORAGE_KEY, solutionInteractionMode)
   }, [solutionInteractionMode])
 
-  useEffect(() => {
-    setSource(createInitialSource(problem))
-    setCustomCases([])
-    resetExecution()
-  }, [problem, resetExecution])
-
-  function updateSource(nextSource: string) {
-    sourceRef.current = nextSource
-    setSource(nextSource)
-  }
-
-  async function executeCases(kind: 'run' | 'submit') {
-    const sourceCode = editorRef.current?.getValue() ?? sourceRef.current
-    await execute(kind, {
-      problem,
-      sourceCode,
-      customCases,
-    })
-  }
-
-  const isAutoJudge = problem.executionMode === 'browser'
-  const actionTitle =
-    problem.executionMode === 'local'
-      ? '本地环境题，请在本机 Node.js 环境下判题'
-      : problem.executionMode === 'component'
-        ? '组件题，请打开本地 Launcher 调试'
-        : undefined
-
-  const renderInfoPanel = () => (
-    <ProblemInfoPanel
-      activeTab={activeTab}
-      onSolutionInteractionModeChange={setSolutionInteractionMode}
-      onTabChange={setActiveTab}
-      problem={problem}
-      solutionInteractionMode={solutionInteractionMode}
-    />
-  )
-
-  const renderCodeWorkspace = () => (
-    <Suspense fallback={<LoadingPanel />}>
-      <CodeWorkspace
-        ref={editorRef}
-        description={problem.description}
-        language={problem.sourceType}
-        onChange={updateSource}
-        title={`#${String(problem.sequence).padStart(2, '0')} ${problem.title}`}
-        value={source}
-      />
-    </Suspense>
-  )
-
-  const renderCasePanel = () => (
-    <CasePanel
-      actions={
-        <div className="flex gap-2">
-          <button
-            className="flex items-center gap-1 px-3 py-1.5 rounded-md text-xs font-semibold bg-[var(--color-surface-secondary)] border border-[var(--color-border)] text-[var(--color-ink-secondary)] hover:border-[var(--color-primary)] disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-            data-testid="run-button"
-            disabled={!isAutoJudge || busyAction !== null}
-            onClick={() => executeCases('run')}
-            title={actionTitle}
-            type="button"
-          >
-            <Play size={12} />
-            {busyAction === 'run' ? '运行中...' : '运行'}
-          </button>
-          <button
-            className="flex items-center gap-1 px-3 py-1.5 rounded-md text-xs font-semibold bg-[var(--color-primary)] text-white hover:bg-[var(--color-primary-strong)] disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-            data-testid="submit-button"
-            disabled={!isAutoJudge || busyAction !== null}
-            onClick={() => executeCases('submit')}
-            title={actionTitle}
-            type="button"
-          >
-            <Check size={12} />
-            {busyAction === 'submit' ? '判题中...' : '提交'}
-          </button>
-        </div>
-      }
-      cases={problem.basicCases}
-      consoleExecution={consoleExecution}
-      customCases={isAutoJudge ? customCases : undefined}
-      execution={sampleExecution}
-      onCustomCasesChange={isAutoJudge ? setCustomCases : undefined}
-      title="测试与判题"
-    />
-  )
-
   if (isMobile) {
     return (
-      <AppShell
-        eyebrow="学习模式"
-        title={problem.title}
-        showPageHeader={false}
-        backTo="/learn"
-        backLabel="列表"
-      >
-        <div className="h-full flex flex-col items-center justify-center bg-white p-8 text-center">
-          <div className="w-16 h-16 rounded-full bg-[var(--color-surface-secondary)] flex items-center justify-center mb-4">
-            <Code size={32} className="text-[var(--color-ink-muted)]" />
-          </div>
-          <h2 className="text-lg font-bold text-[var(--color-ink)] mb-2">学习模式暂不支持移动端</h2>
-          <p className="text-sm text-[var(--color-ink-tertiary)] leading-relaxed max-w-xs">
-            为了获得最佳的代码编写与调试体验，请在 PC 端浏览器中打开此页面。
-          </p>
-          <button
-            onClick={() => navigate('/learn')}
-            className="mt-6 px-6 py-2 rounded-md bg-[var(--color-primary)] text-white text-sm font-semibold"
-          >
-            返回题目列表
-          </button>
+      <AppShell eyebrow="学习模式" title={problem.title} showPageHeader={false} backTo="/learn">
+        <div className="h-full flex flex-col items-center justify-center bg-white p-8 text-center text-sm text-[var(--color-ink-tertiary)]">
+          学习模式暂不支持移动端，请在 PC 端打开。
         </div>
       </AppShell>
     )
   }
+
   return (
     <AppShell
       eyebrow="学习模式"
@@ -307,33 +182,20 @@ function LearnProblemView({ problem }: { problem: ProblemRecord }) {
       backTo="/learn"
       backLabel="题目列表"
     >
-      <div className="h-full p-2">
-        <SplitPane
-          className="h-full"
-          defaultSize={400}
-          direction="horizontal"
-          first={<div className="h-full pr-1">{renderInfoPanel()}</div>}
-          firstClassName="h-full"
-          minFirstSize={260}
-          minSecondSize={360}
-          second={
-            <div className="h-full pl-1">
-              <SplitPane
-                className="h-full"
-                defaultSizeRatio={0.6}
-                direction="vertical"
-                first={<div className="h-full pb-1">{renderCodeWorkspace()}</div>}
-                firstClassName="h-full"
-                minFirstSize={160}
-                minSecondSize={120}
-                second={<div className="h-full pt-1">{renderCasePanel()}</div>}
-                secondClassName="h-full"
-              />
-            </div>
-          }
-          secondClassName="h-full"
-        />
-      </div>
+      <ProblemWorkspace
+        problem={problem}
+        mode="learn"
+        initialSource={createInitialSource(problem)}
+        renderInfoPanel={() => (
+          <ProblemInfoPanel
+            activeTab={activeTab}
+            onSolutionInteractionModeChange={setSolutionInteractionMode}
+            onTabChange={setActiveTab}
+            problem={problem}
+            solutionInteractionMode={solutionInteractionMode}
+          />
+        )}
+      />
     </AppShell>
   )
 }
