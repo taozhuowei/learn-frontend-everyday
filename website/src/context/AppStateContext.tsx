@@ -39,6 +39,7 @@ interface AppContextValue {
   state: AppState
   categories: Array<{ id: string; label: string }>
   getProblemById: (problemId: string) => ProblemRecord | undefined
+  loadProblems: () => Promise<ProblemRecord[]>
   updateSettings: (nextConfig: ExamConfig) => void
   startExam: (problemIds: string[]) => void
   updateAnswer: (problemId: string, code: string) => void
@@ -193,13 +194,19 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
   })
   const stateRef = useRef(state)
   const [allProblems, setAllProblems] = useState<ProblemRecord[]>([])
+  const loadingPromiseRef = useRef<Promise<ProblemRecord[]> | null>(null)
 
-  // Load problems only when needed (e.g. for exam or deep links)
-  useEffect(() => {
-    import('../generated/problems').then((mod) => {
+  const loadProblems = useCallback(async () => {
+    if (allProblems.length > 0) return allProblems
+    if (loadingPromiseRef.current) return loadingPromiseRef.current
+
+    loadingPromiseRef.current = import('../generated/problems').then((mod) => {
       setAllProblems(mod.problems)
+      return mod.problems
     })
-  }, [])
+
+    return loadingPromiseRef.current
+  }, [allProblems.length])
 
   useEffect(() => {
     const handleResize = () => {
@@ -259,14 +266,11 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
   )
 
   const startExam = useCallback(
-    (problemIds: string[]) => {
-      if (allProblems.length === 0) {
-        alert('正在加载题目数据，请稍候...')
-        return
-      }
+    async (problemIds: string[]) => {
+      const problems = await loadProblems()
       const { session, deadline } = createExamSession(
         problemIds,
-        allProblems,
+        problems,
         stateRef.current.settings,
       )
       dispatch({
@@ -274,7 +278,7 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
         payload: { session, deadline },
       })
     },
-    [allProblems],
+    [loadProblems],
   )
 
   const updateAnswer = useCallback((problemId: string, code: string) => {
@@ -362,6 +366,7 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
       state,
       categories,
       getProblemById,
+      loadProblems,
       updateSettings,
       startExam,
       updateAnswer,
@@ -380,6 +385,7 @@ export function AppStateProvider({ children }: { children: React.ReactNode }) {
       closeSettingsPanel,
       finishExam,
       getProblemById,
+      loadProblems,
       openSettingsPanel,
       setCurrentIndex,
       setSubmission,
