@@ -1,4 +1,3 @@
-import { useEffect } from 'react'
 import { HashRouter } from 'react-router-dom'
 import { AppStateProvider } from './context/AppStateContext'
 import './index.css'
