@@ -12,3 +12,11 @@ createRoot(document.getElementById('root')!).render(
     <App />
   </StrictMode>,
 )
+
+// Remove splash screen after mount
+const splash = document.getElementById('splash-screen')
+if (splash) {
+  splash.style.opacity = '0'
+  splash.style.transition = 'opacity 0.4s ease-out'
+  setTimeout(() => splash.remove(), 400)
+}

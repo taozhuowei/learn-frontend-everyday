@@ -49,14 +49,7 @@ export function AppRoutes() {
       <AnimatePresence mode="wait">
         <Routes location={location} key={location.pathname}>
           <Route element={<Outlet />} path="">
-            <Route
-              index
-              element={
-                <PageWrapper>
-                  <HomePage />
-                </PageWrapper>
-              }
-            />
+            <Route index element={<HomePage />} />
             <Route
               path="exam"
               element={

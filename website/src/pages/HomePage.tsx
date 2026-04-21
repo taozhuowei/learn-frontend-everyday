@@ -72,33 +72,32 @@ const containerVariants = {
   visible: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.1,
+      staggerChildren: 0.05,
     },
   },
 }
 
 const itemVariants = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0 },
+  hidden: { opacity: 0, y: 10 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.3 } },
 }
 
 export function HomePage() {
   return (
     <AppShell showPageHeader={false} showTopbar={false} title="首页">
-      <div className="h-full overflow-y-auto">
+      <div className="h-full overflow-y-auto bg-white">
         {/* Hero */}
-        <div className="relative overflow-hidden bg-white border-b border-[var(--color-border)]">
-          {/* 几何光晕装饰 */}
+        <div className="relative overflow-hidden border-b border-[var(--color-border)]">
+          {/* 几何光晕装饰 - 简化以提升性能 */}
           <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
-            <div className="absolute -top-20 -left-20 w-96 h-96 rounded-full bg-amber-300/20 blur-3xl" />
-            <div className="absolute -top-10 left-60 w-64 h-64 rounded-full bg-blue-300/15 blur-3xl" />
-            <div className="absolute top-10 right-10 w-48 h-48 rounded-full bg-amber-200/25 blur-2xl" />
+            <div className="absolute -top-20 -left-20 w-80 h-80 rounded-full bg-amber-100/40 blur-3xl" />
+            <div className="absolute top-0 right-0 w-64 h-64 rounded-full bg-blue-50/30 blur-3xl" />
           </div>
 
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
+            transition={{ duration: 0.4 }}
             className="relative max-w-3xl mx-auto px-5 sm:px-8 py-10 sm:py-16 text-center"
           >
             <div className="flex items-center justify-center gap-2 mb-4">
