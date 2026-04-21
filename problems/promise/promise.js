@@ -21,6 +21,11 @@ class MyPromise {
     this.onRejectedCallbacks = [];
 
     const resolve = (value) => {
+      // 💡 增强：处理 resolve 传入 Promise 的情况 (Promise/A+ 2.3.2)
+      if (value instanceof MyPromise) {
+        return value.then(resolve, reject);
+      }
+
       if (this.state === "pending") {
         this.state = "fulfilled";
         this.value = value;
@@ -124,6 +129,7 @@ class MyPromise {
   }
 
   static resolve(value) {
+    if (value instanceof MyPromise) return value;
     return new MyPromise((resolve) => resolve(value));
   }
 

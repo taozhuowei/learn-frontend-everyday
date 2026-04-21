@@ -25,9 +25,35 @@ function createMockFn() {
   const mock = function(...args) {
     mock.callCount++;
     mock.calls.push(args);
+    // Track concurrency correctly
+    mock.activeCount = (mock.activeCount || 0) + 1;
+    mock.maxConcurrent = Math.max(mock.maxConcurrent || 0, mock.activeCount);
+    
+    let result;
+    if (typeof args[0] === 'function') {
+       try {
+         result = args[0]();
+       } catch (e) {
+         mock.activeCount--;
+         mock.hasError = true;
+         throw e;
+       }
+    }
+
+    if (result && typeof result.then === 'function') {
+       return result.then(
+         v => { mock.activeCount--; return v; },
+         e => { mock.activeCount--; mock.hasError = true; throw e; }
+       );
+    }
+    mock.activeCount--;
+    return result;
   };
   mock.callCount = 0;
   mock.calls = [];
+  mock.activeCount = 0;
+  mock.maxConcurrent = 0;
+  mock.hasError = false;
   return mock;
 }
 
@@ -61,6 +87,9 @@ class VirtualClock {
   }
   async tick(ms) {
     const targetTime = this.currentTime + ms;
+    this._executeTimers();
+    await Promise.resolve();
+
     while (this.currentTime < targetTime) {
        let nextJump = targetTime;
        for (const timer of this.timers.values()) {
@@ -69,22 +98,24 @@ class VirtualClock {
           }
        }
        this.currentTime = nextJump;
-       
-       const toExecute = [];
-       for (const [id, timer] of this.timers.entries()) {
-         if (timer.executeAt <= this.currentTime) {
-           toExecute.push({ id, ...timer });
-         }
-       }
-       if (toExecute.length > 0) {
-         toExecute.sort((a, b) => a.executeAt - b.executeAt);
-         _ReflectApply(_ArrayForEach, toExecute, [timer => {
-           this.timers.delete(timer.id);
-           if (typeof timer.cb === 'function') timer.cb(...timer.args);
-         }]);
-       }
-       await new Promise(r => setTimeout(r, 0));
+       this._executeTimers();
+       for (let i = 0; i < 50; i++) await Promise.resolve();
     }
+  }
+  _executeTimers() {
+     const toExecute = [];
+     for (const [id, timer] of this.timers.entries()) {
+       if (timer.executeAt <= this.currentTime) {
+         toExecute.push({ id, ...timer });
+       }
+     }
+     if (toExecute.length > 0) {
+       toExecute.sort((a, b) => a.executeAt - b.executeAt);
+       for (const timer of toExecute) {
+         this.timers.delete(timer.id);
+         if (typeof timer.cb === 'function') timer.cb(...timer.args);
+       }
+     }
   }
 }
 
@@ -171,7 +202,7 @@ function sendResult(result) {
   } catch (err) {
     const replacer = (k, v) => {
        if (typeof v === 'function') return '[Function]';
-       if (v instanceof Date) return v.toISOString();
+       if (v instanceof Date) return '[Date ' + v.toISOString() + ']';
        if (typeof v === 'number' && isNaN(v)) return 'NaN';
        if (v === globalThis) return '[Global]';
        return v;
@@ -205,7 +236,9 @@ function safeEval(code) {
     if (trimmed.startsWith('function') || (trimmed.startsWith('(') && trimmed.includes('function'))) {
        return eval('(' + trimmed + ')');
     }
-    if (trimmed.startsWith('{') && !trimmed.includes(';')) return eval('(' + trimmed + ')');
+    if (trimmed.startsWith('{') && !trimmed.includes(';')) {
+       return eval('(' + trimmed + ')');
+    }
     return eval(trimmed);
   } catch (e) {
     throw e;
@@ -232,22 +265,30 @@ async function runTest(e) {
     let actual;
     let meta = {};
 
-    const MyPromise = globalThis.Promise;
+    const OriginalPromise = globalThis.Promise;
     const userImpl = eval(fnCode);
     globalThis.__CF_USER_IMPL__ = userImpl;
     
+    // Problem Context Setup
     const problemContext = {
-       MyPromise: (contract.problemId === 'promise' || contract.entry.type === 'class') ? userImpl : MyPromise,
+       MyPromise: (contract.problemId === 'promise' || contract.entry.type === 'class') ? userImpl : OriginalPromise,
        Scheduler: userImpl,
        TaskQueue: userImpl,
        promiseAll: userImpl,
        promiseRace: userImpl,
        curry: userImpl,
        deepCopy: userImpl,
-       deepClone: userImpl
+       deepClone: userImpl,
+       ListNode: ListNode,
+       TreeNode: TreeNode
     };
-
     Object.assign(globalThis, problemContext);
+
+    function isClass(fn) {
+       if (typeof fn !== 'function') return false;
+       const s = fn.toString().trim();
+       return s.startsWith('class') || /^\s*class\s+/.test(s);
+    }
 
     if (contract.runner === 'method-call') {
       const target = safeEval(testCase.input.target);
@@ -256,9 +297,13 @@ async function runTest(e) {
       } else {
          target[contract.entry.name] = userImpl;
       }
-      const args = _ReflectApply(_ArrayMap, testCase.input.args || [], [a => safeEval(a)]);
+      const rawArgs = testCase.input.args || [];
+      const args = _ReflectApply(_ArrayMap, rawArgs, [a => safeEval(a)]);
       const thisArg = testCase.input.thisArg ? safeEval(testCase.input.thisArg) : target;
       actual = _ReflectApply(target[contract.entry.name], thisArg, args);
+      if (contract.problemId === 'bind' && typeof actual === 'function' && testCase.expected !== 'bind_result') {
+         actual = actual();
+      }
     } 
     else if (contract.runner === 'function-call') {
       const fn = userImpl;
@@ -278,19 +323,14 @@ async function runTest(e) {
         input = arrayToTree(rawInput);
       }
       
-      if (contract.entry.type === 'class') {
+      if (contract.entry.type === 'class' || isClass(fn)) {
         actual = new fn(input, ...args);
+      } else if (contract.problemId === 'curry' || contract.problemId === 'myCurry') {
+        actual = input; // Standard curry test now puts everything in target
       } else {
         actual = _ReflectApply(fn, null, [input, ...args]);
       }
       
-      if ((contract.problemId === 'curry' || contract.problemId === 'myCurry') && typeof actual === 'function' && args.length > 0) {
-         let curried = actual;
-         _ReflectApply(_ArrayForEach, args, [arg => { 
-           if (typeof curried === 'function') curried = _ReflectApply(curried, null, [arg]); 
-         }]);
-         actual = curried;
-      }
       if (helpers.includes('listToArray')) actual = listToArray(actual);
       if (helpers.includes('treeToArray')) actual = treeToArray(actual);
     }
@@ -298,25 +338,32 @@ async function runTest(e) {
       const fn = userImpl;
       const mock_fn = createMockFn();
       const clock = new VirtualClock();
-      const tracking_mock = function(...args) { _ReflectApply(mock_fn, this, args); };
+      const tracking_mock = function(...args) { return _ReflectApply(mock_fn, this, args); };
       Object.defineProperty(tracking_mock, 'callCount', { get: () => mock_fn.callCount });
+      Object.defineProperty(tracking_mock, 'maxConcurrent', { get: () => mock_fn.maxConcurrent });
+      globalThis.__MOCK__ = tracking_mock;
       clock.install();
       try {
-        const delay = testCase.input.target ? parseInt(testCase.input.target, 10) : undefined;
-        const isClass = (contract.entry.type === 'class' || (typeof fn === 'function' && /^\s*class\s+/.test(fn.toString())));
-        let wrapped = isClass 
-           ? new fn(tracking_mock, delay) 
-           : _ReflectApply(fn, null, [tracking_mock, delay]);
+        const targetValue = testCase.input.target ? safeEval(testCase.input.target) : undefined;
+        let wrapped;
+        if (contract.problemId === 'scheduler') {
+           wrapped = new fn(targetValue); 
+        } else {
+           wrapped = (contract.entry.type === 'class' || isClass(fn)) 
+              ? new fn(tracking_mock, targetValue) 
+              : _ReflectApply(fn, null, [tracking_mock, targetValue]);
+        }
         
         for (const step of (testCase.input.steps || [])) {
           if (step.type === 'call') {
-            if (typeof wrapped === 'function') _ReflectApply(wrapped, null, step.args || []);
-            else if (wrapped && typeof wrapped[contract.entry.name] === 'function') _ReflectApply(wrapped[contract.entry.name], wrapped, step.args || []);
-            else if (wrapped && typeof wrapped.add === 'function') _ReflectApply(wrapped.add, wrapped, step.args || []);
+            const stepArgs = _ReflectApply(_ArrayMap, step.args || [], [a => safeEval(a)]);
+            if (typeof wrapped === 'function') _ReflectApply(wrapped, null, stepArgs);
+            else if (wrapped && typeof wrapped[contract.entry.name] === 'function') _ReflectApply(wrapped[contract.entry.name], wrapped, stepArgs);
+            else if (wrapped && typeof wrapped.add === 'function') _ReflectApply(wrapped.add, wrapped, stepArgs);
           } else if (step.type === 'tick') {
             await clock.tick(step.ms);
           } else if (step.type === 'await') {
-            await new Promise(r => setTimeout(r, 100));
+            for (let i = 0; i < 50; i++) await Promise.resolve();
           } else if (step.type === 'assert') {
             const actualAssert = safeEval(step.check);
             if (_ReflectApply(_JSONStringify, JSON, [actualAssert]) !== _ReflectApply(_JSONStringify, JSON, [step.expected])) {
@@ -325,11 +372,12 @@ async function runTest(e) {
           }
         }
         meta.callCount = mock_fn.callCount;
-        actual = { callCount: mock_fn.callCount };
+        meta.maxConcurrent = mock_fn.maxConcurrent;
+        meta.hasError = mock_fn.hasError;
+        actual = { callCount: mock_fn.callCount, maxConcurrent: mock_fn.maxConcurrent, hasError: mock_fn.hasError };
       } finally { clock.uninstall(); }
     }
     else if (contract.runner === 'async') {
-      const OriginalPromise = globalThis.Promise;
       if (contract.problemId === 'promise') globalThis.Promise = userImpl;
       actual = await safeEval(testCase.input.target);
       if (contract.problemId === 'promise') globalThis.Promise = OriginalPromise;

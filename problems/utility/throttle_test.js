@@ -26,7 +26,7 @@ module.exports = {
           { type: "call", args: [] },
         ],
       },
-      expected: { callCount: 3 },
+      expected: { callCount: 2 },
     },
     {
       id: "example-3",

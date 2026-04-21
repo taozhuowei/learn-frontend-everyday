@@ -23,8 +23,8 @@ module.exports = {
       id: "example-3",
       hidden: false,
       input: {
-        target: "new MyPromise(resolve => resolve(5))",
-        args: ["v => v * 2"],
+        target: "new MyPromise(resolve => resolve(5)).then(v => v * 2)",
+        args: [],
       },
       expected: 10,
     },
@@ -43,8 +43,9 @@ module.exports = {
       id: "hidden-2",
       hidden: true,
       input: {
-        target: "new MyPromise(resolve => resolve(1))",
-        args: ["v => v + 1", "v => v * 2"],
+        target:
+          "new MyPromise(resolve => resolve(1)).then(v => v + 1).then(v => v * 2)",
+        args: [],
       },
       expected: 4,
     },
@@ -61,8 +62,9 @@ module.exports = {
       id: "hidden-4",
       hidden: true,
       input: {
-        target: "new MyPromise(resolve => resolve({ a: 1 }))",
-        args: ["obj => obj.a"],
+        target:
+          "new MyPromise(resolve => resolve({ a: 1 })).then(obj => obj.a)",
+        args: [],
       },
       expected: 1,
     },

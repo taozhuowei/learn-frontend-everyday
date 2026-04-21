@@ -32,8 +32,8 @@ export const generatedTestManifest = [
     "categoryId": "array",
     "categoryName": "数组方法",
     "executionMode": "browser",
-    "basicCaseCount": 3,
-    "fullCaseCount": 8
+    "basicCaseCount": 1,
+    "fullCaseCount": 4
   },
   {
     "problemId": "reduce",
@@ -59,8 +59,8 @@ export const generatedTestManifest = [
     "categoryId": "function",
     "categoryName": "函数方法",
     "executionMode": "browser",
-    "basicCaseCount": 3,
-    "fullCaseCount": 6
+    "basicCaseCount": 2,
+    "fullCaseCount": 4
   },
   {
     "problemId": "call",
@@ -103,15 +103,6 @@ export const generatedTestManifest = [
     "title": "ReverseList",
     "categoryId": "linkedlist",
     "categoryName": "链表",
-    "executionMode": "browser",
-    "basicCaseCount": 3,
-    "fullCaseCount": 8
-  },
-  {
-    "problemId": "deep_copy",
-    "title": "Deep Copy",
-    "categoryId": "object",
-    "categoryName": "对象方法",
     "executionMode": "browser",
     "basicCaseCount": 3,
     "fullCaseCount": 8
@@ -216,15 +207,6 @@ export const generatedTestManifest = [
     "fullCaseCount": 8
   },
   {
-    "problemId": "curry",
-    "title": "Curry",
-    "categoryId": "utility",
-    "categoryName": "工具函数",
-    "executionMode": "browser",
-    "basicCaseCount": 3,
-    "fullCaseCount": 8
-  },
-  {
     "problemId": "debounce",
     "title": "Debounce",
     "categoryId": "utility",
@@ -234,44 +216,8 @@ export const generatedTestManifest = [
     "fullCaseCount": 8
   },
   {
-    "problemId": "deepClone",
-    "title": "DeepClone",
-    "categoryId": "utility",
-    "categoryName": "工具函数",
-    "executionMode": "browser",
-    "basicCaseCount": 3,
-    "fullCaseCount": 8
-  },
-  {
     "problemId": "flatten",
     "title": "Flatten",
-    "categoryId": "utility",
-    "categoryName": "工具函数",
-    "executionMode": "browser",
-    "basicCaseCount": 3,
-    "fullCaseCount": 8
-  },
-  {
-    "problemId": "scheduler",
-    "title": "Scheduler",
-    "categoryId": "utility",
-    "categoryName": "工具函数",
-    "executionMode": "browser",
-    "basicCaseCount": 3,
-    "fullCaseCount": 8
-  },
-  {
-    "problemId": "task_queue_runner",
-    "title": "Task Queue Runner",
-    "categoryId": "utility",
-    "categoryName": "工具函数",
-    "executionMode": "browser",
-    "basicCaseCount": 3,
-    "fullCaseCount": 8
-  },
-  {
-    "problemId": "throttle",
-    "title": "Throttle",
     "categoryId": "utility",
     "categoryName": "工具函数",
     "executionMode": "browser",
