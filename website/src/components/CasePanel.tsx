@@ -489,16 +489,21 @@ export function CasePanel({
               ) : mergedLogs.length === 0 ? (
                 <div className="text-[#64748b] italic">(无 console 输出)</div>
               ) : (
-                <div className="space-y-1">
+                <motion.div
+                  className="space-y-1"
+                  variants={containerVariants}
+                  initial="hidden"
+                  animate="show"
+                >
                   {mergedLogs.map((log, index) => (
-                    <div key={index} className="flex gap-2">
+                    <motion.div key={index} variants={itemVariants} className="flex gap-2">
                       <span className={`${getLogLevelColor(log.level)} shrink-0 select-none`}>
                         {getLogLevelPrefix(log.level)}
                       </span>
                       <span className={getLogLevelColor(log.level)}>{log.args.join(' ')}</span>
-                    </div>
+                    </motion.div>
                   ))}
-                </div>
+                </motion.div>
               )}
             </div>
           </div>

@@ -7,6 +7,7 @@
 import { useState } from 'react'
 import { Navigate, useNavigate } from 'react-router-dom'
 import { ChevronDown, ChevronUp } from 'lucide-react'
+import { motion } from 'framer-motion'
 import { AppShell } from '../components/AppShell'
 import { useAppState } from '../context/AppStateContext'
 import type { SubmittedProblemResult } from '../types/exam'
@@ -168,19 +169,34 @@ export function ExamResultPage() {
 
         {/* Result Cards List */}
         <div className="flex-1 overflow-y-auto p-4 sm:p-5">
-          <div className="max-w-3xl mx-auto space-y-3">
+          <motion.div
+            initial="hidden"
+            animate="visible"
+            variants={{
+              hidden: { opacity: 0 },
+              visible: {
+                opacity: 1,
+                transition: { staggerChildren: 0.1 },
+              },
+            }}
+            className="max-w-3xl mx-auto space-y-3"
+          >
             {state.result.perProblem.map((result) => {
               const problem = getProblemById(result.problemId)
               if (!problem) return null
               return (
-                <ProblemResultCard
+                <motion.div
                   key={result.problemId}
-                  result={result}
-                  problemTitle={problem.title}
-                />
+                  variants={{
+                    hidden: { opacity: 0, y: 20 },
+                    visible: { opacity: 1, y: 0 },
+                  }}
+                >
+                  <ProblemResultCard result={result} problemTitle={problem.title} />
+                </motion.div>
               )
             })}
-          </div>
+          </motion.div>
         </div>
       </div>
     </AppShell>

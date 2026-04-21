@@ -7,8 +7,24 @@
 import { useDeferredValue, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Search, Code2 } from 'lucide-react'
+import { motion, AnimatePresence } from 'framer-motion'
 import { AppShell } from '../components/AppShell'
 import { problems } from '../generated/problems'
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.03,
+    },
+  },
+}
+
+const itemVariants = {
+  hidden: { opacity: 0, x: -10 },
+  visible: { opacity: 1, x: 0 },
+}
 
 export function LearnListPage() {
   const navigate = useNavigate()
@@ -120,40 +136,55 @@ export function LearnListPage() {
 
         {/* Problem List */}
         <div className="flex-1 overflow-y-auto">
-          {filteredProblems.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-20 text-[var(--color-ink-tertiary)]">
-              <Code2 size={48} className="mb-4 opacity-50" />
-              <p className="text-sm">未找到匹配题目</p>
-            </div>
-          ) : (
-            <div className="bg-white">
-              {filteredProblems.map((problem) => (
-                <button
-                  key={problem.id}
-                  onClick={() => navigate(`/learn/${problem.id}`)}
-                  className="w-full flex items-center gap-4 px-5 py-4 border-b border-[var(--color-border)] hover:bg-[var(--color-surface-secondary)] transition-colors text-left"
-                >
-                  {/* Sequence Number */}
-                  <span className="w-8 text-sm text-[var(--color-ink-tertiary)] font-mono">
-                    {String(problem.sequence).padStart(2, '0')}
-                  </span>
+          <AnimatePresence mode="wait">
+            {filteredProblems.length === 0 ? (
+              <motion.div
+                key="empty"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="flex flex-col items-center justify-center py-20 text-[var(--color-ink-tertiary)]"
+              >
+                <Code2 size={48} className="mb-4 opacity-50" />
+                <p className="text-sm">未找到匹配题目</p>
+              </motion.div>
+            ) : (
+              <motion.div
+                key="list"
+                variants={containerVariants}
+                initial="hidden"
+                animate="visible"
+                className="bg-white"
+              >
+                {filteredProblems.map((problem) => (
+                  <motion.button
+                    variants={itemVariants}
+                    key={problem.id}
+                    onClick={() => navigate(`/learn/${problem.id}`)}
+                    className="w-full flex items-center gap-4 px-5 py-4 border-b border-[var(--color-border)] hover:bg-[var(--color-surface-secondary)] transition-colors text-left"
+                  >
+                    {/* Sequence Number */}
+                    <span className="w-8 text-sm text-[var(--color-ink-tertiary)] font-mono">
+                      {String(problem.sequence).padStart(2, '0')}
+                    </span>
 
-                  {/* Title */}
-                  <span className="flex-1 text-sm font-medium text-[var(--color-ink)] truncate">
-                    {problem.title}
-                  </span>
+                    {/* Title */}
+                    <span className="flex-1 text-sm font-medium text-[var(--color-ink)] truncate">
+                      {problem.title}
+                    </span>
 
-                  {/* Execution Mode Badge */}
-                  {getExecutionBadge(problem.executionMode)}
+                    {/* Execution Mode Badge */}
+                    {getExecutionBadge(problem.executionMode)}
 
-                  {/* Category Badge */}
-                  <span className="hidden sm:inline-flex items-center px-2 py-0.5 rounded text-[11px] font-medium bg-[var(--color-surface-secondary)] text-[var(--color-ink-tertiary)]">
-                    {problem.categoryName}
-                  </span>
-                </button>
-              ))}
-            </div>
-          )}
+                    {/* Category Badge */}
+                    <span className="hidden sm:inline-flex items-center px-2 py-0.5 rounded text-[11px] font-medium bg-[var(--color-surface-secondary)] text-[var(--color-ink-tertiary)]">
+                      {problem.categoryName}
+                    </span>
+                  </motion.button>
+                ))}
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
 
         {/* Result Count */}

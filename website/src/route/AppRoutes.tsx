@@ -1,5 +1,6 @@
 import { Suspense, lazy } from 'react'
-import { Outlet, Route, Routes } from 'react-router-dom'
+import { Outlet, Route, Routes, useLocation } from 'react-router-dom'
+import { AnimatePresence, motion } from 'framer-motion'
 import { LoadingPanel } from '../components/LoadingPanel'
 
 const HomePage = lazy(() =>
@@ -30,22 +31,101 @@ const NotFoundPage = lazy(() =>
   import('../pages/NotFoundPage').then((module) => ({ default: module.NotFoundPage })),
 )
 
+const PageWrapper = ({ children }: { children: React.ReactNode }) => (
+  <motion.div
+    initial={{ opacity: 0, y: 10 }}
+    animate={{ opacity: 1, y: 0 }}
+    exit={{ opacity: 0, y: -10 }}
+    transition={{ duration: 0.2, ease: 'easeOut' }}
+    className="h-full w-full"
+  >
+    {children}
+  </motion.div>
+)
+
 export function AppRoutes() {
+  const location = useLocation()
+
   return (
     <Suspense fallback={<LoadingPanel className="h-screen" />}>
-      <Routes>
-        <Route element={<Outlet />} path="">
-          <Route element={<HomePage />} index />
-          <Route element={<ExamEntryPage />} path="exam" />
-          <Route element={<ExamSessionPage />} path="exam/session" />
-          <Route element={<ExamResultPage />} path="exam/result" />
-          <Route element={<LearnListPage />} path="learn" />
-          <Route element={<LearnPage />} path="learn/:problemId" />
-          <Route element={<TheoryListPage />} path="theory" />
-          <Route element={<TheoryArticlePage />} path="theory/:slug" />
-        </Route>
-        <Route path="*" element={<NotFoundPage />} />
-      </Routes>
+      <AnimatePresence mode="wait">
+        <Routes location={location} key={location.pathname}>
+          <Route element={<Outlet />} path="">
+            <Route
+              index
+              element={
+                <PageWrapper>
+                  <HomePage />
+                </PageWrapper>
+              }
+            />
+            <Route
+              path="exam"
+              element={
+                <PageWrapper>
+                  <ExamEntryPage />
+                </PageWrapper>
+              }
+            />
+            <Route
+              path="exam/session"
+              element={
+                <PageWrapper>
+                  <ExamSessionPage />
+                </PageWrapper>
+              }
+            />
+            <Route
+              path="exam/result"
+              element={
+                <PageWrapper>
+                  <ExamResultPage />
+                </PageWrapper>
+              }
+            />
+            <Route
+              path="learn"
+              element={
+                <PageWrapper>
+                  <LearnListPage />
+                </PageWrapper>
+              }
+            />
+            <Route
+              path="learn/:problemId"
+              element={
+                <PageWrapper>
+                  <LearnPage />
+                </PageWrapper>
+              }
+            />
+            <Route
+              path="theory"
+              element={
+                <PageWrapper>
+                  <TheoryListPage />
+                </PageWrapper>
+              }
+            />
+            <Route
+              path="theory/:slug"
+              element={
+                <PageWrapper>
+                  <TheoryArticlePage />
+                </PageWrapper>
+              }
+            />
+          </Route>
+          <Route
+            path="*"
+            element={
+              <PageWrapper>
+                <NotFoundPage />
+              </PageWrapper>
+            }
+          />
+        </Routes>
+      </AnimatePresence>
     </Suspense>
   )
 }

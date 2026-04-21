@@ -7,6 +7,7 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { EyeOff, Search, ChevronUp, ChevronDown, X } from 'lucide-react'
+import { motion, AnimatePresence } from 'framer-motion'
 import { AppShell } from '../components/AppShell'
 import { MarkdownContent } from '../components/MarkdownContent'
 import { knowledgeArticles } from '../generated/knowledge'
@@ -78,36 +79,48 @@ export function TheoryArticlePage() {
         </div>
 
         {/* In-doc Search Bar */}
-        {searchVisible && (
-          <InDocSearchBar
-            query={searchQuery}
-            onQueryChange={setSearchQuery}
-            currentMatchIndex={currentMatchIndex}
-            totalMatches={marksRef.current.length}
-            onPrev={() => {
-              const newIndex =
-                currentMatchIndex > 0 ? currentMatchIndex - 1 : marksRef.current.length - 1
-              setCurrentMatchIndex(newIndex)
-              highlightCurrentMatch(newIndex)
-            }}
-            onNext={() => {
-              const newIndex =
-                currentMatchIndex < marksRef.current.length - 1 ? currentMatchIndex + 1 : 0
-              setCurrentMatchIndex(newIndex)
-              highlightCurrentMatch(newIndex)
-            }}
-            onClose={() => {
-              setSearchVisible(false)
-              setSearchQuery('')
-            }}
-          />
-        )}
+        <AnimatePresence>
+          {searchVisible && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: 'auto', opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              className="overflow-hidden bg-[var(--color-surface-secondary)]"
+            >
+              <InDocSearchBar
+                query={searchQuery}
+                onQueryChange={setSearchQuery}
+                currentMatchIndex={currentMatchIndex}
+                totalMatches={marksRef.current.length}
+                onPrev={() => {
+                  const newIndex =
+                    currentMatchIndex > 0 ? currentMatchIndex - 1 : marksRef.current.length - 1
+                  setCurrentMatchIndex(newIndex)
+                  highlightCurrentMatch(newIndex)
+                }}
+                onNext={() => {
+                  const newIndex =
+                    currentMatchIndex < marksRef.current.length - 1 ? currentMatchIndex + 1 : 0
+                  setCurrentMatchIndex(newIndex)
+                  highlightCurrentMatch(newIndex)
+                }}
+                onClose={() => {
+                  setSearchVisible(false)
+                  setSearchQuery('')
+                }}
+              />
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {/* Main Content Area */}
         <div className="flex-1 flex overflow-hidden">
           {/* Content */}
           <div className="flex-1 overflow-y-auto">
-            <div
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.4 }}
               ref={contentRef}
               className={`max-w-[760px] mx-auto px-6 py-8 transition-opacity duration-200 ${
                 recitationMode ? 'cf-recitation-mode' : ''
@@ -115,20 +128,27 @@ export function TheoryArticlePage() {
             >
               <h1 className="text-2xl font-bold text-[var(--color-ink)] mb-6">{article.title}</h1>
               <MarkdownContent markdown={article.markdown} />
-            </div>
+            </motion.div>
           </div>
 
           {/* TOC Sidebar */}
-          <TocSidebar
-            headings={article.headings}
-            activeSlug={activeHeadingSlug}
-            onHeadingClick={(headingSlug) => {
-              const element = document.getElementById(headingSlug)
-              if (element) {
-                element.scrollIntoView({ behavior: 'smooth' })
-              }
-            }}
-          />
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.3, delay: 0.1 }}
+            className="hidden lg:block h-full"
+          >
+            <TocSidebar
+              headings={article.headings}
+              activeSlug={activeHeadingSlug}
+              onHeadingClick={(headingSlug) => {
+                const element = document.getElementById(headingSlug)
+                if (element) {
+                  element.scrollIntoView({ behavior: 'smooth' })
+                }
+              }}
+            />
+          </motion.div>
         </div>
 
         {/* Intersection Observer for Active Heading */}
@@ -179,7 +199,7 @@ function InDocSearchBar({
   }, [])
 
   return (
-    <div className="px-4 py-2 border-b border-[var(--color-border)] bg-[var(--color-surface-secondary)] shrink-0">
+    <div className="px-4 py-2 border-b border-[var(--color-border)]">
       <div className="flex items-center gap-3 max-w-[760px]">
         <div className="relative flex-1">
           <Search
@@ -238,8 +258,8 @@ function TocSidebar({
   onHeadingClick: (slug: string) => void
 }) {
   return (
-    <aside className="hidden lg:block w-56 shrink-0 border-l border-[var(--color-border)] bg-white overflow-y-auto">
-      <div className="sticky top-0 p-4">
+    <aside className="w-56 h-full shrink-0 border-l border-[var(--color-border)] bg-white overflow-y-auto">
+      <div className="p-4">
         <h3 className="text-xs font-bold uppercase tracking-wider text-[var(--color-ink-tertiary)] mb-3">
           目录
         </h3>
