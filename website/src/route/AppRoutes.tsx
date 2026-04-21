@@ -2,10 +2,8 @@ import { Suspense, lazy } from 'react'
 import { Outlet, Route, Routes, useLocation } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
 import { LoadingPanel } from '../components/LoadingPanel'
+import { HomePage } from '../pages/HomePage'
 
-const HomePage = lazy(() =>
-  import('../pages/HomePage').then((module) => ({ default: module.HomePage })),
-)
 const ExamEntryPage = lazy(() =>
   import('../pages/ExamEntryPage').then((module) => ({ default: module.ExamEntryPage })),
 )
