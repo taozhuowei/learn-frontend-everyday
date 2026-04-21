@@ -5,8 +5,8 @@
  */
 
 import { useEffect, useState } from 'react'
-import { Navigate, useParams } from 'react-router-dom'
-import { Hand, MousePointer2 } from 'lucide-react'
+import { Navigate, useParams, useNavigate } from 'react-router-dom'
+import { Hand, MousePointer2, ChevronLeft, ChevronRight } from 'lucide-react'
 import { AppShell } from '../components/AppShell'
 import { CodeBlock, type CodeBlockInteractionMode } from '../components/CodeBlock'
 import { MarkdownContent } from '../components/MarkdownContent'
@@ -154,6 +154,7 @@ function LearnProblemView({ problem }: { problem: ProblemRecord }) {
   const {
     state: { isMobile },
   } = useAppState()
+  const navigate = useNavigate()
 
   const [activeTab, setActiveTab] = useState<DetailTab>('description')
   const [solutionInteractionMode, setSolutionInteractionMode] = useState<CodeBlockInteractionMode>(
@@ -163,6 +164,10 @@ function LearnProblemView({ problem }: { problem: ProblemRecord }) {
   useEffect(() => {
     window.localStorage.setItem(SOLUTION_INTERACTION_MODE_STORAGE_KEY, solutionInteractionMode)
   }, [solutionInteractionMode])
+
+  const currentIndex = problems.findIndex((p) => p.id === problem.id)
+  const prevProblem = currentIndex > 0 ? problems[currentIndex - 1] : null
+  const nextProblem = currentIndex < problems.length - 1 ? problems[currentIndex + 1] : null
 
   if (isMobile) {
     return (
@@ -183,6 +188,7 @@ function LearnProblemView({ problem }: { problem: ProblemRecord }) {
       backLabel="题目列表"
     >
       <ProblemWorkspace
+        key={problem.id}
         problem={problem}
         mode="learn"
         initialSource={createInitialSource(problem)}
@@ -194,6 +200,29 @@ function LearnProblemView({ problem }: { problem: ProblemRecord }) {
             problem={problem}
             solutionInteractionMode={solutionInteractionMode}
           />
+        )}
+        renderHeaderRight={() => (
+          <div className="flex items-center gap-1.5 ml-2 border-l border-[var(--color-border)] pl-3">
+            <button
+              disabled={!prevProblem}
+              onClick={() => navigate(`/learn/${prevProblem?.id}`)}
+              className="w-7 h-7 flex items-center justify-center rounded-md text-[var(--color-ink-tertiary)] hover:bg-[var(--color-surface-secondary)] hover:text-[var(--color-ink)] disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+              title="上一题"
+            >
+              <ChevronLeft size={16} />
+            </button>
+            <span className="text-[10px] font-bold text-[var(--color-ink-muted)] tabular-nums min-w-[40px] text-center">
+              {currentIndex + 1} / {problems.length}
+            </span>
+            <button
+              disabled={!nextProblem}
+              onClick={() => navigate(`/learn/${nextProblem?.id}`)}
+              className="w-7 h-7 flex items-center justify-center rounded-md text-[var(--color-ink-tertiary)] hover:bg-[var(--color-surface-secondary)] hover:text-[var(--color-ink)] disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+              title="下一题"
+            >
+              <ChevronRight size={16} />
+            </button>
+          </div>
         )}
       />
     </AppShell>

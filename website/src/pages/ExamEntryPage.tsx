@@ -6,6 +6,7 @@
 
 import { Settings2, Trophy } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
+import { motion } from 'framer-motion'
 import { AppShell } from '../components/AppShell'
 import { useAppState } from '../context/AppStateContext'
 import { problems } from '../generated/problems'
@@ -38,82 +39,109 @@ export function ExamEntryPage() {
       }
       title="准备好进入模拟考试了吗？"
     >
-      <div className="h-full overflow-y-auto">
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 py-4 sm:py-6 flex flex-col gap-5">
-          {/* Hero */}
-          <section className="text-center py-2 sm:py-4">
-            <div className="w-12 h-12 rounded-[var(--radius-lg)] bg-[var(--color-primary-soft)] flex items-center justify-center mx-auto mb-2">
-              <Trophy size={22} className="text-[var(--color-primary)]" />
-            </div>
-            <h2 className="text-xl font-bold text-[var(--color-ink)] mb-2">完整模拟考试链路</h2>
-            <p className="text-sm text-[var(--color-ink-secondary)] leading-relaxed max-w-md mx-auto mb-6 px-2">
+      <div className="h-full flex flex-col justify-center items-center p-6 sm:p-8 bg-[var(--color-surface-secondary)] overflow-hidden">
+        <div className="max-w-4xl w-full flex flex-col gap-6 sm:gap-8">
+          {/* Hero Section */}
+          <section className="text-center">
+            <motion.div
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              className="w-16 h-16 rounded-2xl bg-[var(--color-primary-soft)] flex items-center justify-center mx-auto mb-4 shadow-sm"
+            >
+              <Trophy size={32} className="text-[var(--color-primary)]" />
+            </motion.div>
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-[var(--color-ink)] mb-3 tracking-tight">
+              完整模拟考试链路
+            </h2>
+            <p className="text-sm text-[var(--color-ink-tertiary)] leading-relaxed max-w-lg mx-auto mb-8">
               系统将根据当前配置随机抽取题目，保留计时、切题、运行与提交的完整流程。
               浏览器可自动判题的题目（JS 函数题和组件题）均纳入题库。
             </p>
             <button
-              className="inline-flex items-center gap-2 px-8 py-3 rounded-md bg-[var(--color-primary)] text-white text-sm font-semibold hover:bg-[var(--color-primary-strong)] transition-colors shadow-sm"
+              className="inline-flex items-center gap-2 px-12 py-3.5 rounded-xl bg-[var(--color-primary)] text-white text-base font-bold hover:bg-[var(--color-primary-strong)] transition-all hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-amber-200"
               onClick={handleStartExam}
               type="button"
             >
-              开始考试
+              立即开始考试
             </button>
           </section>
 
-          {/* 规则 + 题库统计 */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* 当前规则 */}
-            <div className="bg-white border border-[var(--color-border)] rounded-[var(--radius-lg)] p-4 sm:p-5">
-              <h3 className="text-xs font-bold uppercase tracking-wide text-[var(--color-ink-muted)] mb-4">
+          {/* Rules & Stats Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* Current Rules */}
+            <motion.div
+              initial={{ x: -20, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              transition={{ delay: 0.1 }}
+              className="bg-white border border-[var(--color-border)] rounded-2xl p-6 shadow-sm flex flex-col"
+            >
+              <h3 className="text-xs font-bold uppercase tracking-widest text-[var(--color-ink-muted)] mb-5">
                 当前考试规则
               </h3>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-2 gap-y-6 gap-x-4 flex-1">
                 {[
-                  { label: '考试时长', value: `${state.settings.durationMinutes} 分钟` },
+                  { label: '考试时长', value: `${state.settings.durationMinutes} min` },
                   { label: '题目数量', value: `${state.settings.questionCount} 题` },
                   {
                     label: '覆盖分类',
                     value: `${state.settings.categoryIds.length || categories.length} 个`,
                   },
-                  { label: '及格线', value: `${state.settings.passingScore} 分` },
+                  { label: '及格分数', value: `${state.settings.passingScore} pt` },
                 ].map(({ label, value }) => (
-                  <div key={label} className="flex flex-col gap-0.5">
-                    <span className="text-lg font-bold text-[var(--color-ink)]">{value}</span>
-                    <span className="text-[0.7rem] text-[var(--color-ink-muted)]">{label}</span>
+                  <div key={label} className="flex flex-col gap-1">
+                    <span className="text-xl font-black text-[var(--color-ink)] tabular-nums">
+                      {value}
+                    </span>
+                    <span className="text-[0.65rem] font-bold text-[var(--color-ink-muted)] uppercase tracking-wider">
+                      {label}
+                    </span>
                   </div>
                 ))}
               </div>
               <button
-                className="mt-4 text-xs font-semibold text-[var(--color-primary)] hover:text-[var(--color-primary-strong)] transition-colors"
+                className="mt-6 text-xs font-bold text-[var(--color-primary)] hover:underline flex items-center gap-1"
                 onClick={openSettingsPanel}
                 type="button"
               >
-                修改规则 →
+                修改规则配置 <Settings2 size={12} />
               </button>
-            </div>
+            </motion.div>
 
-            {/* 题库统计 */}
-            <div className="bg-white border border-[var(--color-border)] rounded-[var(--radius-lg)] p-4 sm:p-5">
-              <h3 className="text-xs font-bold uppercase tracking-wide text-[var(--color-ink-muted)] mb-4">
-                可用题库
+            {/* Question Pool Stats */}
+            <motion.div
+              initial={{ x: 20, opacity: 0 }}
+              animate={{ x: 0, opacity: 1 }}
+              transition={{ delay: 0.2 }}
+              className="bg-white border border-[var(--color-border)] rounded-2xl p-6 shadow-sm flex flex-col"
+            >
+              <h3 className="text-xs font-bold uppercase tracking-widest text-[var(--color-ink-muted)] mb-5">
+                可用题库统计
               </h3>
-              <div className="flex flex-col gap-0.5 mb-4">
-                <span className="text-3xl font-extrabold text-[var(--color-primary)]">
+              <div className="flex items-baseline gap-2 mb-6 border-b border-[var(--color-border)] pb-4">
+                <span className="text-4xl font-black text-[var(--color-primary)] tabular-nums">
                   {executableProblems.length}
                 </span>
-                <span className="text-xs text-[var(--color-ink-muted)]">道可参与考试的题目</span>
+                <span className="text-xs font-bold text-[var(--color-ink-tertiary)] uppercase tracking-wider">
+                  Total Questions
+                </span>
               </div>
-              <div className="flex flex-col gap-1.5">
+              <div className="grid grid-cols-2 gap-x-6 gap-y-3 flex-1 overflow-y-auto pr-2 no-scrollbar">
                 {categories.map((cat) => {
                   const count = executableProblems.filter((p) => p.categoryId === cat.id).length
                   return (
-                    <div key={cat.id} className="flex items-center justify-between text-xs">
-                      <span className="text-[var(--color-ink-secondary)]">{cat.label}</span>
-                      <span className="font-semibold text-[var(--color-ink)]">{count} 题</span>
+                    <div
+                      key={cat.id}
+                      className="flex items-center justify-between text-[0.7rem] border-b border-[var(--color-surface-secondary)] py-1.5 last:border-0"
+                    >
+                      <span className="font-medium text-[var(--color-ink-secondary)]">
+                        {cat.label}
+                      </span>
+                      <span className="font-black text-[var(--color-ink)]">{count}</span>
                     </div>
                   )
                 })}
               </div>
-            </div>
+            </motion.div>
           </div>
         </div>
       </div>
