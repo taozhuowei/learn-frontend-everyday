@@ -8,15 +8,7 @@ import { Link } from 'react-router-dom'
 import { motion } from 'framer-motion'
 
 import { AppShell } from '../components/AppShell'
-import { knowledgeArticles } from '../generated/knowledge'
-import { problems } from '../generated/problems'
-
-const stats = {
-  total: problems.length,
-  browser: problems.filter((p) => p.executionMode === 'browser').length,
-  component: problems.filter((p) => p.executionMode === 'component').length,
-  articles: knowledgeArticles.length,
-}
+import { generatedManifest as stats } from '../generated/manifest'
 
 type FeatureCard = {
   title: string
@@ -34,7 +26,7 @@ const featureCards: FeatureCard[] = [
     href: '/learn',
     icon: <BookOpen size={22} />,
     accent: 'amber',
-    stat: `${stats.total} 道题目`,
+    stat: `${stats.problems} 道题目`,
   },
   {
     title: '考试模式',
@@ -42,7 +34,7 @@ const featureCards: FeatureCard[] = [
     href: '/exam',
     icon: <Trophy size={22} />,
     accent: 'blue',
-    stat: `${stats.browser + stats.component} 道可参考`,
+    stat: `${stats.browserProblems + stats.componentProblems} 道可参考`,
   },
   {
     title: '理论知识',
@@ -50,7 +42,7 @@ const featureCards: FeatureCard[] = [
     href: '/theory',
     icon: <GraduationCap size={22} />,
     accent: 'emerald',
-    stat: `${stats.articles} 篇文章`,
+    stat: `${stats.knowledgeArticles} 篇文章`,
   },
 ]
 
@@ -123,14 +115,14 @@ export function HomePage() {
               <span className="text-[var(--color-primary)]">实战能力</span>
             </h1>
             <p className="text-base text-[var(--color-ink-secondary)] leading-relaxed max-w-xl mx-auto mb-6">
-              {stats.total} 道精心设计的前端题目，{stats.articles} 篇理论知识文档， 浏览器内置 IDE
-              即时练习，系统性提升前端核心技术。
+              {stats.problems} 道精心设计的前端题目，{stats.knowledgeArticles} 篇理论知识文档，
+              浏览器内置 IDE 即时练习，系统性提升前端核心技术。
             </p>
             <div className="flex items-center justify-center gap-3 flex-wrap">
               {[
-                { label: `${stats.total} 道题目`, color: 'text-[var(--color-primary)]' },
-                { label: `${stats.browser} 道自动判题`, color: 'text-blue-500' },
-                { label: `${stats.articles} 篇文档`, color: 'text-emerald-500' },
+                { label: `${stats.problems} 道题目`, color: 'text-[var(--color-primary)]' },
+                { label: `${stats.browserProblems} 道自动判题`, color: 'text-blue-500' },
+                { label: `${stats.knowledgeArticles} 篇文档`, color: 'text-emerald-500' },
               ].map((item) => (
                 <span key={item.label} className={`text-sm font-semibold ${item.color}`}>
                   {item.label}
