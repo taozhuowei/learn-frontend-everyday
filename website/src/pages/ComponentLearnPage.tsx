@@ -6,7 +6,8 @@
  */
 
 import { Suspense, lazy, useRef, useState } from 'react'
-import { Check, Code, Eye, FileText } from 'lucide-react'
+import { Check, Code, Eye, FileText, ChevronLeft, ChevronRight } from 'lucide-react'
+import { useNavigate } from 'react-router-dom'
 import { AppShell } from '../components/AppShell'
 import { LoadingPanel } from '../components/LoadingPanel'
 import { MarkdownContent } from '../components/MarkdownContent'
@@ -14,6 +15,7 @@ import { SplitPane } from '../components/SplitPane'
 import type { CodeEditorHandle } from '../components/CodeWorkspace'
 import type { ProblemRecord } from '../types/content'
 import { useAppState } from '../context/AppStateContext'
+import { problems } from '../generated/problems'
 
 const CodeWorkspace = lazy(() =>
   import('../components/CodeWorkspace').then((module) => ({ default: module.CodeWorkspace })),
@@ -35,12 +37,17 @@ export function ComponentLearnPage({ problem }: ComponentLearnPageProps) {
   const {
     state: { isMobile },
   } = useAppState()
+  const navigate = useNavigate()
   const editorRef = useRef<CodeEditorHandle>(null)
   const [source, setSource] = useState(() => createInitialSource(problem))
   const [activeTab, setActiveTab] = useState<LeftTab>('description')
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [showConfirm, setShowConfirm] = useState(false)
   const [isCompleted, setIsCompleted] = useState(false)
+
+  const currentIndex = problems.findIndex((p) => p.id === problem.id)
+  const prevProblem = currentIndex > 0 ? problems[currentIndex - 1] : null
+  const nextProblem = currentIndex < problems.length - 1 ? problems[currentIndex + 1] : null
 
   // 预览 URL（使用 launcher）
   const previewUrl = problem.launcherPath ? `/${problem.launcherPath}/index.html` : null
@@ -207,7 +214,35 @@ export function ComponentLearnPage({ problem }: ComponentLearnPageProps) {
   }
 
   return (
-    <AppShell eyebrow="组件实践" title={problem.title} showPageHeader={false}>
+    <AppShell
+      eyebrow="组件实践"
+      title={problem.title}
+      showPageHeader={false}
+      showSettings={false}
+      headerRight={
+        <div className="flex items-center gap-1.5 ml-2 border-l border-[var(--color-border)] pl-3">
+          <button
+            disabled={!prevProblem}
+            onClick={() => navigate(`/learn/${prevProblem?.id}`)}
+            className="w-7 h-7 flex items-center justify-center rounded-md text-[var(--color-ink-tertiary)] hover:bg-[var(--color-surface-secondary)] hover:text-[var(--color-ink)] disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+            title="上一题"
+          >
+            <ChevronLeft size={16} />
+          </button>
+          <span className="text-[10px] font-bold text-[var(--color-ink-muted)] tabular-nums min-w-[40px] text-center">
+            {currentIndex + 1} / {problems.length}
+          </span>
+          <button
+            disabled={!nextProblem}
+            onClick={() => navigate(`/learn/${nextProblem?.id}`)}
+            className="w-7 h-7 flex items-center justify-center rounded-md text-[var(--color-ink-tertiary)] hover:bg-[var(--color-surface-secondary)] hover:text-[var(--color-ink)] disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+            title="下一题"
+          >
+            <ChevronRight size={16} />
+          </button>
+        </div>
+      }
+    >
       <div className="h-full p-2">
         <SplitPane
           className="h-full"

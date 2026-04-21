@@ -29,11 +29,25 @@ const NotFoundPage = lazy(() =>
   import('../pages/NotFoundPage').then((module) => ({ default: module.NotFoundPage })),
 )
 
-const PageWrapper = ({ children }: { children: React.ReactNode }) => (
+const PageWrapper = ({
+  children,
+  direction = 'vertical',
+}: {
+  children: React.ReactNode
+  direction?: 'horizontal' | 'vertical'
+}) => (
   <motion.div
-    initial={{ opacity: 0, y: 10 }}
-    animate={{ opacity: 1, y: 0 }}
-    exit={{ opacity: 0, y: -10 }}
+    initial={{
+      opacity: 0,
+      x: direction === 'horizontal' ? 10 : 0,
+      y: direction === 'vertical' ? 10 : 0,
+    }}
+    animate={{ opacity: 1, x: 0, y: 0 }}
+    exit={{
+      opacity: 0,
+      x: direction === 'horizontal' ? -10 : 0,
+      y: direction === 'vertical' ? -10 : 0,
+    }}
     transition={{ duration: 0.2, ease: 'easeOut' }}
     className="h-full w-full"
   >
@@ -85,7 +99,7 @@ export function AppRoutes() {
             <Route
               path="learn/:problemId"
               element={
-                <PageWrapper>
+                <PageWrapper direction="horizontal">
                   <LearnPage />
                 </PageWrapper>
               }
