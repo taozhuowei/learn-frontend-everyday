@@ -1,1 +1,1 @@
-cd website && npx lint-staged
+cd website && yarn lint-staged

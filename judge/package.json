@@ -2,5 +2,6 @@
   "name": "@repo/judge",
   "version": "1.0.0",
   "type": "module",
-  "main": "./src/index.ts"
+  "main": "./src/index.ts",
+  "packageManager": "yarn@4.15.0"
 }

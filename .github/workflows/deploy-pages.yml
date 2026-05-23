@@ -47,11 +47,11 @@ jobs:
 
       - name: Generate content for E2E
         working-directory: website
-        run: npx tsx scripts/build-content.ts
+        run: yarn tsx scripts/build-content.ts
 
       - name: Install Playwright browsers
         working-directory: website
-        run: npx playwright install --with-deps chromium
+        run: yarn playwright install --with-deps chromium
 
       - name: Run E2E tests
         working-directory: website

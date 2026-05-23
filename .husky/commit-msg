@@ -1,1 +1,1 @@
-cd website && npx --no -- commitlint --edit "$1"
+cd website && yarn commitlint --edit "$1"

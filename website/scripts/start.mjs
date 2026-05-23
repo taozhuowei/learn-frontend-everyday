@@ -1,8 +1,8 @@
 /**
  * Module: start
  * Purpose: Build the project and optionally start the preview server on an available port.
- * Usage: npm run start          # Build and start preview server
- *        npm run start -- --build-only  # Build only, don't start server
+ * Usage: yarn start          # Build and start preview server
+ *        yarn start --build-only  # Build only, don't start server
  */
 
 import { spawn } from 'node:child_process'
@@ -106,7 +106,7 @@ async function main() {
     console.log('  Build finished successfully!')
     console.log('========================================')
     console.log('\nOutput directory: dist/')
-    console.log('\nTo start preview server, run: npm run start')
+    console.log('\nTo start preview server, run: yarn start')
     process.exit(0)
   }
 

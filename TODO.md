@@ -65,7 +65,7 @@ FORBIDDEN: <明确禁止项，如：禁止使用 eval>
   - **任务**: 配置完整的 Playwright 测试环境。编写核心 E2E 链路用例：“打开平台 -> 进入题目 -> 输入代码 -> 点击提交 -> 断言 DOM 结果为 Pass/Fail”。
   - **验收标准**: Playwright 配置正确可用，一条串联“加载、输入、运行、看结果”的 e2e 测试脚本可被重复执行通过。
   - **验收点**:
-    1. 可运行 `npm run test:e2e` 不抛错。
+    1. 可运行 `yarn test:e2e` 不抛错。
     2. E2E 用例模拟真实点击、代码输入及 DOM 结构断言。
     3. `Code Reviewer` 审查确认选择器不易碎。
 
@@ -116,7 +116,7 @@ FORBIDDEN: <明确禁止项，如：禁止使用 eval>
 - [x] **C2: 首屏加载依赖与路由懒加载梳理**
   - **范围**: `website/src/App.tsx`, 路由配置文件
   - **任务**: 确保路由级别的懒加载全面生效，检查并消除由于错误的顶级 import 导致的代码全量打包问题。
-  - **验收标准**: 页面级组件实现严格路由切分，`npm run build` 不出现巨大 Vendor Chunk 警告。
+  - **验收标准**: 页面级组件实现严格路由切分，`yarn build` 不出现巨大 Vendor Chunk 警告。
   - **验收点**:
     1. 各页面 (Page Components) 采用 `React.lazy`。
     2. React Router 配置中使用了 `Suspense` 作为路由占位。

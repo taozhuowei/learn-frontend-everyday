@@ -3,14 +3,21 @@ Thumbs.db
 
 .playwright-mcp/
 
-website/node_modules/
+**/node_modules/
 website/dist/
 website/.cache/
 website/coverage/
 website/test-results/
-docs/实践/**/node_modules/
 docs/实践/**/dist/
 
 .github/.DS_Store
 
 CLAUDE.md
+
+# Yarn 4 (Berry) — node-modules linker, Corepack-managed (no committed release)
+**/.yarn/*
+!**/.yarn/patches
+!**/.yarn/plugins
+!**/.yarn/sdks
+!**/.yarn/versions
+**/.pnp.*
