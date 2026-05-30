@@ -13,7 +13,6 @@ docs/
 ├── 算法/           Algorithm and data structure theory
 ├── 网络/           HTTP, TCP, browser networking
 ├── 运行时/         Browser runtime, event loop, V8
-├── 面试准备/       Interview preparation materials
 ├── 其他语言/       Non-JavaScript language references
 └── 实践/           Practice-related docs + component launchers
     ├── with_react/launcher/   React local dev environment
