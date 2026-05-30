@@ -19,13 +19,13 @@ export interface ProblemExecutionOptions {
  *
  * 本 Hook 统一了:
  * 1. 判题引擎 (runCode) 的调用流程。
- * 2. 状态更新 (sampleExecution, consoleExecution, busyAction)。
+ * 2. 状态更新 (sampleExecution, consoleExecution, activeAction)。
  * 3. 错误处理边界。
  */
 export function useProblemExecution() {
   const [sampleExecution, setSampleExecution] = useState<ExecutionResponse | null>(null)
   const [consoleExecution, setConsoleExecution] = useState<ExecutionResponse | null>(null)
-  const [busyAction, setBusyAction] = useState<ExecutionKind | null>(null)
+  const [activeAction, setActiveAction] = useState<ExecutionKind | null>(null)
 
   // 用于追踪最新代码，避免闭包捕获旧状态
   const sourceRef = useRef('')
@@ -33,14 +33,14 @@ export function useProblemExecution() {
   const resetExecution = useCallback(() => {
     setSampleExecution(null)
     setConsoleExecution(null)
-    setBusyAction(null)
+    setActiveAction(null)
   }, [])
 
   const execute = useCallback(async (kind: ExecutionKind, options: ProblemExecutionOptions) => {
     const { problem, sourceCode, customCases = [] } = options
     sourceRef.current = sourceCode
 
-    setBusyAction(kind)
+    setActiveAction(kind)
 
     if (problem.executionMode !== 'browser') {
       // For components or local problems, we don't have automated browser judging yet.
@@ -62,7 +62,7 @@ export function useProblemExecution() {
       }
       setSampleExecution(mockResponse)
       setConsoleExecution(mockResponse)
-      setBusyAction(null)
+      setActiveAction(null)
       return mockResponse
     }
 
@@ -150,14 +150,14 @@ export function useProblemExecution() {
       setConsoleExecution(errResponse)
       return errResponse
     } finally {
-      setBusyAction(null)
+      setActiveAction(null)
     }
   }, [])
 
   return {
     sampleExecution,
     consoleExecution,
-    busyAction,
+    activeAction,
     execute,
     resetExecution,
   }

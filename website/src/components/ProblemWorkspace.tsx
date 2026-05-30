@@ -11,6 +11,7 @@ import confetti from 'canvas-confetti'
 import { SplitPane } from './SplitPane'
 import { LoadingPanel } from './LoadingPanel'
 import { CasePanel, type CustomCase } from './CasePanel'
+import { ActionButton } from './ActionButton'
 import type { CodeEditorHandle } from './CodeWorkspace'
 import { useProblemExecution, type ExecutionKind } from '../hooks/useProblemExecution'
 import type { ProblemRecord } from '../types/content'
@@ -49,7 +50,7 @@ export function ProblemWorkspace({
   const [customCases, setCustomCases] = useState<CustomCase[]>([])
   const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null)
 
-  const { sampleExecution, consoleExecution, busyAction, execute, resetExecution } =
+  const { sampleExecution, consoleExecution, activeAction, execute, resetExecution } =
     useProblemExecution()
 
   useEffect(() => {
@@ -181,28 +182,28 @@ export function ProblemWorkspace({
                     actions={
                       <div className="flex flex-col gap-2 w-full sm:w-auto">
                         <div className="flex gap-2">
-                          <button
-                            className="flex-1 flex items-center justify-center gap-1 px-3 py-1.5 rounded-md text-xs font-semibold bg-[var(--color-surface-secondary)] border border-[var(--color-border)] text-[var(--color-ink-secondary)] hover:border-[var(--color-primary)] disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-                            disabled={!isRunnable || busyAction !== null}
+                          <ActionButton
+                            variant="secondary"
+                            icon={<Play size={12} />}
+                            label="运行"
+                            pendingLabel="运行中..."
+                            pending={activeAction === 'run'}
+                            disabled={!isRunnable || activeAction !== null}
                             onClick={() => handleExecute('run')}
                             title={actionTitle}
-                            type="button"
-                            data-testid="run-button"
-                          >
-                            <Play size={12} />
-                            {busyAction === 'run' ? '运行中...' : '运行'}
-                          </button>
-                          <button
-                            className="flex-1 flex items-center justify-center gap-1 px-3 py-1.5 rounded-md text-xs font-semibold bg-[var(--color-primary)] text-white hover:bg-[var(--color-primary-strong)] disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-                            disabled={!isRunnable || busyAction !== null}
+                            testId="run-button"
+                          />
+                          <ActionButton
+                            variant="primary"
+                            icon={<Check size={12} />}
+                            label={submitButtonLabel}
+                            pendingLabel="判题中..."
+                            pending={activeAction === 'submit'}
+                            disabled={!isRunnable || activeAction !== null}
                             onClick={() => handleExecute('submit')}
                             title={actionTitle}
-                            type="button"
-                            data-testid="submit-button"
-                          >
-                            <Check size={12} />
-                            {busyAction === 'submit' ? '判题中...' : submitButtonLabel}
-                          </button>
+                            testId="submit-button"
+                          />
                         </div>
                       </div>
                     }
