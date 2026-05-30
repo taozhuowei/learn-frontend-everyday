@@ -26,6 +26,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Enable Corepack
+        run: corepack enable
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -35,7 +38,7 @@ jobs:
 
       - name: Install dependencies
         working-directory: website
-        run: yarn install --frozen-lockfile
+        run: yarn install --immutable
 
       - name: Run code quality checks
         working-directory: website
@@ -67,6 +70,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Enable Corepack
+        run: corepack enable
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -76,7 +82,7 @@ jobs:
 
       - name: Install dependencies
         working-directory: website
-        run: yarn install --frozen-lockfile
+        run: yarn install --immutable
 
       - name: Build website
         working-directory: website
