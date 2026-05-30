@@ -81,18 +81,10 @@ function extractSkeleton(rawSource: string, isComponent: boolean): string {
   const source = stripHeaderComment(rawSource)
 
   if (isComponent) {
-    // For components, we want to keep imports and constants at the top,
-    // but empty out the bodies of functions and classes.
-    // A simple regex-based approach for common React/Vue patterns:
+    // 组件题（jsx/tsx/vue）走 ComponentLearnPage 人工确认、不自动判题，
+    // template 仅作编辑器初始内容，无需挖空；直接返回完整源（与 solutionCode 一致）。
+    // 注：旧的正则挖空无法配平嵌套花括号，会损坏含嵌套 {} 的组件源，已移除。
     return source
-      .replace(
-        /(export\s+default\s+function\s+\w+\s*\([^)]*\)\s*\{)([\s\S]*?)(\})/g,
-        '$1\n  // 在此编写你的实现\n$3',
-      )
-      .replace(
-        /(export\s+default\s+class\s+\w+[\s\S]*?\{)([\s\S]*?)(\})/g,
-        '$1\n  // 在此编写你的实现\n$3',
-      )
   }
 
   let result = ''
