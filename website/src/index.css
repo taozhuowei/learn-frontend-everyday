@@ -1,6 +1,6 @@
 /**
  * File: index.css
- * Purpose: CodeForge 全局样式入口。使用 Tailwind CSS v4 的 @theme 配置设计 Token，
+ * Purpose: Learn Frontend Everyday 全局样式入口。使用 Tailwind CSS v4 的 @theme 配置设计 Token，
  * 并在 @layer components 中添加无法直接用 utility 表达的小型组件样式。
  */
 
@@ -102,14 +102,14 @@ textarea {
 }
 
 /* ─── Monaco editor container ─── */
-.cf-editor-container {
+.lfe-editor-container {
   flex: 1;
   min-height: 0;
   overflow: hidden;
 }
 
 /* ─── Tabs ─── */
-.cf-tab {
+.lfe-tab {
   padding: 6px 14px;
   font-size: 0.8125rem;
   font-weight: 600;
@@ -125,10 +125,10 @@ textarea {
     border-bottom-color 150ms;
   white-space: nowrap;
 }
-.cf-tab:hover {
+.lfe-tab:hover {
   color: var(--color-ink);
 }
-.cf-tab.active {
+.lfe-tab.active {
   color: var(--color-ink);
   border-bottom-color: var(--color-primary);
 }
@@ -150,95 +150,95 @@ textarea {
 }
 
 /* ─── Markdown body ─── */
-.cf-markdown {
+.lfe-markdown {
   font-size: 0.9rem;
   line-height: 1.75;
   color: var(--color-ink);
 }
-.cf-markdown h1 {
+.lfe-markdown h1 {
   font-size: 1.7rem;
   font-weight: 800;
   margin-bottom: 14px;
   letter-spacing: -0.02em;
 }
-.cf-markdown h2 {
+.lfe-markdown h2 {
   font-size: 1.3rem;
   font-weight: 700;
   margin: 22px 0 10px;
   border-bottom: 1px solid var(--color-border);
   padding-bottom: 4px;
 }
-.cf-markdown h3 {
+.lfe-markdown h3 {
   font-size: 1.1rem;
   font-weight: 700;
   margin: 18px 0 7px;
 }
-.cf-markdown h4,
-.cf-markdown h5,
-.cf-markdown h6 {
+.lfe-markdown h4,
+.lfe-markdown h5,
+.lfe-markdown h6 {
   font-size: 0.95rem;
   font-weight: 700;
   margin: 14px 0 6px;
 }
-.cf-markdown p {
+.lfe-markdown p {
   margin-bottom: 14px;
 }
-.cf-markdown ul,
-.cf-markdown ol {
+.lfe-markdown ul,
+.lfe-markdown ol {
   margin: 0 0 14px 1.4em;
   padding: 0;
 }
-.cf-markdown li {
+.lfe-markdown li {
   margin-bottom: 3px;
 }
-.cf-markdown li > ul,
-.cf-markdown li > ol {
+.lfe-markdown li > ul,
+.lfe-markdown li > ol {
   margin: 3px 0 0;
 }
-.cf-markdown blockquote {
+.lfe-markdown blockquote {
   margin: 0 0 14px;
   padding: 9px 14px;
   border-left: 3px solid var(--color-primary);
   background: var(--color-primary-soft);
   border-radius: 0 4px 4px 0;
 }
-.cf-markdown blockquote p:last-child {
+.lfe-markdown blockquote p:last-child {
   margin-bottom: 0;
 }
-.cf-markdown table {
+.lfe-markdown table {
   width: 100%;
   border-collapse: collapse;
   margin-bottom: 14px;
   font-size: 0.875rem;
 }
-.cf-markdown th,
-.cf-markdown td {
+.lfe-markdown th,
+.lfe-markdown td {
   padding: 7px 11px;
   border: 1px solid var(--color-border-strong);
   text-align: left;
 }
-.cf-markdown th {
+.lfe-markdown th {
   background: var(--color-surface-secondary);
   font-weight: 700;
 }
-.cf-markdown tr:nth-child(even) td {
+.lfe-markdown tr:nth-child(even) td {
   background: var(--color-surface-secondary);
 }
-.cf-markdown a {
+.lfe-markdown a {
   color: #2563eb;
   text-decoration: underline;
   text-decoration-color: transparent;
   transition: text-decoration-color 0.15s;
 }
-.cf-markdown a:hover {
+.lfe-markdown a:hover {
   text-decoration-color: #2563eb;
 }
-.cf-markdown hr {
+.lfe-markdown hr {
   border: none;
   border-top: 1px solid var(--color-border);
   margin: 22px 0;
 }
-.cf-markdown code {
+.lfe-markdown code {
   font-family: var(--font-mono);
   font-size: 0.8em;
   background: var(--color-surface-secondary);
@@ -246,31 +246,31 @@ textarea {
   padding: 1px 5px;
   border-radius: 3px;
 }
-.cf-markdown pre {
+.lfe-markdown pre {
   margin-bottom: 14px;
   border-radius: var(--radius-md);
   overflow: hidden;
 }
-.cf-markdown pre code {
+.lfe-markdown pre code {
   all: unset;
 }
 
 /* ─── Recitation mode (theory) ─── */
-.cf-recitation-mode p,
-.cf-recitation-mode ul,
-.cf-recitation-mode ol,
-.cf-recitation-mode table,
-.cf-recitation-mode pre,
-.cf-recitation-mode blockquote {
+.lfe-recitation-mode p,
+.lfe-recitation-mode ul,
+.lfe-recitation-mode ol,
+.lfe-recitation-mode table,
+.lfe-recitation-mode pre,
+.lfe-recitation-mode blockquote {
   display: none;
 }
 
 /* ─── In-document search highlight ─── */
-mark.cf-search-mark {
+mark.lfe-search-mark {
   background: #fef08a;
   color: inherit;
   border-radius: 2px;
 }
-mark.cf-search-mark.current {
+mark.lfe-search-mark.current {
   background: #fb923c;
 }

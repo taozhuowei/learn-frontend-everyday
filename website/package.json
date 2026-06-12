@@ -1,9 +1,10 @@
 {
-  "name": "frontend-code-practice-website",
+  "name": "learn-frontend-everyday-website",
   "private": true,
   "version": "1.0.0",
   "type": "module",
   "scripts": {
+    "dev": "node ./scripts/start.mjs",
     "start": "node ./scripts/start.mjs",
     "build": "node ./scripts/start.mjs --build-only",
     "test:unit": "vitest run",

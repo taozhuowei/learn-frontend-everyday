@@ -1,4 +1,4 @@
-# CodeForge (Learn Frontend Everyday) - 开发与重构计划 (TODO)
+# Learn Frontend Everyday - 开发与重构计划 (TODO)
 
 ## 📌 核心治理规则 (Rules & Mandates)
 

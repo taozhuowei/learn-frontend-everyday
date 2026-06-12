@@ -63,7 +63,7 @@ function ProblemInfoPanel({
           <button
             key={tab}
             aria-selected={activeTab === tab}
-            className={`cf-tab ${activeTab === tab ? 'active' : ''}`}
+            className={`lfe-tab ${activeTab === tab ? 'active' : ''}`}
             onClick={() => onTabChange(tab)}
             role="tab"
             type="button"

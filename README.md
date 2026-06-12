@@ -1,4 +1,4 @@
-# Learn Front-end Everyday
+# Learn Frontend Everyday
 
 Browser-based front-end practice platform. Users write code in Monaco editor, the judge engine evaluates it in real-time, and the site deploys automatically to GitHub Pages.
 
@@ -48,7 +48,7 @@ Tests must pass before build. Build must pass before deploy.
 ```bash
 cd website
 yarn install
-yarn start          # dev server at http://127.0.0.1:5173
+yarn dev            # dev server at http://127.0.0.1:3000, or next available port
 ```
 
 ## Testing

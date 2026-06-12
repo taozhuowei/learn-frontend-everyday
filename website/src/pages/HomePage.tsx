@@ -1,6 +1,6 @@
 /**
  * Page: HomePage
- * Purpose: 主页，展示 CodeForge Hero 区和四大功能入口卡片。
+ * Purpose: 主页，展示 Learn Frontend Everyday Hero 区和四大功能入口卡片。
  */
 
 import { BookOpen, ChevronRight, GraduationCap, Trophy } from 'lucide-react'
@@ -102,10 +102,10 @@ export function HomePage() {
           >
             <div className="flex items-center justify-center gap-2 mb-4">
               <span className="w-9 h-9 rounded-[9px] bg-[var(--color-primary)] text-white text-sm font-extrabold flex items-center justify-center">
-                CF
+                LFE
               </span>
               <span className="text-[0.7rem] font-bold uppercase tracking-[0.2em] text-[var(--color-ink-tertiary)]">
-                CodeForge
+                Learn Frontend Everyday
               </span>
             </div>
             <h1 className="text-4xl font-extrabold tracking-tight text-[var(--color-ink)] mb-4 leading-tight">

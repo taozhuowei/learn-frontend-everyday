@@ -71,7 +71,7 @@ export function ComponentLearnPage({ problem }: ComponentLearnPageProps) {
     <aside className="flex flex-col h-full bg-white border border-[var(--color-border)] rounded-[var(--radius-lg)] overflow-hidden">
       <div className="flex shrink-0 border-b border-[var(--color-border)]">
         <button
-          className={`cf-tab ${activeTab === 'description' ? 'active' : ''}`}
+          className={`lfe-tab ${activeTab === 'description' ? 'active' : ''}`}
           onClick={() => setActiveTab('description')}
           type="button"
         >
@@ -79,7 +79,7 @@ export function ComponentLearnPage({ problem }: ComponentLearnPageProps) {
           需求
         </button>
         <button
-          className={`cf-tab ${activeTab === 'approach' ? 'active' : ''}`}
+          className={`lfe-tab ${activeTab === 'approach' ? 'active' : ''}`}
           onClick={() => setActiveTab('approach')}
           type="button"
         >

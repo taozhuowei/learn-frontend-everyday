@@ -1,6 +1,6 @@
 /**
  * Component: AppShell
- * Purpose: 全局布局框架，包含 48px 顶栏导航（品牌 CF + CodeForge）和页面容器结构。
+ * Purpose: 全局布局框架，包含 48px 顶栏导航（品牌 LFE + Learn Frontend Everyday）和页面容器结构。
  */
 
 import type { ReactNode } from 'react'
@@ -53,9 +53,11 @@ export function AppShell({
                 className="w-7 h-7 rounded-[7px] bg-[var(--color-primary)] text-white text-xs font-extrabold flex items-center justify-center shrink-0"
                 aria-hidden="true"
               >
-                CF
+                LFE
               </span>
-              <span className="text-[var(--color-ink)] hidden sm:inline">CodeForge</span>
+              <span className="text-[var(--color-ink)] hidden md:inline">
+                Learn Frontend Everyday
+              </span>
             </NavLink>
 
             {backTo && !showPageHeader ? (

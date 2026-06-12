@@ -1,4 +1,4 @@
-# CodeForge (Learn Frontend Everyday) - 全栈综合 Code Review 报告
+# Learn Frontend Everyday - 全栈综合 Code Review 报告
 
 **评审团队**: Agent 专家审查团队 (Orchestrator, Software Architect, Security Engineer, Optimize, Frontend Developer, Code Reviewer, Animate, Delight, Test Results Analyzer)
 **评审日期**: 2026年4月19日

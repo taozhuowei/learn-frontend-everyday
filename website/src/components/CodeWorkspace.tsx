@@ -92,7 +92,7 @@ export const CodeWorkspace = forwardRef<
   const handleBeforeMount: BeforeMount = (monacoInstance) => {
     monacoRef.current = monacoInstance
 
-    monacoInstance.editor.defineTheme('cf-light', {
+    monacoInstance.editor.defineTheme('lfe-light', {
       base: 'vs',
       inherit: true,
       rules: [
@@ -190,7 +190,7 @@ export const CodeWorkspace = forwardRef<
         </div>
       </div>
       {/* Editor */}
-      <div className="cf-editor-container relative">
+      <div className="lfe-editor-container relative">
         <Editor
           loading={<LoadingPanel className="absolute inset-0 z-10 w-full h-full" type="code" />}
           beforeMount={handleBeforeMount}
@@ -233,7 +233,7 @@ export const CodeWorkspace = forwardRef<
             formatOnPaste: true,
             formatOnType: true,
           }}
-          theme="cf-light"
+          theme="lfe-light"
           value={value}
         />
       </div>

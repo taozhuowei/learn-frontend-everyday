@@ -232,7 +232,7 @@ export function CasePanel({
       >
         <button
           aria-selected={activeTab === 'cases'}
-          className={`cf-tab ${activeTab === 'cases' ? 'active' : ''}`}
+          className={`lfe-tab ${activeTab === 'cases' ? 'active' : ''}`}
           onClick={() => setActiveTab('cases')}
           role="tab"
           type="button"
@@ -241,7 +241,7 @@ export function CasePanel({
         </button>
         <button
           aria-selected={activeTab === 'console'}
-          className={`cf-tab ${activeTab === 'console' ? 'active' : ''}`}
+          className={`lfe-tab ${activeTab === 'console' ? 'active' : ''}`}
           onClick={() => setActiveTab('console')}
           role="tab"
           type="button"

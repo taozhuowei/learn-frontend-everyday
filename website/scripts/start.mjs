@@ -1,7 +1,8 @@
 /**
  * Module: start
  * Purpose: Build the project and optionally start the preview server on an available port.
- * Usage: yarn start          # Build and start preview server
+ * Usage: yarn dev            # Build and start preview server
+ *        yarn start          # Same as yarn dev
  *        yarn start --build-only  # Build only, don't start server
  */
 
@@ -106,7 +107,7 @@ async function main() {
     console.log('  Build finished successfully!')
     console.log('========================================')
     console.log('\nOutput directory: dist/')
-    console.log('\nTo start preview server, run: yarn start')
+    console.log('\nTo start preview server, run: yarn dev')
     process.exit(0)
   }
 

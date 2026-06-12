@@ -123,7 +123,7 @@ export function TheoryArticlePage() {
               transition={{ duration: 0.4 }}
               ref={contentRef}
               className={`max-w-[760px] mx-auto px-6 py-8 transition-opacity duration-200 ${
-                recitationMode ? 'cf-recitation-mode' : ''
+                recitationMode ? 'lfe-recitation-mode' : ''
               }`}
             >
               <h1 className="text-2xl font-bold text-[var(--color-ink)] mb-6">{article.title}</h1>
@@ -349,7 +349,7 @@ function SearchHighlighter({
     if (!container) return
 
     // Clear existing marks
-    container.querySelectorAll('mark.cf-search-mark').forEach((m) => {
+    container.querySelectorAll('mark.lfe-search-mark').forEach((m) => {
       const mark = m as HTMLElement
       mark.replaceWith(mark.textContent ?? '')
     })
@@ -369,7 +369,7 @@ function SearchHighlighter({
           if (
             parent.tagName === 'CODE' ||
             parent.tagName === 'PRE' ||
-            parent.classList.contains('cf-search-mark')
+            parent.classList.contains('lfe-search-mark')
           ) {
             return NodeFilter.FILTER_REJECT
           }
@@ -406,7 +406,7 @@ function SearchHighlighter({
 
         // Create mark element
         const mark = document.createElement('mark')
-        mark.className = 'cf-search-mark bg-amber-200 text-amber-900 rounded px-0.5'
+        mark.className = 'lfe-search-mark bg-amber-200 text-amber-900 rounded px-0.5'
         mark.textContent = text.slice(index, index + query.length)
         fragment.appendChild(mark)
         newMarks.push(mark)

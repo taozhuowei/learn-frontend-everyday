@@ -72,7 +72,8 @@ website/
 ## Commands
 
 ```bash
-yarn start              # Dev server (http://127.0.0.1:5173)
+yarn dev                # Dev server (http://127.0.0.1:3000, or next available port)
+yarn start              # Same as yarn dev
 yarn build              # Full production build (format → content gen → tsc → vite)
 yarn test:unit          # Vitest unit + integration
 yarn test:unit:coverage # With V8 coverage report

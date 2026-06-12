@@ -6,7 +6,7 @@ import { SyntaxHighlighter, oneLight } from '../utils/code_highlighter'
 
 export function MarkdownContent({ markdown }: { markdown: string }) {
   return (
-    <div className="cf-markdown">
+    <div className="lfe-markdown">
       <ReactMarkdown
         components={{
           code({ className, children, ...props }) {
