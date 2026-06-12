@@ -8,6 +8,7 @@ import { NavLink, useNavigate } from 'react-router-dom'
 import { ChevronLeft, Settings2 } from 'lucide-react'
 import { useAppState } from '../context/AppStateContext'
 import { SettingsDrawer } from './SettingsDrawer'
+const brandLogo = '/brand/learn-frontend-everyday-root-mark-transparent.png'
 
 export function AppShell({
   eyebrow,
@@ -49,12 +50,12 @@ export function AppShell({
               className="flex items-center gap-2 font-extrabold text-[0.95rem] tracking-tight shrink-0"
               to="/"
             >
-              <span
-                className="w-7 h-7 rounded-[7px] bg-[var(--color-primary)] text-white text-xs font-extrabold flex items-center justify-center shrink-0"
+              <img
+                alt=""
                 aria-hidden="true"
-              >
-                LFE
-              </span>
+                className="w-7 h-7 rounded-[7px] object-cover shrink-0"
+                src={brandLogo}
+              />
               <span className="text-[var(--color-ink)] hidden md:inline">
                 Learn Frontend Everyday
               </span>

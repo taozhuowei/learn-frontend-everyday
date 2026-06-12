@@ -9,6 +9,7 @@ import { motion } from 'framer-motion'
 
 import { AppShell } from '../components/AppShell'
 import { generatedManifest as stats } from '../generated/manifest'
+const brandLogo = '/brand/learn-frontend-everyday-root-mark-transparent.png'
 
 type FeatureCard = {
   title: string
@@ -101,9 +102,12 @@ export function HomePage() {
             className="relative max-w-3xl mx-auto px-5 sm:px-8 py-10 sm:py-16 text-center"
           >
             <div className="flex items-center justify-center gap-2 mb-4">
-              <span className="w-9 h-9 rounded-[9px] bg-[var(--color-primary)] text-white text-sm font-extrabold flex items-center justify-center">
-                LFE
-              </span>
+              <img
+                alt=""
+                aria-hidden="true"
+                className="w-9 h-9 rounded-[9px] object-cover"
+                src={brandLogo}
+              />
               <span className="text-[0.7rem] font-bold uppercase tracking-[0.2em] text-[var(--color-ink-tertiary)]">
                 Learn Frontend Everyday
               </span>
