@@ -9,7 +9,7 @@ import { motion } from 'framer-motion'
 
 import { AppShell } from '../components/AppShell'
 import { generatedManifest as stats } from '../generated/manifest'
-const brandLogo = '/brand/learn-frontend-everyday-root-mark-transparent.png'
+const brandLogo = `${import.meta.env.BASE_URL}brand/learn-frontend-everyday-root-mark-transparent.png`
 
 type FeatureCard = {
   title: string

@@ -8,7 +8,7 @@ import { NavLink, useNavigate } from 'react-router-dom'
 import { ChevronLeft, Settings2 } from 'lucide-react'
 import { useAppState } from '../context/AppStateContext'
 import { SettingsDrawer } from './SettingsDrawer'
-const brandLogo = '/brand/learn-frontend-everyday-root-mark-transparent.png'
+const brandLogo = `${import.meta.env.BASE_URL}brand/learn-frontend-everyday-root-mark-transparent.png`
 
 export function AppShell({
   eyebrow,
